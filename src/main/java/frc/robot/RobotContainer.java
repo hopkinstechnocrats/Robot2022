@@ -7,20 +7,20 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.SingleModuleTestFixture;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -76,16 +76,16 @@ public class RobotContainer {
         new RunCommand(
             () ->
                 m_robotDrive.drive(
-                    -1*m_driverController.getY(GenericHID.Hand.kLeft),
-                    -1*m_driverController.getX(GenericHID.Hand.kLeft),
-                    -6*m_driverController.getX(GenericHID.Hand.kRight),
+                    -1*m_driverController.getLeftY(),
+                    -1*m_driverController.getLeftX(),
+                    -6*m_driverController.getRightX(),
                     true), m_robotDrive)); // use this to change from field oriented to non-field oriented
 
     // singleModuleTestFixture.setDefaultCommand(
     //         new RunCommand(
     //             () -> 
     //                 singleModuleTestFixture.setState(
-    //                     m_driverController.getY(GenericHID.Hand.kLeft), m_driverController.getY(GenericHID.Hand.kRight)),
+    //                     m_driverController.getLeftY(), m_driverController.getRightY()),
     //             singleModuleTestFixture)
     // );
   }

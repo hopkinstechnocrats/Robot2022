@@ -2,8 +2,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
@@ -37,8 +37,8 @@ public class FixHeadingCommand extends CommandBase {
         var error = desiredState.minus(driveSubsystem.getHeading());
         var output = controller.calculate(error.getRadians(),0);
         driveSubsystem.drive(
-                -1*driverController.getY(GenericHID.Hand.kLeft),
-                -1*driverController.getX(GenericHID.Hand.kLeft),
+                -1*driverController.getLeftY(),
+                -1*driverController.getLeftX(),
                 output,
                 true);
     }
