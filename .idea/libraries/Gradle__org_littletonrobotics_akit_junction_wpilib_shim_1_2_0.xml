@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.littletonrobotics.akit.junction:wpilib-shim:1.2.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.littletonrobotics.akit.junction/wpilib-shim/1.2.0/638c76ea5d3bbf9299e0373aabc056784b174dde/wpilib-shim-1.2.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.littletonrobotics.akit.junction/wpilib-shim/1.2.0/b4a09f1457dc7a3ddfdf5d13e8375a3346bb41a4/wpilib-shim-1.2.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,4 +1,3 @@
-import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
 
 plugins {
     id "java"
@@ -85,7 +84,7 @@ dependencies {
     nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
     simulationRelease wpi.sim.enableRelease()
 
-    compile "com.github.dominikWin:badlog:v0.0.1"
+    implementation "com.github.dominikWin:badlog:v0.1.1"
 
     testImplementation 'junit:junit:4.12'
 }
