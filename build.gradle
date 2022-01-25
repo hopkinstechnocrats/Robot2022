@@ -1,7 +1,7 @@
 
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2022.1.1-rc-1"
+    id "edu.wpi.first.GradleRIO" version "2022.2.1"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -69,6 +69,7 @@ configurations.all {
 dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
+    implementation 'org.jetbrains:annotations:20.1.0'
 
     roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)
     roborioDebug wpi.java.vendor.jniDebug(wpi.platforms.roborio)

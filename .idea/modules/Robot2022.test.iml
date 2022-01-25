@@ -7,12 +7,12 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Robot2022.main" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpimath:wpimath-java:2022.1.1-rc-1" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.ntcore:ntcore-java:2022.1.1-rc-1" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.cscore:cscore-java:2022.1.1-rc-1" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.cameraserver:cameraserver-java:2022.1.1-rc-1" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.hal:hal-java:2022.1.1-rc-1" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpiutil:wpiutil-java:2022.1.1-rc-1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.wpimath:wpimath-java:2022.2.1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.ntcore:ntcore-java:2022.2.1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.cscore:cscore-java:2022.2.1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.cameraserver:cameraserver-java:2022.2.1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.hal:hal-java:2022.2.1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.wpiutil:wpiutil-java:2022.2.1" level="project" />
     <orderEntry type="library" name="Gradle: edu.wpi.first.thirdparty.frc2022.opencv:opencv-java:4.5.2-1" level="project" />
     <orderEntry type="library" name="Gradle: org.littletonrobotics.akit.junction:wpilib-shim:1.2.0" level="project" />
     <orderEntry type="library" name="Gradle: org.littletonrobotics.akit.junction:junction-core:1.2.0" level="project" />
@@ -20,11 +20,12 @@
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.12.4" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.12.4" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.12.4" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpilibNewCommands:wpilibNewCommands-java:2022.1.1-rc-1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.wpilibNewCommands:wpilibNewCommands-java:2022.2.1" level="project" />
     <orderEntry type="library" name="Gradle: com.ctre.phoenix:api-java:5.20.2" level="project" />
     <orderEntry type="library" name="Gradle: com.ctre.phoenix:wpiapi-java:5.20.2" level="project" />
     <orderEntry type="library" name="Gradle: com.kauailabs.navx.frc:navx-java:4.0.442" level="project" />
     <orderEntry type="library" name="Gradle: org.littletonrobotics.akit.conduit:conduit-api:1.2.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:20.1.0" level="project" />
     <orderEntry type="library" name="Gradle: com.github.dominikWin:badlog:v0.1.1" level="project" />
     <orderEntry type="library" name="Gradle: junit:junit:4.13.1" level="project" />
     <orderEntry type="library" name="Gradle: org.ejml:ejml-fsparse:0.41" level="project" />

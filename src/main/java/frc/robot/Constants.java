@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import lib.motorspecs.FalconConstants;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -17,6 +18,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static final class IntakeConstants {
+    public static final int kPWMPort = 0;
+    public static final int currentLimit = 30;
+  }
 
   public static final class TestFixtureConstants {
     public static final int kDriveMotorPort = 1;
@@ -97,9 +103,11 @@ public final class Constants {
     public static final double kPModuleTurningController = 4.3;
 
     public static final double kPModuleDriveController = 1;
-    public static final int kfalconEncoderCPR = 2048;
     public static final double kSteeringGearRatio = 12.8;
-    public static final double kEncoderTicksPerRevolution = kfalconEncoderCPR * kSteeringGearRatio;
+    public static final double kDriveGearRatio = 1;
+
+    public static final double kSteeringEncoderTicksPerRevolution = FalconConstants.kEncoderCPR * kSteeringGearRatio;
+    public static final double kDriveEncoderTicksPerRevolution = FalconConstants.kEncoderCPR * kDriveGearRatio;
   }
 
   public static final class OIConstants {

@@ -12,18 +12,17 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.SingleModuleTestFixture;
+import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.Intake.IntakeIOReal;
+import frc.robot.subsystems.Intake.IntakeSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -50,6 +49,7 @@ import badlog.lib.BadLog;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final IntakeSubsystem m_intake;
   public Pose2d zeroPose = new Pose2d();
   // private final SingleModuleTestFixture singleModuleTestFixture = new SingleModuleTestFixture();
 
@@ -63,6 +63,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    m_intake = new IntakeSubsystem(new IntakeIOReal());
     // Configure the button bindings
     configureButtonBindings();
     loggables = new ArrayList<Loggable>();
@@ -80,6 +81,15 @@ public class RobotContainer {
                     -1*m_driverController.getLeftX(),
                     -6*m_driverController.getRightX(),
                     true), m_robotDrive)); // use this to change from field oriented to non-field oriented
+
+    m_intake.setDefaultCommand(
+            new RunCommand(
+                    () ->
+                    {
+                      m_intake.spinIntake(0);
+                    }
+            , m_intake)
+    );
 
     // singleModuleTestFixture.setDefaultCommand(
     //         new RunCommand(
@@ -101,7 +111,7 @@ public class RobotContainer {
       JoystickButton BButton = new JoystickButton(m_driverController, 2);
       // JoystickButton CButton = new JoystickButton(m_driverController, 3);
       // JoystickButton DButton = new JoystickButton(m_driverController, 4);
-      
+      BButton.whileHeld(new RunCommand(() -> {m_intake.spinIntake(12);}));
       // 
       POVButton DPadTop = new POVButton(m_driverController, 90);
 

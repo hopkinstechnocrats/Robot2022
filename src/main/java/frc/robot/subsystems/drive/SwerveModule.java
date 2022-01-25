@@ -2,63 +2,37 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.drive;
 
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import frc.robot.Constants;
 import frc.robot.Constants.ModuleConstants;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ModuleConstants;
-import lib.Loggable;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import badlog.lib.BadLog;
+import org.littletonrobotics.junction.Logger;
 
 public class SwerveModule {
-  WPI_TalonFX driveMotor;
-  WPI_TalonFX turningMotor;
-  CANCoder encoder; 
-  String corners;
 
-
-  private final PIDController m_drivePIDController =
-      new PIDController(ModuleConstants.kPModuleDriveController, 0, 0);
-
-  private final PIDController m_turningPIDController = 
-      new PIDController(
-        ModuleConstants.kPModuleTurningController,
-        0,
-        0
-        );
-        
+  private String corners;
 
   private Rotation2d swerveAngle;
   private double offset;
   private boolean inverted;
 
-  public SwerveModule(int DriveMotorReport, 
-  int TurningMotorReport, int DriveEncoderReport,
-   int TurningEncoderReport, boolean DriveEncoderReversed, 
-    boolean TurningEncoderReversed, String corners, double turningEncoderOffset){
+  private ModuleSteerIO steerIO;
+  private ModuleDriveIO driveIO;
 
+  public SwerveModule(int DriveMotorReport,
+                      int TurningMotorReport,
+                      int TurningEncoderReport,
+                      String corners, double turningEncoderOffset){
+
+    steerIO = new ModuleSteerIO(TurningMotorReport, TurningEncoderReport, turningEncoderOffset);
+    driveIO = new ModuleDriveIO(DriveMotorReport, false);
     this.corners = corners;
     this.offset = turningEncoderOffset;
-    encoder = new CANCoder(TurningEncoderReport);
 
-    driveMotor = new WPI_TalonFX(DriveMotorReport);
-    turningMotor = new WPI_TalonFX(TurningMotorReport);
-    final CANCoder encoder = new CANCoder(TurningEncoderReport);
-    driveMotor.setNeutralMode(NeutralMode.Brake);
-    turningMotor.setNeutralMode(NeutralMode.Brake);
-    m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
     swerveAngle = new Rotation2d(0,1);
     SmartDashboard.putNumber(corners + "P Gain Input", 0);
     SmartDashboard.putNumber(corners + "I Gain Input", 0);
@@ -68,7 +42,7 @@ public class SwerveModule {
   }
 
   public void periodic() {
-    SmartDashboard.putNumber(corners + "SwerveAngle", this.getAngle().getRadians());
+    Logger.getInstance().recordOutput("DriveSubsystem/"+corners + " SwerveAngle", this.getAngle().getRadians());
   }
 
   /**
@@ -89,7 +63,7 @@ public class SwerveModule {
   }
 
   public SwerveModuleState getState() {
-    return new SwerveModuleState((driveMotor.getSelectedSensorVelocity()/ModuleConstants.kEncoderTicksPerRevolution*10)*Constants.DriveConstants.kWheelHeight*Math.PI, getAngle());
+    return new SwerveModuleState((driveMotor.getSelectedSensorVelocity()/ModuleConstants.kSteeringEncoderTicksPerRevolution *10)*Constants.DriveConstants.kWheelHeight*Math.PI, getAngle());
   }
   //
 
