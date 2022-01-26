@@ -4,13 +4,17 @@
 
 package frc.robot.subsystems.drive;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import frc.robot.Constants;
 import frc.robot.Constants.ModuleConstants;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import badlog.lib.BadLog;
+import lib.iotemplates.ClosedLoopIO;
 import org.littletonrobotics.junction.Logger;
+
+import static frc.robot.Constants.DriveConstants.kWheelHeight;
 
 public class SwerveModule {
 
@@ -20,50 +24,46 @@ public class SwerveModule {
   private double offset;
   private boolean inverted;
 
-  private ModuleSteerIO steerIO;
-  private ModuleDriveIO driveIO;
+  private final ModuleSteerIO steerIO;
+  private final ModuleDriveIO driveIO;
+  private SwerveModuleState desiredState;
+  private final ClosedLoopIO.ClosedLoopIOInputs steerInputs;
+  private final ClosedLoopIO.ClosedLoopIOInputs driveInputs;
 
-  public SwerveModule(int DriveMotorReport,
-                      int TurningMotorReport,
-                      int TurningEncoderReport,
+  public SwerveModule(int driveMotorPort,
+                      int turningMotorPort,
+                      int turningEncoderPort,
                       String corners, double turningEncoderOffset){
 
-    steerIO = new ModuleSteerIO(TurningMotorReport, TurningEncoderReport, turningEncoderOffset);
-    driveIO = new ModuleDriveIO(DriveMotorReport, false);
+    steerIO = new ModuleSteerIO(turningMotorPort, turningEncoderPort, turningEncoderOffset);
+    driveIO = new ModuleDriveIO(driveMotorPort, false);
+    steerInputs = new ClosedLoopIO.ClosedLoopIOInputs();
+    driveInputs = new ClosedLoopIO.ClosedLoopIOInputs();
     this.corners = corners;
     this.offset = turningEncoderOffset;
-
-    swerveAngle = new Rotation2d(0,1);
-    SmartDashboard.putNumber(corners + "P Gain Input", 0);
-    SmartDashboard.putNumber(corners + "I Gain Input", 0);
-    SmartDashboard.putNumber(corners + "D Gain Input", 0);
-    SmartDashboard.putNumber(corners + "Angle Setpoint Degrees", 0);
-    
   }
 
   public void periodic() {
-    Logger.getInstance().recordOutput("DriveSubsystem/"+corners + " SwerveAngle", this.getAngle().getRadians());
-  }
+    steerIO.updateInputs(steerInputs);
+    driveIO.updateInputs(driveInputs);
 
-  /**
-   * Returns the current state of the module.
-   *
-   * @return The current state of the module.
-   */
-  public Rotation2d getAngle() {
-    return Rotation2d.fromDegrees(encoder.getAbsolutePosition()).minus(new Rotation2d(offset));
-  }
+    Logger.getInstance().processInputs("DriveSubsystem/" + corners + " Steer", steerInputs);
+    Logger.getInstance().processInputs("DriveSubsystem/" + corners + " Drive", driveInputs);
 
-  public Rotation2d getError(Rotation2d actual, Rotation2d desired) {
-    return desired.minus(actual);
-  }
+    steerIO.setPosition(desiredState.angle);
+    driveIO.setVelocity(desiredState.speedMetersPerSecond);
 
-  public void setInverted(boolean inverted) {
-    this.inverted = inverted;
+    Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " ModuleAngleRad", getState().angle.getRadians());
+    Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " ModuleSpeedMetersPerSecond", getState().speedMetersPerSecond);
+    Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " DesiredModuleAngleRad", desiredState.angle.getRadians());
+    Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " DesiredModuleSpeedMetersPerSecond", desiredState.angle.getRadians());
   }
 
   public SwerveModuleState getState() {
-    return new SwerveModuleState((driveMotor.getSelectedSensorVelocity()/ModuleConstants.kSteeringEncoderTicksPerRevolution *10)*Constants.DriveConstants.kWheelHeight*Math.PI, getAngle());
+    return new SwerveModuleState(
+            driveInputs.velocityRadPerSec * kWheelHeight / 2,
+            new Rotation2d(steerInputs.positionRad)
+    );
   }
   //
 
@@ -73,56 +73,7 @@ public class SwerveModule {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    
     // Optimize the reference state to avoid spinning further than 90 degrees
-    SwerveModuleState state = desiredState;
-    // SwerveModuleState.optimize(desiredState, getAngle());
-
-    // Calculate the drive output from the drive PID controller.
-    final double driveOutput = inverted ?
-        m_drivePIDController.calculate(getState().speedMetersPerSecond, desiredState.speedMetersPerSecond)
-        : -1*m_drivePIDController.calculate(getState().speedMetersPerSecond, desiredState.speedMetersPerSecond);
-
-    // Calculate the turning motor output from the turning PID controller.
-    final Double turnOutput =
-        m_turningPIDController.calculate(getAngle().getRadians(), state.angle.getRadians());
-
-    // Calculate the turning motor output from the turning PID controller.
-    driveMotor.setVoltage(driveOutput);
-    turningMotor.setVoltage(turnOutput);
-
-    SmartDashboard.putNumber(corners + "Drive Output", driveOutput);
-    SmartDashboard.putNumber(corners + "Measuerd Output", getState().speedMetersPerSecond);
-    SmartDashboard.putNumber(corners + "Turn Output", turnOutput);
-    SmartDashboard.putNumber(corners + "Desired State m/s", desiredState.speedMetersPerSecond);
-    SmartDashboard.putNumber(corners + "SwerveAngle", this.getAngle().getRadians());
-    SmartDashboard.putNumber(corners + "PIDSetpoint", m_turningPIDController.getSetpoint());
-    SmartDashboard.putNumber(corners + "PIDInput", m_turningPIDController.getPositionError());
-    SmartDashboard.putNumber(corners + "P Gain", m_turningPIDController.getP());
-    SmartDashboard.putNumber(corners + "D Gain", m_turningPIDController.getD());
-    SmartDashboard.putNumber(corners + "I Gain", m_turningPIDController.getI());
-    SmartDashboard.putNumber(corners + "Drive P Gain", m_drivePIDController.getP());
-    m_drivePIDController.setP(SmartDashboard.getNumber("PID P Gain Input", 0));
-    SmartDashboard.putNumber(corners + "Computed Error", getError(getAngle(),swerveAngle).getRadians());
-    SmartDashboard.putNumber(corners + "Steering PID Position Error", m_turningPIDController.getPositionError());
-  }
-
-  /** Zeros all the SwerveModule encoders. */
-  public void resetEncoders() {
-
-  }
-
-  public void logInit() {
-    BadLog.createValue(corners + "P Gain", ""+m_turningPIDController.getP());
-    BadLog.createValue(corners + "I Gain", ""+m_turningPIDController.getI());
-    BadLog.createValue(corners + "D Gain", ""+m_turningPIDController.getD());
-
-    BadLog.createTopic(corners + "Steering Rotation Angle Degrees", "degrees", () -> getAngle().getDegrees());
-    BadLog.createTopic(corners + "Steering Rotation Angle Radians", "rad", () -> getAngle().getRadians());
-
-    BadLog.createTopic(corners + "Steering PID Position Error", "rad", () -> m_turningPIDController.getPositionError(), "join:Swerve Steering PID Control");
-    BadLog.createTopic(corners + "Steering PID Setpoint", "rad", () -> m_turningPIDController.getSetpoint(), "join:Swerve Steering PID Control");
-    BadLog.createTopic(corners + "Steering Motor Output", "PercentOutput", () -> turningMotor.get(), "join:Swerve Steering PID Control");
-
+    this.desiredState = desiredState;
   }
 }
