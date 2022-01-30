@@ -4,13 +4,8 @@
 
 package frc.robot.subsystems.drive;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import frc.robot.Constants;
-import frc.robot.Constants.ModuleConstants;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import badlog.lib.BadLog;
 import lib.iotemplates.ClosedLoopIO;
 import org.littletonrobotics.junction.Logger;
 
@@ -36,9 +31,10 @@ public class SwerveModule {
                       String corners, double turningEncoderOffset){
 
     steerIO = new ModuleSteerIO(turningMotorPort, turningEncoderPort, turningEncoderOffset);
-    driveIO = new ModuleDriveIO(driveMotorPort, false);
+    driveIO = new ModuleDriveIO(driveMotorPort, true, corners);
     steerInputs = new ClosedLoopIO.ClosedLoopIOInputs();
     driveInputs = new ClosedLoopIO.ClosedLoopIOInputs();
+    desiredState = new SwerveModuleState(0, new Rotation2d(0));
     this.corners = corners;
     this.offset = turningEncoderOffset;
   }
@@ -51,17 +47,17 @@ public class SwerveModule {
     Logger.getInstance().processInputs("DriveSubsystem/" + corners + " Drive", driveInputs);
 
     steerIO.setPosition(desiredState.angle);
-    driveIO.setVelocity(desiredState.speedMetersPerSecond);
+    driveIO.setVelocityRadPerSec(desiredState.speedMetersPerSecond / (kWheelHeight / 2));
 
     Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " ModuleAngleRad", getState().angle.getRadians());
     Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " ModuleSpeedMetersPerSecond", getState().speedMetersPerSecond);
     Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " DesiredModuleAngleRad", desiredState.angle.getRadians());
-    Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " DesiredModuleSpeedMetersPerSecond", desiredState.angle.getRadians());
+    Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " DesiredModuleSpeedMetersPerSecond", desiredState.speedMetersPerSecond);
   }
 
   public SwerveModuleState getState() {
     return new SwerveModuleState(
-            driveInputs.velocityRadPerSec * kWheelHeight / 2,
+            driveInputs.velocityRadPerSec * (kWheelHeight / 2),
             new Rotation2d(steerInputs.positionRad)
     );
   }

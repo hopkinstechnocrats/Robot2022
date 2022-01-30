@@ -80,7 +80,7 @@ public class RobotContainer {
                     -1*m_driverController.getLeftY(),
                     -1*m_driverController.getLeftX(),
                     -6*m_driverController.getRightX(),
-                    true), m_robotDrive)); // use this to change from field oriented to non-field oriented
+                    false), m_robotDrive)); // use this to change from field oriented to non-field oriented
 
     m_intake.setDefaultCommand(
             new RunCommand(

@@ -102,9 +102,11 @@ public final class Constants {
     public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 0.5 * Math.PI;
     public static final double kPModuleTurningController = 4.3;
 
-    public static final double kPModuleDriveController = 1;
+    public static final double kPModuleDriveController = 0.15;
+    public static final double kDModuleDriveController = 0;
+    public static final double kIModuleDriveController = 0.3;
     public static final double kSteeringGearRatio = 12.8;
-    public static final double kDriveGearRatio = 1;
+    public static final double kDriveGearRatio = 6.75;
 
     public static final double kSteeringEncoderTicksPerRevolution = FalconConstants.kEncoderCPR * kSteeringGearRatio;
     public static final double kDriveEncoderTicksPerRevolution = FalconConstants.kEncoderCPR * kDriveGearRatio;

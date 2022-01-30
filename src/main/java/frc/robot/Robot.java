@@ -35,7 +35,7 @@ public class Robot extends LoggedRobot {
     Logger.getInstance().recordMetadata("ProjectName", "Robot2022");
 
     if (isReal()) {
-      Logger.getInstance().addDataReceiver(new ByteLogReceiver("/media/sda1/"));
+      Logger.getInstance().addDataReceiver(new ByteLogReceiver("/home/lvuser/"));
       Logger.getInstance().addDataReceiver(new LogSocketServer(5800));
     } else {
       String path = ByteLogReplay.promptForPath();
