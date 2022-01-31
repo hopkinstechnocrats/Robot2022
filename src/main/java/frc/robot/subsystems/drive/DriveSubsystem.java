@@ -116,6 +116,17 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    Logger.getInstance().recordOutput("Drivetrain/Raw Rotation Command", rot);
+    if (Math.abs(rot) < 0.1){
+      rot = 0;
+    }
+    if (Math.abs(xSpeed) < 0.05) {
+      xSpeed = 0;
+    }
+    if (Math.abs(ySpeed) < 0.05) {
+      ySpeed = 0;
+    }
+    Logger.getInstance().recordOutput("Drivetrain/Rotation Command", rot);
     if (fieldRelative) {
       swerveModuleStates =
         DriveConstants.kDriveKinematics.toSwerveModuleStates(
