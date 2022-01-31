@@ -79,14 +79,14 @@ public class RobotContainer {
                 m_robotDrive.drive(
                     -1*m_driverController.getLeftY(),
                     -1*m_driverController.getLeftX(),
-                    -6*m_driverController.getRightX(),
-                    false), m_robotDrive)); // use this to change from field oriented to non-field oriented
+                     3*m_driverController.getRightX(),
+                    true), m_robotDrive)); // use this to change from field oriented to non-field oriented
 
     m_intake.setDefaultCommand(
             new RunCommand(
                     () ->
                     {
-                      m_intake.spinIntake(0);
+                      m_intake.spinIntake(9);
                     }
             , m_intake)
     );
@@ -111,7 +111,7 @@ public class RobotContainer {
       JoystickButton BButton = new JoystickButton(m_driverController, 2);
       // JoystickButton CButton = new JoystickButton(m_driverController, 3);
       // JoystickButton DButton = new JoystickButton(m_driverController, 4);
-      BButton.whileHeld(new RunCommand(() -> {m_intake.spinIntake(12);}));
+      BButton.whileHeld(new RunCommand(() -> {m_intake.spinIntake(-12);}));
       // 
       POVButton DPadTop = new POVButton(m_driverController, 90);
 
