@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.littletonrobotics.akit.junction:junction-core:1.4.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.littletonrobotics.akit.junction/junction-core/1.4.0/ada77538931de1809ed1e5b6dd2e7ce9ca26108a/junction-core-1.4.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.littletonrobotics.akit.junction/junction-core/1.4.0/c7734e71d4309c17684c949193cd3f029d1a30ff/junction-core-1.4.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

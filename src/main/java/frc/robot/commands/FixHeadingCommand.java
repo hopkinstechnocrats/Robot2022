@@ -1,14 +1,13 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.DriveSubsystem;
-
-import java.awt.*;
+import frc.robot.subsystems.drive.DriveSubsystem;
 
 
 public class FixHeadingCommand extends CommandBase {
@@ -20,7 +19,7 @@ public class FixHeadingCommand extends CommandBase {
     public FixHeadingCommand(DriveSubsystem driveSubsystem, Rotation2d desiredState, XboxController driverController ) {
         this.driveSubsystem = driveSubsystem;
         this.desiredState = desiredState;
-        this.controller = new PIDController(0,0,0);
+        this.controller = new PIDController(3,0,0);
         this.driverController = driverController;
 
         // each subsystem used by the command must be passed into the addRequirements() method (which takes a vararg of Subsystem)
@@ -41,6 +40,9 @@ public class FixHeadingCommand extends CommandBase {
                 -1*driverController.getLeftX(),
                 output,
                 true);
+        Logger.getInstance().recordOutput("FixHeadingError", error.getRadians());
+        Logger.getInstance().recordOutput("FixHeadingOutput", output);
+
     }
 
     @Override

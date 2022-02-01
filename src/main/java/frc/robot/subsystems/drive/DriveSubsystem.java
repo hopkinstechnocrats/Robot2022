@@ -2,15 +2,13 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.drive;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -19,6 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.SerialPort;
+import org.littletonrobotics.junction.Logger;
+import edu.wpi.first.math.MathUtil;
 
 public class DriveSubsystem extends SubsystemBase {
   // Robot swerve modules
@@ -26,42 +26,30 @@ public class DriveSubsystem extends SubsystemBase {
       new SwerveModule(
           DriveConstants.kFrontLeftDriveMotorPort,
           DriveConstants.kFrontLeftTurningMotorPort,
-          DriveConstants.kFrontLeftDriveEncoderPort,
-          DriveConstants.kFrontLeftTurningEncoderPort,
-          DriveConstants.kFrontLeftDriveEncoderReversed,
-          DriveConstants.kFrontLeftTurningEncoderReversed,
-          "FrontLeft", DriveConstants.kFrontLeftOffset);
+              DriveConstants.kFrontLeftTurningEncoderPort,
+              "FrontLeft", DriveConstants.kFrontLeftOffset);
 
 
   private final SwerveModule m_rearLeft =
       new SwerveModule(
           DriveConstants.kRearLeftDriveMotorPort,
           DriveConstants.kRearLeftTurningMotorPort,
-          DriveConstants.kRearLeftDriveEncoderPort,
-          DriveConstants.kRearLeftTurningEncoderPort,
-          DriveConstants.kRearLeftDriveEncoderReversed,
-          DriveConstants.kRearLeftTurningEncoderReversed,
-          "RearLeft", DriveConstants.kRearLeftOffset);
+              DriveConstants.kRearLeftTurningEncoderPort,
+              "RearLeft", DriveConstants.kRearLeftOffset);
 
   private final SwerveModule m_frontRight =
       new SwerveModule(
           DriveConstants.kFrontRightDriveMotorPort,
           DriveConstants.kFrontRightTurningMotorPort,
-          DriveConstants.kFrontRightDriveEncoderPort,
-          DriveConstants.kFrontRightTurningEncoderPort,
-          DriveConstants.kFrontRightDriveEncoderReversed,
-          DriveConstants.kFrontRightTurningEncoderReversed,
-          "FrontRight", DriveConstants.kFrontRightOffset);
+              DriveConstants.kFrontRightTurningEncoderPort,
+              "FrontRight", DriveConstants.kFrontRightOffset);
 
   private final SwerveModule m_rearRight =
       new SwerveModule(
           DriveConstants.kRearRightDriveMotorPort,
           DriveConstants.kRearRightTurningMotorPort,
-          DriveConstants.kRearRightDriveEncoderPort,
-          DriveConstants.kRearRightTurningEncoderPort,
-          DriveConstants.kRearRightDriveEncoderReversed,
-          DriveConstants.kRearRightTurningEncoderReversed,
-          "RearRight", DriveConstants.kRearRightOffset);
+              DriveConstants.kRearRightTurningEncoderPort,
+              "RearRight", DriveConstants.kRearRightOffset);
   
   
 
@@ -97,6 +85,9 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.periodic();
     SmartDashboard.putNumber("Heading", getHeading().getDegrees());
     m_field.setRobotPose(getPose());
+
+    Logger.getInstance().recordOutput("Odometry/RobotPose",
+            new double[] {getPose().getX(), getPose().getY(), getPose().getRotation().getRadians()});
   }
 
   /**
@@ -126,7 +117,17 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    if (fieldRelative == true) {
+    Logger.getInstance().recordOutput("DriveSubsystem/Raw Rotation Command", rot);
+    
+    rot =  MathUtil.applyDeadband(rot, 0.2);
+    ySpeed = MathUtil.applyDeadband(ySpeed, 0.2);
+    xSpeed =  MathUtil.applyDeadband(xSpeed, 0.2);
+    
+    Logger.getInstance().recordOutput("DriveSubsystem/Rotation Command", rot);
+    Logger.getInstance().recordOutput("DriveSubsystem/xSpeed Command", xSpeed);
+    Logger.getInstance().recordOutput("DriveSubsystem/ySpeed Command", ySpeed);
+
+    if (fieldRelative) {
       swerveModuleStates =
         DriveConstants.kDriveKinematics.toSwerveModuleStates(
           // fieldRelative
@@ -159,14 +160,6 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setDesiredState(desiredStates[3]);
   }
 
-  /** Resets the drive encoders to currently read a position of 0. */
-  public void resetEncoders() {
-    m_frontLeft.resetEncoders();
-    m_rearLeft.resetEncoders();
-    m_frontRight.resetEncoders();
-    m_rearRight.resetEncoders();
-  }
-
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
     m_gyro.zeroYaw();
@@ -187,6 +180,6 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The turn rate of the robot, in degrees per second
    */
   public double getTurnRate() {
-    return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+    return m_gyro.getRate();
   }
 }

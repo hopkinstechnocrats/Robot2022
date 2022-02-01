@@ -7,6 +7,11 @@ package frc.robot;
 import org.littletonrobotics.junction.LoggedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
+import org.littletonrobotics.junction.io.ByteLogReceiver;
+import org.littletonrobotics.junction.io.ByteLogReplay;
+import org.littletonrobotics.junction.io.LogSocketServer;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -25,6 +30,20 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
+    setUseTiming(isReal());
+    LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
+    Logger.getInstance().recordMetadata("ProjectName", "Robot2022");
+
+    if (isReal()) {
+      Logger.getInstance().addDataReceiver(new ByteLogReceiver("/home/lvuser/"));
+      Logger.getInstance().addDataReceiver(new LogSocketServer(5800));
+    } else {
+      String path = ByteLogReplay.promptForPath();
+      Logger.getInstance().setReplaySource(new ByteLogReplay(path));
+      Logger.getInstance().addDataReceiver(new ByteLogReceiver(ByteLogReceiver.addPathSuffix(path, "_sim")));
+    }
+
+    Logger.getInstance().start();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
