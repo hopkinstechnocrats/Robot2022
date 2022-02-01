@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.SerialPort;
 import org.littletonrobotics.junction.Logger;
+import edu.wpi.first.math.MathUtil;
 
 public class DriveSubsystem extends SubsystemBase {
   // Robot swerve modules
@@ -116,17 +117,16 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    Logger.getInstance().recordOutput("Drivetrain/Raw Rotation Command", rot);
-    if (Math.abs(rot) < 0.1){
-      rot = 0;
-    }
-    if (Math.abs(xSpeed) < 0.05) {
-      xSpeed = 0;
-    }
-    if (Math.abs(ySpeed) < 0.05) {
-      ySpeed = 0;
-    }
-    Logger.getInstance().recordOutput("Drivetrain/Rotation Command", rot);
+    Logger.getInstance().recordOutput("DriveSubsystem/Raw Rotation Command", rot);
+    
+    rot =  MathUtil.applyDeadband(rot, 0.2);
+    ySpeed = MathUtil.applyDeadband(ySpeed, 0.2);
+    xSpeed =  MathUtil.applyDeadband(xSpeed, 0.2);
+    
+    Logger.getInstance().recordOutput("DriveSubsystem/Rotation Command", rot);
+    Logger.getInstance().recordOutput("DriveSubsystem/xSpeed Command", xSpeed);
+    Logger.getInstance().recordOutput("DriveSubsystem/ySpeed Command", ySpeed);
+
     if (fieldRelative) {
       swerveModuleStates =
         DriveConstants.kDriveKinematics.toSwerveModuleStates(
