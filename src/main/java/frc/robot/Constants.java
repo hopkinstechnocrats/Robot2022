@@ -108,7 +108,6 @@ public final class Constants {
     public static final double kSteeringGearRatio = 12.8;
     public static final double kDriveGearRatio = 6.75;
 
-    public static final double kSteeringEncoderTicksPerRevolution = FalconConstants.kEncoderCPR * kSteeringGearRatio;
     public static final double kDriveEncoderTicksPerRevolution = FalconConstants.kEncoderCPR * kDriveGearRatio;
   }
 
