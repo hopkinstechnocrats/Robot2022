@@ -6,6 +6,7 @@ package frc.robot.subsystems.drive;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -59,11 +60,13 @@ public class DriveSubsystem extends SubsystemBase {
   //field
   private final Field2d m_field = new Field2d();
 
+  private final SlewRateLimiter xSpeedFilter = new SlewRateLimiter(1);
+  private final SlewRateLimiter ySpeedFilter = new SlewRateLimiter(1);
+  private final SlewRateLimiter rotFilter = new SlewRateLimiter(1);
+
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry =
      new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
-
-  private SwerveModuleState[] swerveModuleStates;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -122,11 +125,15 @@ public class DriveSubsystem extends SubsystemBase {
     rot =  MathUtil.applyDeadband(rot, 0.2);
     ySpeed = MathUtil.applyDeadband(ySpeed, 0.2);
     xSpeed =  MathUtil.applyDeadband(xSpeed, 0.2);
+    rot = rotFilter.calculate(rot);
+    ySpeed = ySpeedFilter.calculate(ySpeed);
+    xSpeed = xSpeedFilter.calculate(xSpeed);
     
     Logger.getInstance().recordOutput("DriveSubsystem/Rotation Command", rot);
     Logger.getInstance().recordOutput("DriveSubsystem/xSpeed Command", xSpeed);
     Logger.getInstance().recordOutput("DriveSubsystem/ySpeed Command", ySpeed);
 
+    SwerveModuleState[] swerveModuleStates;
     if (fieldRelative) {
       swerveModuleStates =
         DriveConstants.kDriveKinematics.toSwerveModuleStates(
@@ -139,7 +146,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+            swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_rearLeft.setDesiredState(swerveModuleStates[1]);
     m_frontRight.setDesiredState(swerveModuleStates[2]);
