@@ -4,15 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3c35ea9b-7c4f-4ef1-a3e2-6129d21cc7d5" name="Default Changelist" comment="draft of AdvantageKit integration builds successfully.">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_littletonrobotics_akit_conduit_conduit_api_1_2_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_littletonrobotics_akit_junction_junction_core_1_2_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_littletonrobotics_akit_junction_wpilib_shim_1_2_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/Robot2022.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Robot2022.main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/Robot2022.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Robot2022.test.iml" afterDir="false" />
+    <list default="true" id="3c35ea9b-7c4f-4ef1-a3e2-6129d21cc7d5" name="Default Changelist" comment="add .idea/ to .gitignore">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/RobotContainer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/RobotContainer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/commands/FixHeadingCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/commands/FixHeadingCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/Intake/IntakeSubsystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/Intake/IntakeSubsystem.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/DriveSubsystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/DriveSubsystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/SwerveModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/SwerveModule.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +56,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="fd1276144fc5c096bfaa3ae373729325b53ff6aa" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -72,12 +70,12 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/Constants.java" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/DriveSubsystem.java" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/lib/iotemplates/ClosedLoopIO.java" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/ModuleDriveIO.java" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/ModuleSteerIO.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/SwerveModule.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/DriveSubsystem.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/Constants.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/ModuleSteerIO.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/ModuleDriveIO.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/lib/iotemplates/ClosedLoopIO.java" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="24DCLPnOXjKRqwik3685yy2tXi4" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -164,6 +162,8 @@
         <item itemvalue="Gradle.Robot2022 [deploy]" />
         <item itemvalue="Gradle.Robot2022 [build]" />
         <item itemvalue="Gradle.Robot2022 [vendordep]" />
+        <item itemvalue="Gradle.Robot2022 [vendordep]" />
+        <item itemvalue="Gradle.Robot2022 [deploy]" />
       </list>
     </recent_temporary>
   </component>
@@ -202,7 +202,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="draft of AdvantageKit integration builds successfully." />

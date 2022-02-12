@@ -10,6 +10,8 @@ public class IntakeSubsystem extends SubsystemBase {
     private final IntakeIOReal io;
     private final OpenLoopIO.OpenLoopIOInputs inputs = new OpenLoopIO.OpenLoopIOInputs();
 
+    int speed = 0;
+
     public IntakeSubsystem(IntakeIOReal io) {
         this.io = io;
         // TODO: Set the default command, if any, for this subsystem by calling setDefaultCommand(command)
@@ -18,8 +20,18 @@ public class IntakeSubsystem extends SubsystemBase {
         //       such as SpeedControllers, Encoders, DigitalInputs, etc.
     }
 
-    public void spinIntake(double speed) {
+    public void spinIntake() {
         this.io.setVoltage(speed);
+    }
+
+    public void startSpin(){
+        speed = 12;
+        spinIntake();
+    }
+
+    public void endSpin(){
+        speed = 0;
+        spinIntake();
     }
 
     public void periodic() {

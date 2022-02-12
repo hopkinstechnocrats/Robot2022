@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -22,10 +23,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
@@ -87,7 +84,7 @@ public class RobotContainer {
             new RunCommand(
                     () ->
                     {
-                      m_intake.spinIntake(12);
+                      m_intake.spinIntake();
                     }
             , m_intake)
     );
@@ -110,9 +107,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
       JoystickButton AButton = new JoystickButton(m_driverController, 1);
       JoystickButton BButton = new JoystickButton(m_driverController, 2);
-      // JoystickButton CButton = new JoystickButton(m_driverController, 3);
-      // JoystickButton DButton = new JoystickButton(m_driverController, 4);
-      BButton.whileHeld(new RunCommand(() -> {m_intake.spinIntake(-12);}));
+      JoystickButton XButton = new JoystickButton(m_driverController, 3);
+      JoystickButton YButton = new JoystickButton(m_driverController, 4);
       // 
       POVButton DPadTop = new POVButton(m_driverController, 90);
       DPadTop.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(90), m_driverController));
@@ -125,9 +121,12 @@ public class RobotContainer {
 
       AButton.whenPressed(new InstantCommand(() -> m_robotDrive.zeroHeading()));
       BButton.whenPressed(new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)));
-      // CButton.whenPressed(new InstantCommand(() -> singleModuleTestFixture.setAngle(new Rotation2d(-1, 0))));
-      // DButton.whenPressed(new InstantCommand(() -> singleModuleTestFixture.setAngle(new Rotation2d(0, -1))));
-      
+      XButton.toggleWhenPressed(new StartEndCommand(m_intake::startSpin,
+              m_intake::endSpin,
+              m_intake));
+      YButton.toggleWhenPressed(new StartEndCommand(m_intake::startSpin,
+              m_intake::endSpin,
+              m_intake));
       // DPadTop.whenPressed(new InstantCommand(() -> .(90)));
 
   }

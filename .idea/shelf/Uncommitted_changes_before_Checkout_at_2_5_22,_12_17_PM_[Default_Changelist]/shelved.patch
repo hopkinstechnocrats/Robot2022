@@ -1,0 +1,635 @@
+Index: build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\nplugins {\n    id \"java\"\n    id \"edu.wpi.first.GradleRIO\" version \"2022.3.1\"\n}\n\nsourceCompatibility = JavaVersion.VERSION_11\ntargetCompatibility = JavaVersion.VERSION_11\n\ndef ROBOT_MAIN_CLASS = \"frc.robot.Main\"\n\n// Define my targets (RoboRIO) and artifacts (deployable files)\n// This is added by GradleRIO's backing project DeployUtils.\ndeploy {\n    targets {\n        roborio(getTargetTypeClass('RoboRIO')) {\n            // Team number is loaded either from the .wpilib/wpilib_preferences.json\n            // or from command line. If not found an exception will be thrown.\n            // You can use getTeamOrDefault(team) instead of getTeamNumber if you\n            // want to store a team number in this file.\n            team = project.frc.getTeamNumber()\n            debug = project.frc.getDebugOrDefault(false)\n\n            artifacts {\n                // First part is artifact name, 2nd is artifact type\n                // getTargetTypeClass is a shortcut to get the class type using a string\n\n                frcJava(getArtifactTypeClass('FRCJavaArtifact')) {\n                }\n\n                // Static files artifact\n                frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {\n                    files = project.fileTree('src/main/deploy')\n                    directory = '/home/lvuser/deploy'\n                }\n            }\n        }\n    }\n}\n\ndef deployArtifact = deploy.targets.roborio.artifacts.frcJava\n\n// Set to true to use debug for JNI.\nwpi.java.debugJni = false\n\n// Set this to true to enable desktop support.\ndef includeDesktopSupport = true\n\nrepositories {\n    maven {\n        url \"https://jitpack.io\"\n    }\n    maven { url 'https://nexus.otake.pw/repository/maven-public/' }\n    maven {\n        url = uri(\"https://maven.pkg.github.com/Mechanical-Advantage/AdvantageKit\")\n        credentials {\n            username = \"Mechanical-Advantage-Bot\"\n            password = \"ghp_ykO20iuCY5H2i\" + \"LgmNxz8VIKJ2uQa6g1DdV0i\"\n        }\n    }\n}\n\nconfigurations.all {\n    exclude group: \"edu.wpi.first.wpilibj\"\n}\n\n// Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.\n// Also defines JUnit 4.\ndependencies {\n    implementation wpi.java.deps.wpilib()\n    implementation wpi.java.vendor.java()\n    implementation 'org.jetbrains:annotations:20.1.0'\n\n    roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)\n    roborioDebug wpi.java.vendor.jniDebug(wpi.platforms.roborio)\n\n    roborioRelease wpi.java.deps.wpilibJniRelease(wpi.platforms.roborio)\n    roborioRelease wpi.java.vendor.jniRelease(wpi.platforms.roborio)\n\n    nativeDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.desktop)\n    nativeDebug wpi.java.vendor.jniDebug(wpi.platforms.desktop)\n    simulationDebug wpi.sim.enableDebug()\n\n    nativeRelease wpi.java.deps.wpilibJniRelease(wpi.platforms.desktop)\n    nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)\n    simulationRelease wpi.sim.enableRelease()\n\n    implementation \"com.github.dominikWin:badlog:v0.1.1\"\n\n    testImplementation 'junit:junit:4.12'\n}\n\n// Simulation configuration (e.g. environment variables).\nwpi.sim.addGui().defaultEnabled = true\nwpi.sim.addDriverstation()\n\n// Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')\n// in order to make them all available at runtime. Also adding the manifest so WPILib\n// knows where to look for our Robot Class.\njar {\n    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }\n    manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)\n    duplicatesStrategy = DuplicatesStrategy.INCLUDE\n}\n\n// Configure jar and deploy tasks\ndeployArtifact.jarTask = jar\nwpi.java.configureExecutableTasks(jar)\nwpi.java.configureTestTasks(test)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/build.gradle b/build.gradle
+--- a/build.gradle	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
++++ b/build.gradle	(date 1644084478971)
+@@ -1,7 +1,7 @@
+ 
+ plugins {
+     id "java"
+-    id "edu.wpi.first.GradleRIO" version "2022.3.1"
++    id "edu.wpi.first.GradleRIO" version "2022.2.1"
+ }
+ 
+ sourceCompatibility = JavaVersion.VERSION_11
+Index: vendordeps/Phoenix-frc2022-latest.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\n    \"fileName\": \"Phoenix.json\",\n    \"name\": \"CTRE-Phoenix\",\n    \"version\": \"5.20.2\",\n    \"frcYear\": 2022,\n    \"uuid\": \"ab676553-b602-441f-a38d-f1296eff6537\",\n    \"mavenUrls\": [\n        \"https://maven.ctr-electronics.com/release/\"\n    ],\n    \"jsonUrl\": \"https://maven.ctr-electronics.com/release/com/ctre/phoenix/Phoenix-frc2022-latest.json\",\n    \"javaDependencies\": [\n        {\n            \"groupId\": \"com.ctre.phoenix\",\n            \"artifactId\": \"api-java\",\n            \"version\": \"5.20.2\"\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix\",\n            \"artifactId\": \"wpiapi-java\",\n            \"version\": \"5.20.2\"\n        }\n    ],\n    \"jniDependencies\": [\n        {\n            \"groupId\": \"com.ctre.phoenix\",\n            \"artifactId\": \"cci\",\n            \"version\": \"5.20.2\",\n            \"isJar\": false,\n            \"skipInvalidPlatforms\": true,\n            \"validPlatforms\": [\n                \"linuxathena\"\n            ]\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix.sim\",\n            \"artifactId\": \"cci-sim\",\n            \"version\": \"5.20.2\",\n            \"isJar\": false,\n            \"skipInvalidPlatforms\": true,\n            \"validPlatforms\": [\n                \"windowsx86-64\",\n                \"linuxx86-64\",\n                \"osxx86-64\"\n            ]\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix.sim\",\n            \"artifactId\": \"simTalonSRX\",\n            \"version\": \"5.20.2\",\n            \"isJar\": false,\n            \"skipInvalidPlatforms\": true,\n            \"validPlatforms\": [\n                \"windowsx86-64\",\n                \"linuxx86-64\",\n                \"osxx86-64\"\n            ]\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix.sim\",\n            \"artifactId\": \"simTalonFX\",\n            \"version\": \"5.20.2\",\n            \"isJar\": false,\n            \"skipInvalidPlatforms\": true,\n            \"validPlatforms\": [\n                \"windowsx86-64\",\n                \"linuxx86-64\",\n                \"osxx86-64\"\n            ]\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix.sim\",\n            \"artifactId\": \"simVictorSPX\",\n            \"version\": \"5.20.2\",\n            \"isJar\": false,\n            \"skipInvalidPlatforms\": true,\n            \"validPlatforms\": [\n                \"windowsx86-64\",\n                \"linuxx86-64\",\n                \"osxx86-64\"\n            ]\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix.sim\",\n            \"artifactId\": \"simPigeonIMU\",\n            \"version\": \"5.20.2\",\n            \"isJar\": false,\n            \"skipInvalidPlatforms\": true,\n            \"validPlatforms\": [\n                \"windowsx86-64\",\n                \"linuxx86-64\",\n                \"osxx86-64\"\n            ]\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix.sim\",\n            \"artifactId\": \"simCANCoder\",\n            \"version\": \"5.20.2\",\n            \"isJar\": false,\n            \"skipInvalidPlatforms\": true,\n            \"validPlatforms\": [\n                \"windowsx86-64\",\n                \"linuxx86-64\",\n                \"osxx86-64\"\n            ]\n        }\n    ],\n    \"cppDependencies\": [\n        {\n            \"groupId\": \"com.ctre.phoenix\",\n            \"artifactId\": \"wpiapi-cpp\",\n            \"version\": \"5.20.2\",\n            \"libName\": \"CTRE_Phoenix_WPI\",\n            \"headerClassifier\": \"headers\",\n            \"sharedLibrary\": true,\n            \"skipInvalidPlatforms\": true,\n            \"binaryPlatforms\": [\n                \"linuxathena\"\n            ]\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix\",\n            \"artifactId\": \"api-cpp\",\n            \"version\": \"5.20.2\",\n            \"libName\": \"CTRE_Phoenix\",\n            \"headerClassifier\": \"headers\",\n            \"sharedLibrary\": true,\n            \"skipInvalidPlatforms\": true,\n            \"binaryPlatforms\": [\n                \"linuxathena\"\n            ]\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix\",\n            \"artifactId\": \"cci\",\n            \"version\": \"5.20.2\",\n            \"libName\": \"CTRE_PhoenixCCI\",\n            \"headerClassifier\": \"headers\",\n            \"sharedLibrary\": true,\n            \"skipInvalidPlatforms\": true,\n            \"binaryPlatforms\": [\n                \"linuxathena\"\n            ]\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix.sim\",\n            \"artifactId\": \"wpiapi-cpp-sim\",\n            \"version\": \"5.20.2\",\n            \"libName\": \"CTRE_Phoenix_WPISim\",\n            \"headerClassifier\": \"headers\",\n            \"sharedLibrary\": true,\n            \"skipInvalidPlatforms\": true,\n            \"binaryPlatforms\": [\n                \"windowsx86-64\",\n                \"linuxx86-64\",\n                \"osxx86-64\"\n            ]\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix.sim\",\n            \"artifactId\": \"api-cpp-sim\",\n            \"version\": \"5.20.2\",\n            \"libName\": \"CTRE_PhoenixSim\",\n            \"headerClassifier\": \"headers\",\n            \"sharedLibrary\": true,\n            \"skipInvalidPlatforms\": true,\n            \"binaryPlatforms\": [\n                \"windowsx86-64\",\n                \"linuxx86-64\",\n                \"osxx86-64\"\n            ]\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix.sim\",\n            \"artifactId\": \"cci-sim\",\n            \"version\": \"5.20.2\",\n            \"libName\": \"CTRE_PhoenixCCISim\",\n            \"headerClassifier\": \"headers\",\n            \"sharedLibrary\": true,\n            \"skipInvalidPlatforms\": true,\n            \"binaryPlatforms\": [\n                \"windowsx86-64\",\n                \"linuxx86-64\",\n                \"osxx86-64\"\n            ]\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix.sim\",\n            \"artifactId\": \"simTalonSRX\",\n            \"version\": \"5.20.2\",\n            \"libName\": \"CTRE_SimTalonSRX\",\n            \"headerClassifier\": \"headers\",\n            \"sharedLibrary\": true,\n            \"skipInvalidPlatforms\": true,\n            \"binaryPlatforms\": [\n                \"windowsx86-64\",\n                \"linuxx86-64\",\n                \"osxx86-64\"\n            ]\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix.sim\",\n            \"artifactId\": \"simTalonFX\",\n            \"version\": \"5.20.2\",\n            \"libName\": \"CTRE_SimTalonFX\",\n            \"headerClassifier\": \"headers\",\n            \"sharedLibrary\": true,\n            \"skipInvalidPlatforms\": true,\n            \"binaryPlatforms\": [\n                \"windowsx86-64\",\n                \"linuxx86-64\",\n                \"osxx86-64\"\n            ]\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix.sim\",\n            \"artifactId\": \"simVictorSPX\",\n            \"version\": \"5.20.2\",\n            \"libName\": \"CTRE_SimVictorSPX\",\n            \"headerClassifier\": \"headers\",\n            \"sharedLibrary\": true,\n            \"skipInvalidPlatforms\": true,\n            \"binaryPlatforms\": [\n                \"windowsx86-64\",\n                \"linuxx86-64\",\n                \"osxx86-64\"\n            ]\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix.sim\",\n            \"artifactId\": \"simPigeonIMU\",\n            \"version\": \"5.20.2\",\n            \"libName\": \"CTRE_SimPigeonIMU\",\n            \"headerClassifier\": \"headers\",\n            \"sharedLibrary\": true,\n            \"skipInvalidPlatforms\": true,\n            \"binaryPlatforms\": [\n                \"windowsx86-64\",\n                \"linuxx86-64\",\n                \"osxx86-64\"\n            ]\n        },\n        {\n            \"groupId\": \"com.ctre.phoenix.sim\",\n            \"artifactId\": \"simCANCoder\",\n            \"version\": \"5.20.2\",\n            \"libName\": \"CTRE_SimCANCoder\",\n            \"headerClassifier\": \"headers\",\n            \"sharedLibrary\": true,\n            \"skipInvalidPlatforms\": true,\n            \"binaryPlatforms\": [\n                \"windowsx86-64\",\n                \"linuxx86-64\",\n                \"osxx86-64\"\n            ]\n        }\n    ]\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/vendordeps/Phoenix-frc2022-latest.json b/vendordeps/Phoenix-frc2022-latest.json
+--- a/vendordeps/Phoenix-frc2022-latest.json	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
++++ b/vendordeps/Phoenix-frc2022-latest.json	(date 1644084920127)
+@@ -1,30 +1,29 @@
+ {
+     "fileName": "Phoenix.json",
+     "name": "CTRE-Phoenix",
+-    "version": "5.20.2",
+-    "frcYear": 2022,
++    "version": "5.19.4",
+     "uuid": "ab676553-b602-441f-a38d-f1296eff6537",
+     "mavenUrls": [
+-        "https://maven.ctr-electronics.com/release/"
++        "https://devsite.ctr-electronics.com/maven/release/"
+     ],
+-    "jsonUrl": "https://maven.ctr-electronics.com/release/com/ctre/phoenix/Phoenix-frc2022-latest.json",
++    "jsonUrl": "https://devsite.ctr-electronics.com/maven/release/com/ctre/phoenix/Phoenix-latest.json",
+     "javaDependencies": [
+         {
+             "groupId": "com.ctre.phoenix",
+             "artifactId": "api-java",
+-            "version": "5.20.2"
++            "version": "5.19.4"
+         },
+         {
+             "groupId": "com.ctre.phoenix",
+             "artifactId": "wpiapi-java",
+-            "version": "5.20.2"
++            "version": "5.19.4"
+         }
+     ],
+     "jniDependencies": [
+         {
+             "groupId": "com.ctre.phoenix",
+             "artifactId": "cci",
+-            "version": "5.20.2",
++            "version": "5.19.4",
+             "isJar": false,
+             "skipInvalidPlatforms": true,
+             "validPlatforms": [
+@@ -34,7 +33,7 @@
+         {
+             "groupId": "com.ctre.phoenix.sim",
+             "artifactId": "cci-sim",
+-            "version": "5.20.2",
++            "version": "5.19.4",
+             "isJar": false,
+             "skipInvalidPlatforms": true,
+             "validPlatforms": [
+@@ -46,19 +45,7 @@
+         {
+             "groupId": "com.ctre.phoenix.sim",
+             "artifactId": "simTalonSRX",
+-            "version": "5.20.2",
+-            "isJar": false,
+-            "skipInvalidPlatforms": true,
+-            "validPlatforms": [
+-                "windowsx86-64",
+-                "linuxx86-64",
+-                "osxx86-64"
+-            ]
+-        },
+-        {
+-            "groupId": "com.ctre.phoenix.sim",
+-            "artifactId": "simTalonFX",
+-            "version": "5.20.2",
++            "version": "5.19.4",
+             "isJar": false,
+             "skipInvalidPlatforms": true,
+             "validPlatforms": [
+@@ -70,31 +57,7 @@
+         {
+             "groupId": "com.ctre.phoenix.sim",
+             "artifactId": "simVictorSPX",
+-            "version": "5.20.2",
+-            "isJar": false,
+-            "skipInvalidPlatforms": true,
+-            "validPlatforms": [
+-                "windowsx86-64",
+-                "linuxx86-64",
+-                "osxx86-64"
+-            ]
+-        },
+-        {
+-            "groupId": "com.ctre.phoenix.sim",
+-            "artifactId": "simPigeonIMU",
+-            "version": "5.20.2",
+-            "isJar": false,
+-            "skipInvalidPlatforms": true,
+-            "validPlatforms": [
+-                "windowsx86-64",
+-                "linuxx86-64",
+-                "osxx86-64"
+-            ]
+-        },
+-        {
+-            "groupId": "com.ctre.phoenix.sim",
+-            "artifactId": "simCANCoder",
+-            "version": "5.20.2",
++            "version": "5.19.4",
+             "isJar": false,
+             "skipInvalidPlatforms": true,
+             "validPlatforms": [
+@@ -108,34 +71,40 @@
+         {
+             "groupId": "com.ctre.phoenix",
+             "artifactId": "wpiapi-cpp",
+-            "version": "5.20.2",
++            "version": "5.19.4",
+             "libName": "CTRE_Phoenix_WPI",
+             "headerClassifier": "headers",
+-            "sharedLibrary": true,
++            "sharedLibrary": false,
+             "skipInvalidPlatforms": true,
+             "binaryPlatforms": [
+-                "linuxathena"
++                "linuxathena",
++                "windowsx86-64",
++                "linuxx86-64",
++                "osxx86-64"
+             ]
+         },
+         {
+             "groupId": "com.ctre.phoenix",
+             "artifactId": "api-cpp",
+-            "version": "5.20.2",
++            "version": "5.19.4",
+             "libName": "CTRE_Phoenix",
+             "headerClassifier": "headers",
+-            "sharedLibrary": true,
++            "sharedLibrary": false,
+             "skipInvalidPlatforms": true,
+             "binaryPlatforms": [
+-                "linuxathena"
++                "linuxathena",
++                "windowsx86-64",
++                "linuxx86-64",
++                "osxx86-64"
+             ]
+         },
+         {
+             "groupId": "com.ctre.phoenix",
+             "artifactId": "cci",
+-            "version": "5.20.2",
++            "version": "5.19.4",
+             "libName": "CTRE_PhoenixCCI",
+             "headerClassifier": "headers",
+-            "sharedLibrary": true,
++            "sharedLibrary": false,
+             "skipInvalidPlatforms": true,
+             "binaryPlatforms": [
+                 "linuxathena"
+@@ -143,25 +112,11 @@
+         },
+         {
+             "groupId": "com.ctre.phoenix.sim",
+-            "artifactId": "wpiapi-cpp-sim",
+-            "version": "5.20.2",
+-            "libName": "CTRE_Phoenix_WPISim",
+-            "headerClassifier": "headers",
+-            "sharedLibrary": true,
+-            "skipInvalidPlatforms": true,
+-            "binaryPlatforms": [
+-                "windowsx86-64",
+-                "linuxx86-64",
+-                "osxx86-64"
+-            ]
+-        },
+-        {
+-            "groupId": "com.ctre.phoenix.sim",
+-            "artifactId": "api-cpp-sim",
+-            "version": "5.20.2",
+-            "libName": "CTRE_PhoenixSim",
++            "artifactId": "cci-sim",
++            "version": "5.19.4",
++            "libName": "CTRE_PhoenixCCISim",
+             "headerClassifier": "headers",
+-            "sharedLibrary": true,
++            "sharedLibrary": false,
+             "skipInvalidPlatforms": true,
+             "binaryPlatforms": [
+                 "windowsx86-64",
+@@ -170,26 +125,27 @@
+             ]
+         },
+         {
+-            "groupId": "com.ctre.phoenix.sim",
+-            "artifactId": "cci-sim",
+-            "version": "5.20.2",
+-            "libName": "CTRE_PhoenixCCISim",
++            "groupId": "com.ctre.phoenix",
++            "artifactId": "diagnostics",
++            "version": "5.19.4",
++            "libName": "CTRE_PhoenixDiagnostics",
+             "headerClassifier": "headers",
+-            "sharedLibrary": true,
++            "sharedLibrary": false,
+             "skipInvalidPlatforms": true,
+             "binaryPlatforms": [
++                "linuxathena",
+                 "windowsx86-64",
+                 "linuxx86-64",
+                 "osxx86-64"
+             ]
+         },
+         {
+-            "groupId": "com.ctre.phoenix.sim",
+-            "artifactId": "simTalonSRX",
+-            "version": "5.20.2",
+-            "libName": "CTRE_SimTalonSRX",
++            "groupId": "com.ctre.phoenix",
++            "artifactId": "canutils",
++            "version": "5.19.4",
++            "libName": "CTRE_PhoenixCanutils",
+             "headerClassifier": "headers",
+-            "sharedLibrary": true,
++            "sharedLibrary": false,
+             "skipInvalidPlatforms": true,
+             "binaryPlatforms": [
+                 "windowsx86-64",
+@@ -198,12 +154,12 @@
+             ]
+         },
+         {
+-            "groupId": "com.ctre.phoenix.sim",
+-            "artifactId": "simTalonFX",
+-            "version": "5.20.2",
+-            "libName": "CTRE_SimTalonFX",
++            "groupId": "com.ctre.phoenix",
++            "artifactId": "platform-sim",
++            "version": "5.19.4",
++            "libName": "CTRE_PhoenixPlatform",
+             "headerClassifier": "headers",
+-            "sharedLibrary": true,
++            "sharedLibrary": false,
+             "skipInvalidPlatforms": true,
+             "binaryPlatforms": [
+                 "windowsx86-64",
+@@ -212,14 +168,15 @@
+             ]
+         },
+         {
+-            "groupId": "com.ctre.phoenix.sim",
+-            "artifactId": "simVictorSPX",
+-            "version": "5.20.2",
+-            "libName": "CTRE_SimVictorSPX",
++            "groupId": "com.ctre.phoenix",
++            "artifactId": "core",
++            "version": "5.19.4",
++            "libName": "CTRE_PhoenixCore",
+             "headerClassifier": "headers",
+-            "sharedLibrary": true,
++            "sharedLibrary": false,
+             "skipInvalidPlatforms": true,
+             "binaryPlatforms": [
++                "linuxathena",
+                 "windowsx86-64",
+                 "linuxx86-64",
+                 "osxx86-64"
+@@ -227,9 +184,9 @@
+         },
+         {
+             "groupId": "com.ctre.phoenix.sim",
+-            "artifactId": "simPigeonIMU",
+-            "version": "5.20.2",
+-            "libName": "CTRE_SimPigeonIMU",
++            "artifactId": "simTalonSRX",
++            "version": "5.19.4",
++            "libName": "CTRE_SimTalonSRX",
+             "headerClassifier": "headers",
+             "sharedLibrary": true,
+             "skipInvalidPlatforms": true,
+@@ -241,9 +198,9 @@
+         },
+         {
+             "groupId": "com.ctre.phoenix.sim",
+-            "artifactId": "simCANCoder",
+-            "version": "5.20.2",
+-            "libName": "CTRE_SimCANCoder",
++            "artifactId": "simVictorSPX",
++            "version": "5.19.4",
++            "libName": "CTRE_SimVictorSPX",
+             "headerClassifier": "headers",
+             "sharedLibrary": true,
+             "skipInvalidPlatforms": true,
+Index: .idea/libraries/Gradle__edu_wpi_first_cameraserver_cameraserver_java_2022_2_1.xml
+===================================================================
+diff --git a/.idea/libraries/Gradle__edu_wpi_first_cameraserver_cameraserver_java_2022_2_1.xml b/.idea/libraries/Gradle__edu_wpi_first_cameraserver_cameraserver_java_2022_2_1.xml
+deleted file mode 100644
+--- a/.idea/libraries/Gradle__edu_wpi_first_cameraserver_cameraserver_java_2022_2_1.xml	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
++++ /dev/null	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
+@@ -1,11 +0,0 @@
+-<component name="libraryTable">
+-  <library name="Gradle: edu.wpi.first.cameraserver:cameraserver-java:2022.2.1">
+-    <CLASSES>
+-      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/edu.wpi.first.cameraserver/cameraserver-java/2022.2.1/fe399ff88debe8b481637fb002fc58ca56aae2f4/cameraserver-java-2022.2.1.jar!/" />
+-    </CLASSES>
+-    <JAVADOC />
+-    <SOURCES>
+-      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/edu.wpi.first.cameraserver/cameraserver-java/2022.2.1/11c68fdfc631dec1cd7f101206e9a35dcec65846/cameraserver-java-2022.2.1-sources.jar!/" />
+-    </SOURCES>
+-  </library>
+-</component>
+\ No newline at end of file
+Index: .idea/libraries/Gradle__edu_wpi_first_ntcore_ntcore_java_2022_2_1.xml
+===================================================================
+diff --git a/.idea/libraries/Gradle__edu_wpi_first_ntcore_ntcore_java_2022_2_1.xml b/.idea/libraries/Gradle__edu_wpi_first_ntcore_ntcore_java_2022_2_1.xml
+deleted file mode 100644
+--- a/.idea/libraries/Gradle__edu_wpi_first_ntcore_ntcore_java_2022_2_1.xml	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
++++ /dev/null	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
+@@ -1,11 +0,0 @@
+-<component name="libraryTable">
+-  <library name="Gradle: edu.wpi.first.ntcore:ntcore-java:2022.2.1">
+-    <CLASSES>
+-      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/edu.wpi.first.ntcore/ntcore-java/2022.2.1/5e18ded2e72fe4d4244ef04a3c9163f0d12e728b/ntcore-java-2022.2.1.jar!/" />
+-    </CLASSES>
+-    <JAVADOC />
+-    <SOURCES>
+-      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/edu.wpi.first.ntcore/ntcore-java/2022.2.1/2c72c5b631ac9000fa2d6b8a25ccfaa50caf1425/ntcore-java-2022.2.1-sources.jar!/" />
+-    </SOURCES>
+-  </library>
+-</component>
+\ No newline at end of file
+Index: .idea/libraries/Gradle__edu_wpi_first_wpiutil_wpiutil_java_2022_2_1.xml
+===================================================================
+diff --git a/.idea/libraries/Gradle__edu_wpi_first_wpiutil_wpiutil_java_2022_2_1.xml b/.idea/libraries/Gradle__edu_wpi_first_wpiutil_wpiutil_java_2022_2_1.xml
+deleted file mode 100644
+--- a/.idea/libraries/Gradle__edu_wpi_first_wpiutil_wpiutil_java_2022_2_1.xml	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
++++ /dev/null	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
+@@ -1,11 +0,0 @@
+-<component name="libraryTable">
+-  <library name="Gradle: edu.wpi.first.wpiutil:wpiutil-java:2022.2.1">
+-    <CLASSES>
+-      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpiutil/wpiutil-java/2022.2.1/5e24e6af81831f0e9545f4eec2629b4c009d022f/wpiutil-java-2022.2.1.jar!/" />
+-    </CLASSES>
+-    <JAVADOC />
+-    <SOURCES>
+-      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpiutil/wpiutil-java/2022.2.1/921bb28b6fad359ef30f07346101fe6163f88e0f/wpiutil-java-2022.2.1-sources.jar!/" />
+-    </SOURCES>
+-  </library>
+-</component>
+\ No newline at end of file
+Index: .idea/libraries/Gradle__edu_wpi_first_wpilibNewCommands_wpilibNewCommands_java_2022_2_1.xml
+===================================================================
+diff --git a/.idea/libraries/Gradle__edu_wpi_first_wpilibNewCommands_wpilibNewCommands_java_2022_2_1.xml b/.idea/libraries/Gradle__edu_wpi_first_wpilibNewCommands_wpilibNewCommands_java_2022_2_1.xml
+deleted file mode 100644
+--- a/.idea/libraries/Gradle__edu_wpi_first_wpilibNewCommands_wpilibNewCommands_java_2022_2_1.xml	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
++++ /dev/null	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
+@@ -1,11 +0,0 @@
+-<component name="libraryTable">
+-  <library name="Gradle: edu.wpi.first.wpilibNewCommands:wpilibNewCommands-java:2022.2.1">
+-    <CLASSES>
+-      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilibNewCommands/wpilibNewCommands-java/2022.2.1/ae25cfc79ee4b64afa1830d8d9a76fc97789e504/wpilibNewCommands-java-2022.2.1.jar!/" />
+-    </CLASSES>
+-    <JAVADOC />
+-    <SOURCES>
+-      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilibNewCommands/wpilibNewCommands-java/2022.2.1/d001ff08a9b98869844b26186f783cd0363e040e/wpilibNewCommands-java-2022.2.1-sources.jar!/" />
+-    </SOURCES>
+-  </library>
+-</component>
+\ No newline at end of file
+Index: .idea/libraries/Gradle__edu_wpi_first_hal_hal_java_2022_2_1.xml
+===================================================================
+diff --git a/.idea/libraries/Gradle__edu_wpi_first_hal_hal_java_2022_2_1.xml b/.idea/libraries/Gradle__edu_wpi_first_hal_hal_java_2022_2_1.xml
+deleted file mode 100644
+--- a/.idea/libraries/Gradle__edu_wpi_first_hal_hal_java_2022_2_1.xml	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
++++ /dev/null	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
+@@ -1,11 +0,0 @@
+-<component name="libraryTable">
+-  <library name="Gradle: edu.wpi.first.hal:hal-java:2022.2.1">
+-    <CLASSES>
+-      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/edu.wpi.first.hal/hal-java/2022.2.1/64605201acf4cc47eb510bb496abdfdcd8ee74ba/hal-java-2022.2.1.jar!/" />
+-    </CLASSES>
+-    <JAVADOC />
+-    <SOURCES>
+-      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/edu.wpi.first.hal/hal-java/2022.2.1/c3366615a84edb487fa8567afc3dd1010075af41/hal-java-2022.2.1-sources.jar!/" />
+-    </SOURCES>
+-  </library>
+-</component>
+\ No newline at end of file
+Index: .idea/libraries/Gradle__edu_wpi_first_cscore_cscore_java_2022_2_1.xml
+===================================================================
+diff --git a/.idea/libraries/Gradle__edu_wpi_first_cscore_cscore_java_2022_2_1.xml b/.idea/libraries/Gradle__edu_wpi_first_cscore_cscore_java_2022_2_1.xml
+deleted file mode 100644
+--- a/.idea/libraries/Gradle__edu_wpi_first_cscore_cscore_java_2022_2_1.xml	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
++++ /dev/null	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
+@@ -1,11 +0,0 @@
+-<component name="libraryTable">
+-  <library name="Gradle: edu.wpi.first.cscore:cscore-java:2022.2.1">
+-    <CLASSES>
+-      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/edu.wpi.first.cscore/cscore-java/2022.2.1/952bef4a81822d7cf84e9767a1a507118eb167b3/cscore-java-2022.2.1.jar!/" />
+-    </CLASSES>
+-    <JAVADOC />
+-    <SOURCES>
+-      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/edu.wpi.first.cscore/cscore-java/2022.2.1/cc96f6c79b743fa8dc6222e3b7b5dd36c7f393fa/cscore-java-2022.2.1-sources.jar!/" />
+-    </SOURCES>
+-  </library>
+-</component>
+\ No newline at end of file
+Index: .idea/libraries/Gradle__edu_wpi_first_wpimath_wpimath_java_2022_2_1.xml
+===================================================================
+diff --git a/.idea/libraries/Gradle__edu_wpi_first_wpimath_wpimath_java_2022_2_1.xml b/.idea/libraries/Gradle__edu_wpi_first_wpimath_wpimath_java_2022_2_1.xml
+deleted file mode 100644
+--- a/.idea/libraries/Gradle__edu_wpi_first_wpimath_wpimath_java_2022_2_1.xml	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
++++ /dev/null	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
+@@ -1,11 +0,0 @@
+-<component name="libraryTable">
+-  <library name="Gradle: edu.wpi.first.wpimath:wpimath-java:2022.2.1">
+-    <CLASSES>
+-      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpimath/wpimath-java/2022.2.1/66e5dc32cffcf72ff6291fada2c08b2164b35c50/wpimath-java-2022.2.1.jar!/" />
+-    </CLASSES>
+-    <JAVADOC />
+-    <SOURCES>
+-      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpimath/wpimath-java/2022.2.1/17864b8295e0dc5f7ecc3b1828d709b653d9c29b/wpimath-java-2022.2.1-sources.jar!/" />
+-    </SOURCES>
+-  </library>
+-</component>
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"3c35ea9b-7c4f-4ef1-a3e2-6129d21cc7d5\" name=\"Default Changelist\" comment=\"draft of AdvantageKit integration builds successfully.\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/libraries/Gradle__org_littletonrobotics_akit_conduit_conduit_api_1_2_0.xml\" beforeDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/libraries/Gradle__org_littletonrobotics_akit_junction_junction_core_1_2_0.xml\" beforeDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/libraries/Gradle__org_littletonrobotics_akit_junction_wpilib_shim_1_2_0.xml\" beforeDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/modules/Robot2022.main.iml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/modules/Robot2022.main.iml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/modules/Robot2022.test.iml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/modules/Robot2022.test.iml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/src/main/java/frc/robot/RobotContainer.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/main/java/frc/robot/RobotContainer.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/DriveSubsystem.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/DriveSubsystem.java\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"ExternalProjectsData\">\n    <projectState path=\"$PROJECT_DIR$\">\n      <ProjectState />\n    </projectState>\n  </component>\n  <component name=\"ExternalProjectsManager\">\n    <system id=\"GRADLE\">\n      <state>\n        <task path=\"$PROJECT_DIR$\">\n          <activation />\n        </task>\n        <projects_view>\n          <tree_state>\n            <expand>\n              <path>\n                <item name=\"\" type=\"6a2764b6:ExternalProjectsStructure$RootNode\" />\n                <item name=\"Robot2022\" type=\"f1a62948:ProjectNode\" />\n              </path>\n              <path>\n                <item name=\"\" type=\"6a2764b6:ExternalProjectsStructure$RootNode\" />\n                <item name=\"Robot2022\" type=\"f1a62948:ProjectNode\" />\n                <item name=\"Tasks\" type=\"e4a08cd1:TasksNode\" />\n              </path>\n              <path>\n                <item name=\"\" type=\"6a2764b6:ExternalProjectsStructure$RootNode\" />\n                <item name=\"Robot2022\" type=\"f1a62948:ProjectNode\" />\n                <item name=\"Tasks\" type=\"e4a08cd1:TasksNode\" />\n                <item name=\"deployutils\" type=\"c8890929:TasksNode$1\" />\n              </path>\n            </expand>\n            <select />\n          </tree_state>\n        </projects_view>\n      </state>\n    </system>\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\n      <map>\n        <entry key=\"$PROJECT_DIR$\" value=\"fd1276144fc5c096bfaa3ae373729325b53ff6aa\" />\n      </map>\n    </option>\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"GitSEFilterConfiguration\">\n    <file-type-list>\n      <filtered-out-file-type name=\"LOCAL_BRANCH\" />\n      <filtered-out-file-type name=\"REMOTE_BRANCH\" />\n      <filtered-out-file-type name=\"TAG\" />\n      <filtered-out-file-type name=\"COMMIT_BY_MESSAGE\" />\n    </file-type-list>\n  </component>\n  <component name=\"HighlightingSettingsPerFile\">\n    <setting file=\"file://$PROJECT_DIR$/src/main/java/frc/robot/Constants.java\" root0=\"FORCE_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/DriveSubsystem.java\" root0=\"FORCE_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/src/main/java/lib/iotemplates/ClosedLoopIO.java\" root0=\"FORCE_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/ModuleDriveIO.java\" root0=\"FORCE_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/ModuleSteerIO.java\" root0=\"FORCE_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/SwerveModule.java\" root0=\"FORCE_HIGHLIGHTING\" />\n  </component>\n  <component name=\"ProjectId\" id=\"24DCLPnOXjKRqwik3685yy2tXi4\" />\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\n    <property name=\"WebServerToolWindowFactoryState\" value=\"false\" />\n    <property name=\"aspect.path.notification.shown\" value=\"true\" />\n    <property name=\"node.js.detected.package.eslint\" value=\"true\" />\n    <property name=\"node.js.selected.package.eslint\" value=\"(autodetect)\" />\n    <property name=\"node.js.selected.package.tslint\" value=\"(autodetect)\" />\n    <property name=\"nodejs_package_manager_path\" value=\"npm\" />\n  </component>\n  <component name=\"RunManager\" selected=\"Gradle.Robot2022 [deploy]\">\n    <configuration name=\"Robot2022 [build]\" type=\"GradleRunConfiguration\" factoryName=\"Gradle\" temporary=\"true\">\n      <ExternalSystemSettings>\n        <option name=\"executionName\" />\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\n        <option name=\"externalSystemIdString\" value=\"GRADLE\" />\n        <option name=\"scriptParameters\" />\n        <option name=\"taskDescriptions\">\n          <list />\n        </option>\n        <option name=\"taskNames\">\n          <list>\n            <option value=\"build\" />\n          </list>\n        </option>\n        <option name=\"vmOptions\" />\n      </ExternalSystemSettings>\n      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>\n      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>\n      <DebugAllEnabled>false</DebugAllEnabled>\n      <method v=\"2\" />\n    </configuration>\n    <configuration name=\"Robot2022 [deploy]\" type=\"GradleRunConfiguration\" factoryName=\"Gradle\" temporary=\"true\">\n      <ExternalSystemSettings>\n        <option name=\"executionName\" />\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\n        <option name=\"externalSystemIdString\" value=\"GRADLE\" />\n        <option name=\"scriptParameters\" />\n        <option name=\"taskDescriptions\">\n          <list />\n        </option>\n        <option name=\"taskNames\">\n          <list>\n            <option value=\"deploy\" />\n          </list>\n        </option>\n        <option name=\"vmOptions\" />\n      </ExternalSystemSettings>\n      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>\n      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>\n      <DebugAllEnabled>false</DebugAllEnabled>\n      <method v=\"2\" />\n    </configuration>\n    <configuration name=\"Robot2022 [vendordep]\" type=\"GradleRunConfiguration\" factoryName=\"Gradle\" temporary=\"true\">\n      <ExternalSystemSettings>\n        <option name=\"executionName\" />\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\n        <option name=\"externalSystemIdString\" value=\"GRADLE\" />\n        <option name=\"scriptParameters\" />\n        <option name=\"taskDescriptions\">\n          <list />\n        </option>\n        <option name=\"taskNames\">\n          <list>\n            <option value=\"vendordep\" />\n          </list>\n        </option>\n        <option name=\"vmOptions\" />\n      </ExternalSystemSettings>\n      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>\n      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>\n      <DebugAllEnabled>false</DebugAllEnabled>\n      <method v=\"2\" />\n    </configuration>\n    <recent_temporary>\n      <list>\n        <item itemvalue=\"Gradle.Robot2022 [deploy]\" />\n        <item itemvalue=\"Gradle.Robot2022 [build]\" />\n        <item itemvalue=\"Gradle.Robot2022 [vendordep]\" />\n      </list>\n    </recent_temporary>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"3c35ea9b-7c4f-4ef1-a3e2-6129d21cc7d5\" name=\"Default Changelist\" comment=\"\" />\n      <created>1643155767784</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1643155767784</updated>\n      <workItem from=\"1643155794014\" duration=\"6243000\" />\n      <workItem from=\"1643523981056\" duration=\"216000\" />\n      <workItem from=\"1643556462092\" duration=\"5796000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"draft of AdvantageKit integration builds successfully.\">\n      <created>1643160866051</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1643160866051</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"2\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n    <option name=\"oldMeFiltersMigrated\" value=\"true\" />\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"draft of AdvantageKit integration builds successfully.\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"draft of AdvantageKit integration builds successfully.\" />\n  </component>\n  <component name=\"WpiLibVersionService\">\n    <option name=\"lastChecked\" value=\"20220130002902\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
++++ b/.idea/workspace.xml	(date 1644084923779)
+@@ -4,15 +4,19 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="3c35ea9b-7c4f-4ef1-a3e2-6129d21cc7d5" name="Default Changelist" comment="draft of AdvantageKit integration builds successfully.">
+-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_littletonrobotics_akit_conduit_conduit_api_1_2_0.xml" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_littletonrobotics_akit_junction_junction_core_1_2_0.xml" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_littletonrobotics_akit_junction_wpilib_shim_1_2_0.xml" beforeDir="false" />
++    <list default="true" id="3c35ea9b-7c4f-4ef1-a3e2-6129d21cc7d5" name="Default Changelist" comment="add .idea/ to .gitignore">
++      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__edu_wpi_first_cameraserver_cameraserver_java_2022_2_1.xml" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__edu_wpi_first_cscore_cscore_java_2022_2_1.xml" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__edu_wpi_first_hal_hal_java_2022_2_1.xml" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__edu_wpi_first_ntcore_ntcore_java_2022_2_1.xml" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__edu_wpi_first_wpilibNewCommands_wpilibNewCommands_java_2022_2_1.xml" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__edu_wpi_first_wpimath_wpimath_java_2022_2_1.xml" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__edu_wpi_first_wpiutil_wpiutil_java_2022_2_1.xml" beforeDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/modules/Robot2022.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Robot2022.main.iml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/modules/Robot2022.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Robot2022.test.iml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/RobotContainer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/RobotContainer.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/DriveSubsystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/DriveSubsystem.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/vendordeps/Phoenix-frc2022-latest.json" beforeDir="false" afterPath="$PROJECT_DIR$/vendordeps/Phoenix-frc2022-latest.json" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -72,12 +76,15 @@
+     </file-type-list>
+   </component>
+   <component name="HighlightingSettingsPerFile">
+-    <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/Constants.java" root0="FORCE_HIGHLIGHTING" />
++    <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/SwerveModule.java" root0="FORCE_HIGHLIGHTING" />
+     <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/DriveSubsystem.java" root0="FORCE_HIGHLIGHTING" />
+-    <setting file="file://$PROJECT_DIR$/src/main/java/lib/iotemplates/ClosedLoopIO.java" root0="FORCE_HIGHLIGHTING" />
+-    <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/ModuleDriveIO.java" root0="FORCE_HIGHLIGHTING" />
++    <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/Constants.java" root0="FORCE_HIGHLIGHTING" />
+     <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/ModuleSteerIO.java" root0="FORCE_HIGHLIGHTING" />
+-    <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/SwerveModule.java" root0="FORCE_HIGHLIGHTING" />
++    <setting file="file://$PROJECT_DIR$/src/main/java/frc/robot/subsystems/drive/ModuleDriveIO.java" root0="FORCE_HIGHLIGHTING" />
++    <setting file="file://$PROJECT_DIR$/src/main/java/lib/iotemplates/ClosedLoopIO.java" root0="FORCE_HIGHLIGHTING" />
++  </component>
++  <component name="MarkdownSettingsMigration">
++    <option name="stateVersion" value="1" />
+   </component>
+   <component name="ProjectId" id="24DCLPnOXjKRqwik3685yy2tXi4" />
+   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+@@ -178,6 +185,8 @@
+       <workItem from="1643155794014" duration="6243000" />
+       <workItem from="1643523981056" duration="216000" />
+       <workItem from="1643556462092" duration="5796000" />
++      <workItem from="1644077658307" duration="648000" />
++      <workItem from="1644081740058" duration="2195000" />
+     </task>
+     <task id="LOCAL-00001" summary="draft of AdvantageKit integration builds successfully.">
+       <created>1643160866051</created>
+@@ -186,7 +195,28 @@
+       <option name="project" value="LOCAL" />
+       <updated>1643160866051</updated>
+     </task>
+-    <option name="localTasksCounter" value="2" />
++    <task id="LOCAL-00002" summary="update wpilib to 2022.3.1">
++      <created>1644083568751</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1644083568751</updated>
++    </task>
++    <task id="LOCAL-00003" summary="update wpilib to 2022.3.1">
++      <created>1644083587194</created>
++      <option name="number" value="00003" />
++      <option name="presentableId" value="LOCAL-00003" />
++      <option name="project" value="LOCAL" />
++      <updated>1644083587194</updated>
++    </task>
++    <task id="LOCAL-00004" summary="add .idea/ to .gitignore">
++      <created>1644083677092</created>
++      <option name="number" value="00004" />
++      <option name="presentableId" value="LOCAL-00004" />
++      <option name="project" value="LOCAL" />
++      <updated>1644083677092</updated>
++    </task>
++    <option name="localTasksCounter" value="5" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -202,13 +232,15 @@
+         </entry>
+       </map>
+     </option>
+-    <option name="oldMeFiltersMigrated" value="true" />
+   </component>
+   <component name="VcsManagerConfiguration">
+     <MESSAGE value="draft of AdvantageKit integration builds successfully." />
+-    <option name="LAST_COMMIT_MESSAGE" value="draft of AdvantageKit integration builds successfully." />
++    <MESSAGE value="Add slew rate limiter" />
++    <MESSAGE value="update wpilib to 2022.3.1" />
++    <MESSAGE value="add .idea/ to .gitignore" />
++    <option name="LAST_COMMIT_MESSAGE" value="add .idea/ to .gitignore" />
+   </component>
+   <component name="WpiLibVersionService">
+-    <option name="lastChecked" value="20220130002902" />
++    <option name="lastChecked" value="20220205112451" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: .idea/modules/Robot2022.main.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<module external.linked.project.id=\"Robot2022:main\" external.linked.project.path=\"$MODULE_DIR$/../..\" external.root.project.path=\"$MODULE_DIR$/../..\" external.system.id=\"GRADLE\" external.system.module.group=\"\" external.system.module.type=\"sourceSet\" external.system.module.version=\"unspecified\" type=\"JAVA_MODULE\" version=\"4\">\n  <component name=\"FacetManager\">\n    <facet type=\"FRC_FACET\" name=\"FRC\">\n      <configuration />\n    </facet>\n  </component>\n  <component name=\"NewModuleRootManager\">\n    <output url=\"file://$MODULE_DIR$/../../build/classes/java/main\" />\n    <exclude-output />\n    <content url=\"file://$MODULE_DIR$/../../src/main\">\n      <sourceFolder url=\"file://$MODULE_DIR$/../../src/main/java\" isTestSource=\"false\" />\n    </content>\n    <content url=\"file://$MODULE_DIR$/../../src/main\">\n      <sourceFolder url=\"file://$MODULE_DIR$/../../src/main/java\" isTestSource=\"false\" />\n    </content>\n    <orderEntry type=\"inheritedJdk\" />\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\n    <orderEntry type=\"library\" name=\"Gradle: edu.wpi.first.wpimath:wpimath-java:2022.2.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: edu.wpi.first.ntcore:ntcore-java:2022.2.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: edu.wpi.first.cscore:cscore-java:2022.2.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: edu.wpi.first.cameraserver:cameraserver-java:2022.2.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: edu.wpi.first.hal:hal-java:2022.2.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: edu.wpi.first.wpiutil:wpiutil-java:2022.2.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: edu.wpi.first.thirdparty.frc2022.opencv:opencv-java:4.5.2-1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.littletonrobotics.akit.junction:wpilib-shim:1.4.0\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.littletonrobotics.akit.junction:junction-core:1.4.0\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.ejml:ejml-simple:0.41\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: com.fasterxml.jackson.core:jackson-core:2.12.4\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: com.fasterxml.jackson.core:jackson-databind:2.12.4\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: com.fasterxml.jackson.core:jackson-annotations:2.12.4\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: edu.wpi.first.wpilibNewCommands:wpilibNewCommands-java:2022.2.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: com.ctre.phoenix:api-java:5.20.2\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: com.ctre.phoenix:wpiapi-java:5.20.2\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: com.kauailabs.navx.frc:navx-java:4.0.442\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.littletonrobotics.akit.conduit:conduit-api:1.4.0\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.jetbrains:annotations:20.1.0\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: com.github.dominikWin:badlog:v0.1.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.ejml:ejml-fsparse:0.41\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.ejml:ejml-fdense:0.41\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.ejml:ejml-dsparse:0.41\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.ejml:ejml-ddense:0.41\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.ejml:ejml-cdense:0.41\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.ejml:ejml-zdense:0.41\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.ejml:ejml-core:0.41\" level=\"project\" />\n    <orderEntry type=\"library\" scope=\"RUNTIME\" name=\"Gradle: com.googlecode.json-simple:json-simple:1.1.1\" level=\"project\" />\n    <orderEntry type=\"library\" scope=\"RUNTIME\" name=\"Gradle: junit:junit:4.13.1\" level=\"project\" />\n    <orderEntry type=\"library\" scope=\"RUNTIME\" name=\"Gradle: org.hamcrest:hamcrest-core:1.3\" level=\"project\" />\n  </component>\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules/Robot2022.main.iml b/.idea/modules/Robot2022.main.iml
+--- a/.idea/modules/Robot2022.main.iml	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
++++ b/.idea/modules/Robot2022.main.iml	(date 1644083303444)
+@@ -16,12 +16,12 @@
+     </content>
+     <orderEntry type="inheritedJdk" />
+     <orderEntry type="sourceFolder" forTests="false" />
+-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpimath:wpimath-java:2022.2.1" level="project" />
+-    <orderEntry type="library" name="Gradle: edu.wpi.first.ntcore:ntcore-java:2022.2.1" level="project" />
+-    <orderEntry type="library" name="Gradle: edu.wpi.first.cscore:cscore-java:2022.2.1" level="project" />
+-    <orderEntry type="library" name="Gradle: edu.wpi.first.cameraserver:cameraserver-java:2022.2.1" level="project" />
+-    <orderEntry type="library" name="Gradle: edu.wpi.first.hal:hal-java:2022.2.1" level="project" />
+-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpiutil:wpiutil-java:2022.2.1" level="project" />
++    <orderEntry type="library" name="Gradle: edu.wpi.first.wpimath:wpimath-java:2022.3.1" level="project" />
++    <orderEntry type="library" name="Gradle: edu.wpi.first.ntcore:ntcore-java:2022.3.1" level="project" />
++    <orderEntry type="library" name="Gradle: edu.wpi.first.cscore:cscore-java:2022.3.1" level="project" />
++    <orderEntry type="library" name="Gradle: edu.wpi.first.cameraserver:cameraserver-java:2022.3.1" level="project" />
++    <orderEntry type="library" name="Gradle: edu.wpi.first.hal:hal-java:2022.3.1" level="project" />
++    <orderEntry type="library" name="Gradle: edu.wpi.first.wpiutil:wpiutil-java:2022.3.1" level="project" />
+     <orderEntry type="library" name="Gradle: edu.wpi.first.thirdparty.frc2022.opencv:opencv-java:4.5.2-1" level="project" />
+     <orderEntry type="library" name="Gradle: org.littletonrobotics.akit.junction:wpilib-shim:1.4.0" level="project" />
+     <orderEntry type="library" name="Gradle: org.littletonrobotics.akit.junction:junction-core:1.4.0" level="project" />
+@@ -29,7 +29,7 @@
+     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.12.4" level="project" />
+     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.12.4" level="project" />
+     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.12.4" level="project" />
+-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpilibNewCommands:wpilibNewCommands-java:2022.2.1" level="project" />
++    <orderEntry type="library" name="Gradle: edu.wpi.first.wpilibNewCommands:wpilibNewCommands-java:2022.3.1" level="project" />
+     <orderEntry type="library" name="Gradle: com.ctre.phoenix:api-java:5.20.2" level="project" />
+     <orderEntry type="library" name="Gradle: com.ctre.phoenix:wpiapi-java:5.20.2" level="project" />
+     <orderEntry type="library" name="Gradle: com.kauailabs.navx.frc:navx-java:4.0.442" level="project" />
+Index: .idea/modules/Robot2022.test.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<module external.linked.project.id=\"Robot2022:test\" external.linked.project.path=\"$MODULE_DIR$/../..\" external.root.project.path=\"$MODULE_DIR$/../..\" external.system.id=\"GRADLE\" external.system.module.group=\"\" external.system.module.type=\"sourceSet\" external.system.module.version=\"unspecified\" type=\"JAVA_MODULE\" version=\"4\">\n  <component name=\"NewModuleRootManager\">\n    <output-test url=\"file://$MODULE_DIR$/../../build/classes/java/test\" />\n    <exclude-output />\n    <content url=\"file://$MODULE_DIR$/../../src/test\" />\n    <orderEntry type=\"inheritedJdk\" />\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\n    <orderEntry type=\"module\" module-name=\"Robot2022.main\" />\n    <orderEntry type=\"library\" name=\"Gradle: edu.wpi.first.wpimath:wpimath-java:2022.2.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: edu.wpi.first.ntcore:ntcore-java:2022.2.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: edu.wpi.first.cscore:cscore-java:2022.2.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: edu.wpi.first.cameraserver:cameraserver-java:2022.2.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: edu.wpi.first.hal:hal-java:2022.2.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: edu.wpi.first.wpiutil:wpiutil-java:2022.2.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: edu.wpi.first.thirdparty.frc2022.opencv:opencv-java:4.5.2-1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.littletonrobotics.akit.junction:wpilib-shim:1.4.0\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.littletonrobotics.akit.junction:junction-core:1.4.0\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.ejml:ejml-simple:0.41\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: com.fasterxml.jackson.core:jackson-core:2.12.4\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: com.fasterxml.jackson.core:jackson-databind:2.12.4\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: com.fasterxml.jackson.core:jackson-annotations:2.12.4\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: edu.wpi.first.wpilibNewCommands:wpilibNewCommands-java:2022.2.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: com.ctre.phoenix:api-java:5.20.2\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: com.ctre.phoenix:wpiapi-java:5.20.2\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: com.kauailabs.navx.frc:navx-java:4.0.442\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.littletonrobotics.akit.conduit:conduit-api:1.4.0\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.jetbrains:annotations:20.1.0\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: com.github.dominikWin:badlog:v0.1.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: junit:junit:4.13.1\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.ejml:ejml-fsparse:0.41\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.ejml:ejml-fdense:0.41\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.ejml:ejml-dsparse:0.41\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.ejml:ejml-ddense:0.41\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.ejml:ejml-cdense:0.41\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.ejml:ejml-zdense:0.41\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.ejml:ejml-core:0.41\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"Gradle: org.hamcrest:hamcrest-core:1.3\" level=\"project\" />\n    <orderEntry type=\"library\" scope=\"RUNTIME\" name=\"Gradle: com.googlecode.json-simple:json-simple:1.1.1\" level=\"project\" />\n  </component>\n  <component name=\"TestModuleProperties\" production-module=\"Robot2022.main\" />\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules/Robot2022.test.iml b/.idea/modules/Robot2022.test.iml
+--- a/.idea/modules/Robot2022.test.iml	(revision 6b957b8b95b6094b650751b96dab93ffcdb33ee6)
++++ b/.idea/modules/Robot2022.test.iml	(date 1644083303532)
+@@ -7,12 +7,12 @@
+     <orderEntry type="inheritedJdk" />
+     <orderEntry type="sourceFolder" forTests="false" />
+     <orderEntry type="module" module-name="Robot2022.main" />
+-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpimath:wpimath-java:2022.2.1" level="project" />
+-    <orderEntry type="library" name="Gradle: edu.wpi.first.ntcore:ntcore-java:2022.2.1" level="project" />
+-    <orderEntry type="library" name="Gradle: edu.wpi.first.cscore:cscore-java:2022.2.1" level="project" />
+-    <orderEntry type="library" name="Gradle: edu.wpi.first.cameraserver:cameraserver-java:2022.2.1" level="project" />
+-    <orderEntry type="library" name="Gradle: edu.wpi.first.hal:hal-java:2022.2.1" level="project" />
+-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpiutil:wpiutil-java:2022.2.1" level="project" />
++    <orderEntry type="library" name="Gradle: edu.wpi.first.wpimath:wpimath-java:2022.3.1" level="project" />
++    <orderEntry type="library" name="Gradle: edu.wpi.first.ntcore:ntcore-java:2022.3.1" level="project" />
++    <orderEntry type="library" name="Gradle: edu.wpi.first.cscore:cscore-java:2022.3.1" level="project" />
++    <orderEntry type="library" name="Gradle: edu.wpi.first.cameraserver:cameraserver-java:2022.3.1" level="project" />
++    <orderEntry type="library" name="Gradle: edu.wpi.first.hal:hal-java:2022.3.1" level="project" />
++    <orderEntry type="library" name="Gradle: edu.wpi.first.wpiutil:wpiutil-java:2022.3.1" level="project" />
+     <orderEntry type="library" name="Gradle: edu.wpi.first.thirdparty.frc2022.opencv:opencv-java:4.5.2-1" level="project" />
+     <orderEntry type="library" name="Gradle: org.littletonrobotics.akit.junction:wpilib-shim:1.4.0" level="project" />
+     <orderEntry type="library" name="Gradle: org.littletonrobotics.akit.junction:junction-core:1.4.0" level="project" />
+@@ -20,7 +20,7 @@
+     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.12.4" level="project" />
+     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.12.4" level="project" />
+     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.12.4" level="project" />
+-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpilibNewCommands:wpilibNewCommands-java:2022.2.1" level="project" />
++    <orderEntry type="library" name="Gradle: edu.wpi.first.wpilibNewCommands:wpilibNewCommands-java:2022.3.1" level="project" />
+     <orderEntry type="library" name="Gradle: com.ctre.phoenix:api-java:5.20.2" level="project" />
+     <orderEntry type="library" name="Gradle: com.ctre.phoenix:wpiapi-java:5.20.2" level="project" />
+     <orderEntry type="library" name="Gradle: com.kauailabs.navx.frc:navx-java:4.0.442" level="project" />
