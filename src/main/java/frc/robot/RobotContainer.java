@@ -151,9 +151,9 @@ public class RobotContainer {
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(.4, 1), new Translation2d(.8, -1)),
+            List.of(new Translation2d(1, .5), new Translation2d(2, -.5)),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(1.2, 0, new Rotation2d(0)),
+            new Pose2d(3, 0.5, new Rotation2d(-Math.PI/2)),
             config);
 
     var thetaController =
@@ -188,7 +188,7 @@ public class RobotContainer {
 
     File file = new File(filepath);
     try {
-        //noinspection ResultOfMethodCallIgnored
+        //noinspection
         file.createNewFile();
         logFileWriter = new BufferedWriter(new FileWriter(file));
     } catch (IOException e) {

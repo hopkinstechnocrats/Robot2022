@@ -43,6 +43,7 @@ public class FixHeadingCommand extends CommandBase {
         Logger.getInstance().recordOutput("FixHeadingError", error.getRadians());
         Logger.getInstance().recordOutput("FixHeadingOutput", output);
 
+
     }
 
     @Override
