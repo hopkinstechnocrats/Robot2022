@@ -23,8 +23,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj.Filesystem;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,6 +35,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import lib.Loggable;
 import badlog.lib.BadLog;
@@ -46,6 +49,8 @@ import badlog.lib.BadLog;
  */
 public class RobotContainer {
   // The robot's subsystems
+  String trajectoryJSON = "paths/TestCircle.wpilib.json";
+  Trajectory trajectory = new Trajectory();
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final IntakeSubsystem m_intake;
   public Pose2d zeroPose = new Pose2d();
@@ -61,6 +66,13 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    try {
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+   } catch (IOException ex) {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+   }
+
     m_intake = new IntakeSubsystem(new IntakeIOReal());
     // Configure the button bindings
     configureButtonBindings();
@@ -151,14 +163,15 @@ public class RobotContainer {
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, .5), new Translation2d(2, -.5)),
+            List.of(new Translation2d(1, .5), new Translation2d(2, 0), new Translation2d(3, -.5), new Translation2d(4, 0),
+            new Translation2d(3, .5), new Translation2d(2, 0), new Translation2d(1, -.5)),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(3, 0.5, new Rotation2d(-Math.PI/2)),
+            new Pose2d(0, 0, new Rotation2d(0)),
             config);
 
     var thetaController =
         new ProfiledPIDController(
-            AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+            AutoConstants.kPThetaController, AutoConstants.kIThetaController, AutoConstants.kDThetaController, AutoConstants.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     SwerveControllerCommand swerveControllerCommand =
