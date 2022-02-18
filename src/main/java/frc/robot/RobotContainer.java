@@ -39,6 +39,7 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import lib.Loggable;
 import badlog.lib.BadLog;
+import org.littletonrobotics.junction.Logger;
 
 
 /*
@@ -188,11 +189,25 @@ public class RobotContainer {
             m_robotDrive::setModuleStates,
             m_robotDrive);
 
+    Command autonomousLogCommand =
+            new RunCommand(
+                    () -> {
+                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerGoalPosition", thetaController.getGoal().position);
+                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerGoalVelocity", thetaController.getGoal().velocity);
+                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerSetpointPosition", thetaController.getSetpoint().position);
+                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerSetpointVelocity", thetaController.getSetpoint().velocity);
+                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerPositionError", thetaController.getPositionError());
+                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerVelocityError", thetaController.getVelocityError());
+                    }
+            );
+
     // Reset odometry to the starting pose of the trajectory.
     m_robotDrive.resetOdometry(trajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+    return swerveControllerCommand
+            .deadlineWith(autonomousLogCommand)
+            .andThen(() -> m_robotDrive.drive(0, 0, 0, false));
   }
 
   public void initializeLog() {
