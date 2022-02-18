@@ -49,7 +49,7 @@ import badlog.lib.BadLog;
  */
 public class RobotContainer {
   // The robot's subsystems
-  String trajectoryJSON = "paths/TestCircle.wpilib.json";
+  String trajectoryJSON = "paths/output/Unnamed.wpilib.json";
   Trajectory trajectory = new Trajectory();
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final IntakeSubsystem m_intake;
@@ -163,10 +163,10 @@ public class RobotContainer {
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, .5), new Translation2d(2, 0), new Translation2d(3, -.5), new Translation2d(4, 0),
-            new Translation2d(3, .5), new Translation2d(2, 0), new Translation2d(1, -.5)),
+            List.of(new Translation2d(1, .5), new Translation2d(2, 0),
+            new Translation2d(1, -.5)),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(0, 0, new Rotation2d(0)),
+            new Pose2d(0, 0, new Rotation2d(-Math.PI/2)),
             config);
 
     var thetaController =
@@ -176,7 +176,7 @@ public class RobotContainer {
 
     SwerveControllerCommand swerveControllerCommand =
         new SwerveControllerCommand(
-            exampleTrajectory,
+            trajectory,
             m_robotDrive::getPose, // Functional interface to feed supplier
             DriveConstants.kDriveKinematics,
 
@@ -184,11 +184,12 @@ public class RobotContainer {
             new PIDController(AutoConstants.kPXController, 0, 0),
             new PIDController(AutoConstants.kPYController, 0, 0),
             thetaController,
+            m_robotDrive::setRotation,
             m_robotDrive::setModuleStates,
             m_robotDrive);
 
     // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+    m_robotDrive.resetOdometry(trajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));

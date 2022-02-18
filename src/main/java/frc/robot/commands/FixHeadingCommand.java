@@ -35,9 +35,9 @@ public class FixHeadingCommand extends CommandBase {
     public void execute() {
         var error = desiredState.minus(driveSubsystem.getHeading());
         var output = controller.calculate(error.getRadians(),0);
-        driveSubsystem.drive(
-                -2*driverController.getLeftY(),
-                -2*driverController.getLeftX(),
+        driveSubsystem.driveNoDeadband(
+                0,//-2*driverController.getLeftY(),
+                0,//-2*driverController.getLeftX(),
                 output,
                 true);
         Logger.getInstance().recordOutput("FixHeadingError", error.getRadians());

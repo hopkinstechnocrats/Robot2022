@@ -129,6 +129,12 @@ public class DriveSubsystem extends SubsystemBase {
     ySpeed = ySpeedFilter.calculate(ySpeed);
     xSpeed = xSpeedFilter.calculate(xSpeed);
     
+    driveNoDeadband(xSpeed, ySpeed, rot, fieldRelative);
+  }
+
+  public void driveNoDeadband(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+  
+    
     Logger.getInstance().recordOutput("DriveSubsystem/Rotation Command", rot);
     Logger.getInstance().recordOutput("DriveSubsystem/xSpeed Command", xSpeed);
     Logger.getInstance().recordOutput("DriveSubsystem/ySpeed Command", ySpeed);
@@ -179,6 +185,10 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public Rotation2d getHeading() {
     return m_gyro.getRotation2d();
+  }
+
+  public Rotation2d setRotation() {
+    return new Rotation2d(Math.PI/2);
   }
 
   /**
