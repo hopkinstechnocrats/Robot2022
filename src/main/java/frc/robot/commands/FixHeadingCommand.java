@@ -38,8 +38,7 @@ public class FixHeadingCommand extends CommandBase {
         driveSubsystem.driveNoDeadband(
                 0,//-2*driverController.getLeftY(),
                 0,//-2*driverController.getLeftX(),
-                output,
-                true);
+                output);
         Logger.getInstance().recordOutput("FixHeadingError", error.getRadians());
         Logger.getInstance().recordOutput("FixHeadingOutput", output);
 

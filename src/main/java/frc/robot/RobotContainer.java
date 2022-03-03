@@ -4,9 +4,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.*;
@@ -15,6 +19,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.FixHeadingCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.Climber.ClimberSubsystem;
 import frc.robot.subsystems.Intake.IntakeIOReal;
 import frc.robot.subsystems.Intake.IntakeSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -40,6 +45,7 @@ import java.text.SimpleDateFormat;
 import lib.Loggable;
 import badlog.lib.BadLog;
 import org.littletonrobotics.junction.Logger;
+import org.opencv.features2d.ORB;
 
 
 /*
@@ -54,11 +60,15 @@ public class RobotContainer {
   Trajectory trajectory = new Trajectory();
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final IntakeSubsystem m_intake;
-  public Pose2d zeroPose = new Pose2d();
+  private final ClimberSubsystem m_climber;
+  private final Solenoid obj = new Solenoid(PneumaticsModuleType.REVPH, 0);
+  public final Compressor phCompressor = new Compressor(PneumaticsModuleType.REVPH);
+  public Pose2d zeroPose = new Pose2d(new Translation2d(0, 0), new Rotation2d());
   // private final SingleModuleTestFixture singleModuleTestFixture = new SingleModuleTestFixture();
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
 
   public BadLog log;
   public File logFile;
@@ -74,11 +84,19 @@ public class RobotContainer {
       DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
    }
 
-    m_intake = new IntakeSubsystem(new IntakeIOReal());
-    // Configure the button bindings
+    m_intake = new IntakeSubsystem();
+    m_climber = new ClimberSubsystem();
+    obj.set(true);
+    phCompressor.enableAnalog(100, 120);
+     // Configure the button bindings
     configureButtonBindings();
     loggables = new ArrayList<Loggable>();
     // loggables.add(driv);
+    m_intake.setDefaultCommand(
+        new RunCommand( () -> 
+            SmartDashboard.putNumber("Compressor Pressure", phCompressor.getPressure())
+        , m_intake)
+    );
 
     // Configure default commands
     // Set the default drive command to split-stick arcade drive
@@ -90,8 +108,8 @@ public class RobotContainer {
                 m_robotDrive.drive(
                     -2*m_driverController.getLeftY(),
                     -2*m_driverController.getLeftX(),
-                     3*m_driverController.getRightX(),
-                    true), m_robotDrive)); // use this to change from field oriented to non-field oriented
+                     3*m_driverController.getRightX()
+                     ), m_robotDrive)); // use this to change from field oriented to non-field oriented
 
     m_intake.setDefaultCommand(
             new RunCommand(
@@ -100,6 +118,15 @@ public class RobotContainer {
                       m_intake.spinIntake();
                     }
             , m_intake)
+    );
+
+    m_climber.setDefaultCommand(
+        new RunCommand(
+                () ->
+                {
+                  m_climber.spinClimber(0);
+                }
+        , m_climber)
     );
 
     // singleModuleTestFixture.setDefaultCommand(
@@ -122,6 +149,17 @@ public class RobotContainer {
       JoystickButton BButton = new JoystickButton(m_driverController, 2);
       JoystickButton XButton = new JoystickButton(m_driverController, 3);
       JoystickButton YButton = new JoystickButton(m_driverController, 4);
+
+      JoystickButton OAButton = new JoystickButton(m_operatorController, 1);
+      JoystickButton OBButton = new JoystickButton(m_operatorController, 2);
+      JoystickButton OXButton = new JoystickButton(m_operatorController, 3);
+      JoystickButton OYButton = new JoystickButton(m_operatorController, 4);
+      JoystickButton ORBumper = new JoystickButton(m_operatorController, 6);
+      JoystickButton OLBumper = new JoystickButton(m_operatorController, 5);
+      JoystickButton OBack = new JoystickButton(m_operatorController, 7);
+      JoystickButton OStart = new JoystickButton(m_operatorController, 8);
+      JoystickButton OLTrigger = new JoystickButton(m_operatorController, 11);
+      JoystickButton ORTrigger = new JoystickButton(m_operatorController, 12);
       // 
       POVButton DPadTop = new POVButton(m_driverController, 90);
       DPadTop.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(90), m_driverController));
@@ -134,12 +172,27 @@ public class RobotContainer {
 
       AButton.whenPressed(new InstantCommand(() -> m_robotDrive.zeroHeading()));
       BButton.whenPressed(new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)));
-      XButton.toggleWhenPressed(new StartEndCommand(m_intake::startSpin,
-              m_intake::endSpin,
-              m_intake));
-      YButton.toggleWhenPressed(new StartEndCommand(m_intake::startSpin,
-              m_intake::endSpin,
-              m_intake));
+      YButton.whenPressed(new InstantCommand(() -> m_robotDrive.fieldON()));
+      XButton.whenPressed(new InstantCommand(() -> m_robotDrive.fieldOFF()));
+
+      OAButton.whenPressed(new InstantCommand(() -> m_intake.intakeIn()));
+      OXButton.whenPressed(new InstantCommand(() -> m_intake.intakeOut()));
+      //OLBumper.whenPressed(new RunCommand(() -> m_intake.spinIntake(.4)));
+      OLBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
+      //OLTrigger.whenPressed(new RunCommand(() -> m_intake.spinIntake(-.4)));
+      OLBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeIn, m_intake::EndIntake));
+
+      OBButton.whenPressed(new InstantCommand(() -> m_climber.clawsOut()));
+      OYButton.whenPressed(new InstantCommand(() -> m_climber.clawsIn()));
+      OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(-3), m_climber));
+      OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
+      ORBumper.whenHeld(new RunCommand(() -> m_climber.spinClimber(-12), m_climber));
+      ORTrigger.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
+
+
+      //ORTrigger.whenPressed(new RunCommand(() -> m_feed.spinFeed(Down)));
+      //ORBumper.whenPressed(new RunCommand(() -> m_feed.spinFeed(Up)));
+
       // DPadTop.whenPressed(new InstantCommand(() -> .(90)));
 
   }
@@ -205,9 +258,10 @@ public class RobotContainer {
     m_robotDrive.resetOdometry(trajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
+    m_robotDrive.fieldOFF();
     return swerveControllerCommand
             .deadlineWith(autonomousLogCommand)
-            .andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+            .andThen(() -> m_robotDrive.drive(0, 0, 0));
   }
 
   public void initializeLog() {
