@@ -6,7 +6,7 @@ import frc.robot.Constants;
 import lib.iotemplates.OpenLoopIO;
 
 public class IntakeIOReal implements OpenLoopIO {
-
+    /*
     Spark motor;
 
     public IntakeIOReal() {
@@ -19,5 +19,5 @@ public class IntakeIOReal implements OpenLoopIO {
 
     public void setVoltage(double volts) {
         motor.set(volts / RobotController.getBatteryVoltage()); //convert to percent ouput for Spark controller
-    }
+    }*/
 }

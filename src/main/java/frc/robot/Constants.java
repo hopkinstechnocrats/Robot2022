@@ -20,7 +20,7 @@ import lib.motorspecs.FalconConstants;
 public final class Constants {
 
   public static final class IntakeConstants {
-    public static final int kPWMPort = 0;
+    public static final int kCANPort = 21;
     public static final int currentLimit = 30;
   }
 
@@ -89,7 +89,7 @@ public final class Constants {
     public static final double kaVoltSecondsSquaredPerMeter = 0.15;
     public static final double kWheelHeight = .1;//meters
 
-    public static final double kMaxSpeedMetersPerSecond = 3;
+    public static final double kMaxSpeedMetersPerSecond = 4;
 
     public static final double kFrontRightOffset = -2.998932440316429;
     public static final double kFrontLeftOffset = 0.796136928912 - Math.PI;
@@ -113,21 +113,23 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kOperatorControllerPort = 1;
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 1.125;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
-    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+    public static final double kMaxSpeedMetersPerSecond = 1.5;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 1.125;
+    public static final double kMaxAngularSpeedRadiansPerSecond = 100*Math.PI;
+    public static final double kMaxAngularSpeedRadiansPerSecondSquared = 1000*Math.PI;
 
     public static final double kPXController = 2;
     public static final double kPYController = 2;
-    public static final double kPThetaController = 2;
-
+    public static final double kPThetaController = 18*2*Math.PI/360;
+    public static final double kIThetaController = 0;
+    public static final double kDThetaController = 0;
     // Constraint for the motion profilied robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
         new TrapezoidProfile.Constraints(
-            kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+            1000, 1000);
   }
 }

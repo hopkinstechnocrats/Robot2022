@@ -22,6 +22,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
 
 public class DriveSubsystem extends SubsystemBase {
+  boolean fieldOriented = false;
   // Robot swerve modules
   private final SwerveModule m_frontLeft =
       new SwerveModule(
@@ -119,22 +120,28 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rot Angular rate of the robot.
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+  public void drive(double xSpeed, double ySpeed, double rot) {
     Logger.getInstance().recordOutput("DriveSubsystem/Raw Rotation Command", rot);
     
-    rot =  MathUtil.applyDeadband(rot, 0.2);
+    rot =  MathUtil.applyDeadband(rot, 0.4);
     ySpeed = MathUtil.applyDeadband(ySpeed, 0.2);
     xSpeed =  MathUtil.applyDeadband(xSpeed, 0.2);
     rot = rotFilter.calculate(rot);
     ySpeed = ySpeedFilter.calculate(ySpeed);
     xSpeed = xSpeedFilter.calculate(xSpeed);
     
+    driveNoDeadband(xSpeed, ySpeed, rot);
+  }
+
+  public void driveNoDeadband(double xSpeed, double ySpeed, double rot) {
+  
+    
     Logger.getInstance().recordOutput("DriveSubsystem/Rotation Command", rot);
     Logger.getInstance().recordOutput("DriveSubsystem/xSpeed Command", xSpeed);
     Logger.getInstance().recordOutput("DriveSubsystem/ySpeed Command", ySpeed);
 
     SwerveModuleState[] swerveModuleStates;
-    if (fieldRelative) {
+    if (fieldOriented) {
       swerveModuleStates =
         DriveConstants.kDriveKinematics.toSwerveModuleStates(
           // fieldRelative
@@ -178,7 +185,21 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public Rotation2d getHeading() {
-    return m_gyro.getRotation2d();
+    return Rotation2d.fromDegrees(m_gyro.getFusedHeading());
+  }
+
+  public Rotation2d setRotation() {
+    return new Rotation2d(Math.PI/2);
+  }
+
+  public void fieldON() {
+    fieldOriented = true;
+    driveNoDeadband(0, 0, 0);
+  }
+
+  public void fieldOFF() {
+    fieldOriented = false;
+    driveNoDeadband(0, 0, 0);
   }
 
   /**
