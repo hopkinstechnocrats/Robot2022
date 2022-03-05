@@ -20,8 +20,10 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.FixHeadingCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Climber.ClimberSubsystem;
+import frc.robot.subsystems.Feed.FeedSubsystem;
 import frc.robot.subsystems.Intake.IntakeIOReal;
 import frc.robot.subsystems.Intake.IntakeSubsystem;
+import frc.robot.subsystems.Launcher.LauncherSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -56,11 +58,13 @@ import org.opencv.features2d.ORB;
  */
 public class RobotContainer {
   // The robot's subsystems
-  String trajectoryJSON = "paths/output/Unnamed.wpilib.json";
+  String trajectoryJSON = "paths/output/GoGoGadgets.wpilib.json";
   Trajectory trajectory = new Trajectory();
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final IntakeSubsystem m_intake;
   private final ClimberSubsystem m_climber;
+  private final FeedSubsystem m_feed;
+  private final LauncherSubsystem m_launcher;
   private final Solenoid obj = new Solenoid(PneumaticsModuleType.REVPH, 0);
   public final Compressor phCompressor = new Compressor(PneumaticsModuleType.REVPH);
   public Pose2d zeroPose = new Pose2d(new Translation2d(0, 0), new Rotation2d());
@@ -86,6 +90,8 @@ public class RobotContainer {
 
     m_intake = new IntakeSubsystem();
     m_climber = new ClimberSubsystem();
+    m_feed = new FeedSubsystem();
+    m_launcher = new LauncherSubsystem();
     obj.set(true);
     phCompressor.enableAnalog(100, 120);
      // Configure the button bindings
@@ -129,6 +135,17 @@ public class RobotContainer {
         , m_climber)
     );
 
+    m_feed.setDefaultCommand(
+      new RunCommand(
+        () -> m_feed.spinFeed(0),
+        m_feed)
+    );
+
+    m_launcher.setDefaultCommand(
+      new RunCommand(
+        () -> m_launcher.spinLauncher(0),
+        m_launcher)
+    );
     // singleModuleTestFixture.setDefaultCommand(
     //         new RunCommand(
     //             () -> 
@@ -158,8 +175,9 @@ public class RobotContainer {
       JoystickButton OLBumper = new JoystickButton(m_operatorController, 5);
       JoystickButton OBack = new JoystickButton(m_operatorController, 7);
       JoystickButton OStart = new JoystickButton(m_operatorController, 8);
-      JoystickButton OLTrigger = new JoystickButton(m_operatorController, 11);
-      JoystickButton ORTrigger = new JoystickButton(m_operatorController, 12);
+      JoystickButton OLIn = new JoystickButton(m_operatorController, 9);
+      JoystickButton ORIn = new JoystickButton(m_operatorController, 10);
+      JoystickButton OXbox = new JoystickButton(m_operatorController, 13);
       // 
       POVButton DPadTop = new POVButton(m_driverController, 90);
       DPadTop.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(90), m_driverController));
@@ -170,6 +188,11 @@ public class RobotContainer {
       POVButton DPadLeft = new POVButton(m_driverController, 0);
       DPadLeft.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(0), m_driverController));
 
+      POVButton ODPadTop = new POVButton(m_operatorController, 90);
+      POVButton ODPadRight = new POVButton(m_operatorController, 180);
+      POVButton ODPadBottom = new POVButton(m_operatorController, 270);
+      POVButton ODPadLeft = new POVButton(m_operatorController, 0);
+
       AButton.whenPressed(new InstantCommand(() -> m_robotDrive.zeroHeading()));
       BButton.whenPressed(new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)));
       YButton.whenPressed(new InstantCommand(() -> m_robotDrive.fieldON()));
@@ -177,21 +200,22 @@ public class RobotContainer {
 
       OAButton.whenPressed(new InstantCommand(() -> m_intake.intakeIn()));
       OXButton.whenPressed(new InstantCommand(() -> m_intake.intakeOut()));
-      //OLBumper.whenPressed(new RunCommand(() -> m_intake.spinIntake(.4)));
       OLBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
-      //OLTrigger.whenPressed(new RunCommand(() -> m_intake.spinIntake(-.4)));
-      OLBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeIn, m_intake::EndIntake));
-
+      
       OBButton.whenPressed(new InstantCommand(() -> m_climber.clawsOut()));
       OYButton.whenPressed(new InstantCommand(() -> m_climber.clawsIn()));
       OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(-3), m_climber));
       OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
-      ORBumper.whenHeld(new RunCommand(() -> m_climber.spinClimber(-12), m_climber));
-      ORTrigger.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
+      OLIn.whenHeld(new RunCommand(() -> m_climber.spinClimber(-12), m_climber));
 
 
-      //ORTrigger.whenPressed(new RunCommand(() -> m_feed.spinFeed(Down)));
-      //ORBumper.whenPressed(new RunCommand(() -> m_feed.spinFeed(Up)));
+      ORIn.whenHeld(new RunCommand(() -> m_feed.spinFeed(1), m_feed));
+      ORBumper.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
+
+      ODPadTop.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.75), m_launcher));
+      ODPadLeft.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.1), m_launcher));
+      ODPadRight.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.35), m_launcher));
+      ODPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.26), m_launcher));
 
       // DPadTop.whenPressed(new InstantCommand(() -> .(90)));
 
@@ -217,10 +241,9 @@ public class RobotContainer {
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, .5), new Translation2d(2, 0),
-            new Translation2d(1, -.5)),
+            List.of(new Translation2d(1, 0)),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(0, 0, new Rotation2d(-Math.PI/2)),
+            new Pose2d(2, 0, new Rotation2d(0)),
             config);
 
     var thetaController =
@@ -257,11 +280,18 @@ public class RobotContainer {
     // Reset odometry to the starting pose of the trajectory.
     m_robotDrive.resetOdometry(trajectory.getInitialPose());
 
+    // new ParallelCommandGroup(
+    //     new RunCommand(() -> m_launcher.spinLauncher(0.1)), m_launcher),
+    //     new RunCommand(() -> m_feed.spinFeed(), m_feed)
+    // ).andThen(swerveControllerCommand)
+    // .andThen(() -> m_robotDrive.drive(0, 0, 0));
+    
     // Run path following command, then stop at the end.
     m_robotDrive.fieldOFF();
     return swerveControllerCommand
-            .deadlineWith(autonomousLogCommand)
+            // .deadlineWith(autonomousLogCommand)
             .andThen(() -> m_robotDrive.drive(0, 0, 0));
+            
   }
 
   public void initializeLog() {
