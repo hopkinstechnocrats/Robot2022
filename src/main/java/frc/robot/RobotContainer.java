@@ -241,9 +241,9 @@ public class RobotContainer {
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, 0)),
+            List.of(new Translation2d(0, 1)),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(2, 0, new Rotation2d(0)),
+            new Pose2d(0, 2, new Rotation2d(0)),
             config);
 
     var thetaController =
@@ -253,7 +253,7 @@ public class RobotContainer {
 
     SwerveControllerCommand swerveControllerCommand =
         new SwerveControllerCommand(
-            trajectory,
+            exampleTrajectory,
             m_robotDrive::getPose, // Functional interface to feed supplier
             DriveConstants.kDriveKinematics,
 
@@ -261,7 +261,6 @@ public class RobotContainer {
             new PIDController(AutoConstants.kPXController, 0, 0),
             new PIDController(AutoConstants.kPYController, 0, 0),
             thetaController,
-            m_robotDrive::setRotation,
             m_robotDrive::setModuleStates,
             m_robotDrive);
 
@@ -288,9 +287,39 @@ public class RobotContainer {
     
     // Run path following command, then stop at the end.
     m_robotDrive.fieldOFF();
-    return swerveControllerCommand
-            // .deadlineWith(autonomousLogCommand)
-            .andThen(() -> m_robotDrive.drive(0, 0, 0));
+    // return new SequentialCommandGroup(
+    //   new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
+    //   new InstantCommand(() -> m_intake.intakeIn()),
+    //   new RunCommand(() -> m_launcher.spinLauncher(0.18), m_launcher).withTimeout(2),
+    //   new ParallelCommandGroup(
+    //     new RunCommand(() -> m_launcher.spinLauncher(0.18),m_launcher).withTimeout(3),
+    //     new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(3)
+    //   ),
+    //   new RunCommand(() -> m_robotDrive.drive(.7, 0, 0), m_robotDrive).withTimeout(8)
+    // );
+
+    return new SequentialCommandGroup(
+      new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
+      new InstantCommand(() -> m_intake.intakeIn()),
+      new InstantCommand(m_intake::StartIntakeOut),
+      new RunCommand(() -> m_robotDrive.drive(1, 0, 0), m_robotDrive).withTimeout(1),
+      new RunCommand(() -> m_robotDrive.drive(0, 0, 0), m_robotDrive).withTimeout(0.5),
+      // new InstantCommand(() -> m_robotDrive.drive(0,0,0), m_robotDrive),
+      new RunCommand(() -> m_launcher.spinLauncher(0.34), m_launcher).withTimeout(2),
+      new ParallelCommandGroup(
+        new RunCommand(() -> m_launcher.spinLauncher(0.34),m_launcher).withTimeout(7),
+        new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(7)
+      ),
+      new InstantCommand(m_intake::EndIntake),
+      new InstantCommand(() -> m_intake.intakeOut()),
+      new RunCommand(() -> m_robotDrive.drive(0.5, 0, 0), m_robotDrive).withTimeout(2)
+      // new RunCommand(() -> m_robotDrive.drive(.7, 0, 0), m_robotDrive).withTimeout(8)
+    );
+    // )ParallelCommandGroup(
+    //   swerveControllerCommand,
+
+    //         // .deadlineWith(autonomousLogCommand)
+    //         .andThen(() -> m_robotDrive.drive(0, 0, 0));
             
   }
 
