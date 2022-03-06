@@ -4,8 +4,16 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.music.Orchestra;
+
 import org.littletonrobotics.junction.LoggedRobot;
 
+import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -32,6 +40,7 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
+    
     setUseTiming(isReal());
     LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
     Logger.getInstance().recordMetadata("ProjectName", "Robot2022");
@@ -101,6 +110,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
+    RobotContainer.LoadMusicSelection(0);
     // m_robotContainer.initializeLog();
     // m_robotContainer.log.finishInitialization();
     // This makes sure that the autonomous stops running when

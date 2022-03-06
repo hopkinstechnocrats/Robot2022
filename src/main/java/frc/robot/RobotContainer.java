@@ -38,6 +38,11 @@ import edu.wpi.first.wpilibj.Filesystem;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.music.Orchestra;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -57,6 +62,48 @@ import org.opencv.features2d.ORB;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  static Orchestra _orchestra;
+
+  WPI_TalonFX [] _fxes = {new WPI_TalonFX(Constants.DriveConstants.kFrontLeftDriveMotorPort, "rio"),
+  new WPI_TalonFX(Constants.DriveConstants.kFrontLeftTurningMotorPort, "rio"),
+  new WPI_TalonFX(Constants.DriveConstants.kFrontRightDriveMotorPort, "rio"),
+  new WPI_TalonFX(Constants.DriveConstants.kFrontRightTurningMotorPort, "rio"),
+  new WPI_TalonFX(Constants.DriveConstants.kRearLeftDriveMotorPort, "rio"),
+  new WPI_TalonFX(Constants.DriveConstants.kRearLeftTurningMotorPort, "rio"),
+  new WPI_TalonFX(Constants.DriveConstants.kRearRightDriveMotorPort, "rio"),
+  new WPI_TalonFX(Constants.DriveConstants.kRearRightTurningMotorPort, "rio")
+  };
+
+  static String[] _songs = new String[] {
+    "song1.chirp",
+    "song2.chirp",
+    "song3.chirp",
+    "song4.chirp",
+    "song5.chirp",
+    "song6.chirp",
+    "song7.chirp",
+  };
+
+  static int _songSelection = 0;
+
+  static int _timeToPlayLoops = 0;
+
+  static void LoadMusicSelection(int offset) {
+    _songSelection = offset;
+
+    if (_songSelection >= _songs.length) {
+      _songSelection = 0;
+    }
+
+    if (_songSelection < 0) {
+      _songSelection = _songs.length - 1;
+    }
+
+    _orchestra.loadMusic(_songs[_songSelection]);
+
+    _timeToPlayLoops = 10;
+    }
+
   // The robot's subsystems
   String trajectoryJSON = "paths/output/GoGoGadgets.wpilib.json";
   Trajectory trajectory = new Trajectory();
@@ -81,6 +128,14 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    ArrayList<TalonFX> _instruments = new ArrayList<TalonFX>(1);
+    
+    for (int i = 0; i < _fxes.length; ++i) {
+      _instruments.add(_fxes[1]);
+    }
+  
+    _orchestra = new Orchestra(_instruments);
+
     try {
       Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
       trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
@@ -130,7 +185,8 @@ public class RobotContainer {
         new RunCommand(
                 () ->
                 {
-                  m_climber.spinClimber(0);
+                  m_climber.spinClimber
+                  (0);
                 }
         , m_climber)
     );
@@ -166,6 +222,7 @@ public class RobotContainer {
       JoystickButton BButton = new JoystickButton(m_driverController, 2);
       JoystickButton XButton = new JoystickButton(m_driverController, 3);
       JoystickButton YButton = new JoystickButton(m_driverController, 4);
+      JoystickButton RBumper = new JoystickButton(m_driverController, 6);
 
       JoystickButton OAButton = new JoystickButton(m_operatorController, 1);
       JoystickButton OBButton = new JoystickButton(m_operatorController, 2);
@@ -193,6 +250,8 @@ public class RobotContainer {
       POVButton ODPadBottom = new POVButton(m_operatorController, 270);
       POVButton ODPadLeft = new POVButton(m_operatorController, 0);
 
+      RBumper.whenPressed(new InstantCommand(() -> _orchestra.play(), m_robotDrive));
+
       AButton.whenPressed(new InstantCommand(() -> m_robotDrive.zeroHeading()));
       BButton.whenPressed(new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)));
       YButton.whenPressed(new InstantCommand(() -> m_robotDrive.fieldON()));
@@ -204,9 +263,9 @@ public class RobotContainer {
       
       OBButton.whenPressed(new InstantCommand(() -> m_climber.clawsOut()));
       OYButton.whenPressed(new InstantCommand(() -> m_climber.clawsIn()));
-      OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(-3), m_climber));
-      OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
-      OLIn.whenHeld(new RunCommand(() -> m_climber.spinClimber(-12), m_climber));
+      OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(3), m_climber));
+      OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(-5), m_climber));
+      OLIn.whenHeld(new RunCommand(() -> m_climber.spinClimber(12), m_climber));
 
 
       ORIn.whenHeld(new RunCommand(() -> m_feed.spinFeed(1), m_feed));
@@ -301,7 +360,6 @@ public class RobotContainer {
     return new SequentialCommandGroup(
       new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
       new InstantCommand(() -> m_intake.intakeIn()),
-      new InstantCommand(m_intake::StartIntakeOut),
       new RunCommand(() -> m_robotDrive.drive(1, 0, 0), m_robotDrive).withTimeout(1),
       new RunCommand(() -> m_robotDrive.drive(0, 0, 0), m_robotDrive).withTimeout(0.5),
       // new InstantCommand(() -> m_robotDrive.drive(0,0,0), m_robotDrive),
@@ -310,9 +368,9 @@ public class RobotContainer {
         new RunCommand(() -> m_launcher.spinLauncher(0.34),m_launcher).withTimeout(7),
         new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(7)
       ),
-      new InstantCommand(m_intake::EndIntake),
+      // new InstantCommand(m_intake::EndIntake),
       new InstantCommand(() -> m_intake.intakeOut()),
-      new RunCommand(() -> m_robotDrive.drive(0.5, 0, 0), m_robotDrive).withTimeout(2)
+      new RunCommand(() -> m_robotDrive.drive(0.5, 0.1, 0), m_robotDrive).withTimeout(2)
       // new RunCommand(() -> m_robotDrive.drive(.7, 0, 0), m_robotDrive).withTimeout(8)
     );
     // )ParallelCommandGroup(
