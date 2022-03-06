@@ -130,7 +130,8 @@ public class RobotContainer {
         new RunCommand(
                 () ->
                 {
-                  m_climber.spinClimber(0);
+                  m_climber.spinClimber
+                  (0);
                 }
         , m_climber)
     );
@@ -204,9 +205,9 @@ public class RobotContainer {
       
       OBButton.whenPressed(new InstantCommand(() -> m_climber.clawsOut()));
       OYButton.whenPressed(new InstantCommand(() -> m_climber.clawsIn()));
-      OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(-3), m_climber));
-      OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
-      OLIn.whenHeld(new RunCommand(() -> m_climber.spinClimber(-12), m_climber));
+      OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(3), m_climber));
+      OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(-5), m_climber));
+      OLIn.whenHeld(new RunCommand(() -> m_climber.spinClimber(12), m_climber));
 
 
       ORIn.whenHeld(new RunCommand(() -> m_feed.spinFeed(1), m_feed));
@@ -301,7 +302,6 @@ public class RobotContainer {
     return new SequentialCommandGroup(
       new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
       new InstantCommand(() -> m_intake.intakeIn()),
-      new InstantCommand(m_intake::StartIntakeOut),
       new RunCommand(() -> m_robotDrive.drive(1, 0, 0), m_robotDrive).withTimeout(1),
       new RunCommand(() -> m_robotDrive.drive(0, 0, 0), m_robotDrive).withTimeout(0.5),
       // new InstantCommand(() -> m_robotDrive.drive(0,0,0), m_robotDrive),
@@ -310,9 +310,9 @@ public class RobotContainer {
         new RunCommand(() -> m_launcher.spinLauncher(0.34),m_launcher).withTimeout(7),
         new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(7)
       ),
-      new InstantCommand(m_intake::EndIntake),
+      // new InstantCommand(m_intake::EndIntake),
       new InstantCommand(() -> m_intake.intakeOut()),
-      new RunCommand(() -> m_robotDrive.drive(0.5, 0, 0), m_robotDrive).withTimeout(2)
+      new RunCommand(() -> m_robotDrive.drive(0.5, 0.1, 0), m_robotDrive).withTimeout(2)
       // new RunCommand(() -> m_robotDrive.drive(.7, 0, 0), m_robotDrive).withTimeout(8)
     );
     // )ParallelCommandGroup(
