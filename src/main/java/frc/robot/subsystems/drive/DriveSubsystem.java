@@ -24,34 +24,34 @@ import edu.wpi.first.math.MathUtil;
 public class DriveSubsystem extends SubsystemBase {
   boolean fieldOriented = false;
   // Robot swerve modules
-  private final SwerveModule m_frontLeft =
-      new SwerveModule(
-          DriveConstants.kFrontLeftDriveMotorPort,
-          DriveConstants.kFrontLeftTurningMotorPort,
-              DriveConstants.kFrontLeftTurningEncoderPort,
-              "FrontLeft", DriveConstants.kFrontLeftOffset);
+  // private final SwerveModule m_frontLeft =
+  //     new SwerveModule(
+  //         DriveConstants.kFrontLeftDriveMotorPort,
+  //         DriveConstants.kFrontLeftTurningMotorPort,
+  //             DriveConstants.kFrontLeftTurningEncoderPort,
+  //             "FrontLeft", DriveConstants.kFrontLeftOffset);
 
 
-  private final SwerveModule m_rearLeft =
-      new SwerveModule(
-          DriveConstants.kRearLeftDriveMotorPort,
-          DriveConstants.kRearLeftTurningMotorPort,
-              DriveConstants.kRearLeftTurningEncoderPort,
-              "RearLeft", DriveConstants.kRearLeftOffset);
+  // private final SwerveModule m_rearLeft =
+  //     new SwerveModule(
+  //         DriveConstants.kRearLeftDriveMotorPort,
+  //         DriveConstants.kRearLeftTurningMotorPort,
+  //             DriveConstants.kRearLeftTurningEncoderPort,
+  //             "RearLeft", DriveConstants.kRearLeftOffset);
 
-  private final SwerveModule m_frontRight =
-      new SwerveModule(
-          DriveConstants.kFrontRightDriveMotorPort,
-          DriveConstants.kFrontRightTurningMotorPort,
-              DriveConstants.kFrontRightTurningEncoderPort,
-              "FrontRight", DriveConstants.kFrontRightOffset);
+  // private final SwerveModule m_frontRight =
+  //     new SwerveModule(
+  //         DriveConstants.kFrontRightDriveMotorPort,
+  //         DriveConstants.kFrontRightTurningMotorPort,
+  //             DriveConstants.kFrontRightTurningEncoderPort,
+  //             "FrontRight", DriveConstants.kFrontRightOffset);
 
-  private final SwerveModule m_rearRight =
-      new SwerveModule(
-          DriveConstants.kRearRightDriveMotorPort,
-          DriveConstants.kRearRightTurningMotorPort,
-              DriveConstants.kRearRightTurningEncoderPort,
-              "RearRight", DriveConstants.kRearRightOffset);
+  // private final SwerveModule m_rearRight =
+  //     new SwerveModule(
+  //         DriveConstants.kRearRightDriveMotorPort,
+  //         DriveConstants.kRearRightTurningMotorPort,
+  //             DriveConstants.kRearRightTurningEncoderPort,
+  //             "RearRight", DriveConstants.kRearRightOffset);
   
   
 
@@ -77,17 +77,17 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void periodic() {
     // Update the odometry in the periodic block
-    m_odometry.update(
-      getHeading(),
-      m_frontLeft.getState(),
-      m_rearLeft.getState(),
-      m_frontRight.getState(),
-      m_rearRight.getState());
-    m_frontLeft.periodic();
-    m_frontRight.periodic();
-    m_rearLeft.periodic();
-    m_rearRight.periodic();
-    SmartDashboard.putNumber("Heading", getHeading().getDegrees());
+    // m_odometry.update(
+    //   getHeading(),
+    //   m_frontLeft.getState(),
+    //   m_rearLeft.getState(),
+    //   m_frontRight.getState(),
+    //   m_rearRight.getState());
+    // m_frontLeft.periodic();
+    // m_frontRight.periodic();
+    // m_rearLeft.periodic();
+    // m_rearRight.periodic();
+    // SmartDashboard.putNumber("Heading", getHeading().getDegrees());
     m_field.setRobotPose(getPose());
 
     Logger.getInstance().recordOutput("Odometry/RobotPose",
@@ -154,10 +154,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
             swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    m_frontLeft.setDesiredState(swerveModuleStates[0]);
-    m_rearLeft.setDesiredState(swerveModuleStates[1]);
-    m_frontRight.setDesiredState(swerveModuleStates[2]);
-    m_rearRight.setDesiredState(swerveModuleStates[3]);
+    // m_frontLeft.setDesiredState(swerveModuleStates[0]);
+    // m_rearLeft.setDesiredState(swerveModuleStates[1]);
+    // m_frontRight.setDesiredState(swerveModuleStates[2]);
+    // m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
   /**
@@ -168,10 +168,10 @@ public class DriveSubsystem extends SubsystemBase {
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
         desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    m_frontLeft.setDesiredState(desiredStates[0]);
-    m_rearLeft.setDesiredState(desiredStates[1]);
-    m_frontRight.setDesiredState(desiredStates[2]);
-    m_rearRight.setDesiredState(desiredStates[3]);
+    // m_frontLeft.setDesiredState(desiredStates[0]);
+    // m_rearLeft.setDesiredState(desiredStates[1]);
+    // m_frontRight.setDesiredState(desiredStates[2]);
+    // m_rearRight.setDesiredState(desiredStates[3]);
   }
 
   /** Zeroes the heading of the robot. */
