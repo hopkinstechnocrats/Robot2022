@@ -29,7 +29,7 @@ public class FeedSubsystem extends SubsystemBase {
 
     public void periodic() {
        io.updateInputs(inputs);
-       Logger.getInstance().processInputs("Feed", inputs);
+       Logger.getInstance().processInputs("FeedMotor", inputs);
     }
 }
 
