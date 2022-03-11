@@ -78,10 +78,13 @@ public class RobotContainer {
     "Music/SuperMarioTheme.chrp",
     "Music/Kiwi-HarryStyles.chrp",
     "Music/Style-TaylorSwift.chrp",
-    "Music/WeAreTheChampions-Queen.chrp"
+    "Music/WeAreTheChampions-Queen.chrp",
+    "Music/WeddingMarch.chrp",
+    "Music/DevilWentDown.chrp",
+    "Music/TTFAF.chrp"
   };
 
-  static int _songSelection = 0;
+  static int _songSelection = 1;
 
   static int _timeToPlayLoops = 0;
 
@@ -96,7 +99,7 @@ public class RobotContainer {
       _songSelection = _songs.length - 1;
     }
 
-    _orchestra.loadMusic(_songs[_songSelection]);
+    _orchestra.loadMusic(_songs[0]);
 
     _timeToPlayLoops = 10;
     }
