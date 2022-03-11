@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Intake;
+package frc.robot.subsystems.Feed;
 
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -13,46 +13,20 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import org.littletonrobotics.junction.Logger;
 
-public class IntakeSubsystem extends SubsystemBase {
+public class FeedSubsystem extends SubsystemBase {
 
-    private final TalonFX motor = new TalonFX(Constants.IntakeConstants.kCANPort);
+    private final TalonFX motor = new TalonFX(Constants.FeedConstants.kCANPort);
 
-    double speed = 0;
 
-    private final DoubleSolenoid intakeSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 6, 7);
-
-    public IntakeSubsystem() {
+    public FeedSubsystem() {
         // TODO: Set the default command, if any, for this subsystem by calling setDefaultCommand(command)
         //       in the constructor or in the robot coordination class, such as RobotContainer.
         //       Also, you can call addChild(name, sendableChild) to associate sendables with the subsystem
         //       such as SpeedControllers, Encoders, DigitalInputs, etc.
     }
 
-    public void spinIntake() {
-        motor.set(ControlMode.PercentOutput, -1*speed);
-    }
-
-    public void StartIntakeOut() {
-        speed = -.8;
-        spinIntake();
-    }
-
-    public void StartIntakeIn() {
-        speed = .8;
-        spinIntake();
-    }
-
-    public void EndIntake() {
-        speed = 0;
-        spinIntake();
-    }
-
-    public void intakeOut(){
-        intakeSolenoid.set(DoubleSolenoid.Value.kForward);
-    }
-
-    public void intakeIn(){
-        intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+    public void spinFeed(double speed) {
+        motor.set(ControlMode.PercentOutput, speed);
     }
 
     public void periodic() {
