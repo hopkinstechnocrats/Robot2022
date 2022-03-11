@@ -11,26 +11,25 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import lib.iotemplates.OpenLoopIOTalonSRXBase;
 import org.littletonrobotics.junction.Logger;
 
 public class FeedSubsystem extends SubsystemBase {
 
-    private final TalonFX motor = new TalonFX(Constants.FeedConstants.kCANPort);
-
+    private final OpenLoopIOTalonSRXBase io = new OpenLoopIOTalonSRXBase(Constants.FeedConstants.kCANPort);
+    private final OpenLoopIO.OpenLoopIOInputs inputs;
 
     public FeedSubsystem() {
-        // TODO: Set the default command, if any, for this subsystem by calling setDefaultCommand(command)
-        //       in the constructor or in the robot coordination class, such as RobotContainer.
-        //       Also, you can call addChild(name, sendableChild) to associate sendables with the subsystem
-        //       such as SpeedControllers, Encoders, DigitalInputs, etc.
+        inputs = new OpenLoopIO.OpenLoopIOInputs();
     }
 
     public void spinFeed(double speed) {
-        motor.set(ControlMode.PercentOutput, speed);
+        io.setVoltage(12 * speed);
     }
 
     public void periodic() {
-       
+       io.updateInputs(inputs);
+       Logger.getInstance().processInputs("FeedMotor", inputs);
     }
 }
 

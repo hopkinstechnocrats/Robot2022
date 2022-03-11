@@ -17,6 +17,20 @@ public interface ClosedLoopIO {
         public double[] supplyCurrentAmps = new double[] {};
         public double[] statorCurrentAmps = new double[] {};
         public double[] tempCelcius = new double[] {};
+        public boolean[] underVoltage = new boolean[] {};
+        public boolean[] forwardLimitSwitch = new boolean[] {};
+        public boolean[] reverseLimitSwitch = new boolean[] {};
+        public boolean[] forwardSoftLimit = new boolean[] {};
+        public boolean[] reverseSoftLimit = new boolean[] {};
+        public boolean[] hardwareFailure = new boolean[] {};
+        public boolean[] resetDuringEn = new boolean[] {};
+        public boolean[] sensorOverflow = new boolean[] {};
+        public boolean[] sensorOutOfPhase = new boolean[] {};
+        public boolean[] hardwareESDReset = new boolean[] {};
+        public boolean[] remoteLossOfSignal = new boolean[] {};
+        public boolean[] APIError = new boolean[] {};
+        public boolean[] supplyOverV = new boolean[] {};
+        public boolean[] supplyUnstable = new boolean[] {};
 
         public void toLog(LogTable table) {
             table.put("PositionRad", positionRad);
@@ -25,6 +39,20 @@ public interface ClosedLoopIO {
             table.put("SupplyCurrentAmps", supplyCurrentAmps);
             table.put("StatorCurrentAmps", statorCurrentAmps);
             table.put("TempCelcius", tempCelcius);
+            table.put("UnderVoltage", underVoltage);
+            table.put("ForwardLimitSwitch", forwardLimitSwitch);
+            table.put("ReverseLimitSwitch", reverseLimitSwitch);
+            table.put("ForwardSoftLimit", forwardSoftLimit);
+            table.put("ReverseSoftLimit", reverseSoftLimit);
+            table.put("HardwareFailure", hardwareFailure);
+            table.put("ResetDuringEn", resetDuringEn);
+            table.put("SensorOverflow", sensorOverflow);
+            table.put("SensorOutOfPhase", sensorOutOfPhase);
+            table.put("HardwareESDReset", hardwareESDReset);
+            table.put("RemoteLossOfSignal", remoteLossOfSignal);
+            table.put("APIError", APIError);
+            table.put("SupplyOverV", supplyOverV);
+            table.put("SupplyUnstable", supplyUnstable);
         }
 
         public void fromLog(LogTable table) {
@@ -34,6 +62,20 @@ public interface ClosedLoopIO {
             supplyCurrentAmps = table.getDoubleArray("StatorCurrentAmps", supplyCurrentAmps);
             statorCurrentAmps = table.getDoubleArray("StatorCurrentAmps", statorCurrentAmps);
             tempCelcius = table.getDoubleArray("TempCelcius", tempCelcius);
+            underVoltage = table.getBooleanArray("UnderVoltage", underVoltage);
+            forwardLimitSwitch = table.getBooleanArray("ForwardLimitSwitch", forwardLimitSwitch);
+            reverseLimitSwitch = table.getBooleanArray("ReverseLimitSwitch", reverseLimitSwitch);
+            forwardSoftLimit = table.getBooleanArray("ForwardSoftLimit", forwardSoftLimit);
+            reverseSoftLimit = table.getBooleanArray("ReverseSoftLimit", reverseSoftLimit);
+            hardwareFailure = table.getBooleanArray("HardwareFailure", hardwareFailure);
+            resetDuringEn = table.getBooleanArray("ResetDuringEn", resetDuringEn);
+            sensorOverflow = table.getBooleanArray("SensorOverflow", sensorOverflow);
+            sensorOutOfPhase = table.getBooleanArray("SensorOutOfPhase", sensorOutOfPhase);
+            hardwareESDReset = table.getBooleanArray("HardwareESDReset", hardwareESDReset);
+            remoteLossOfSignal = table.getBooleanArray("RemoteLossOfSignal", remoteLossOfSignal);
+            APIError = table.getBooleanArray("APIError", APIError);
+            supplyOverV = table.getBooleanArray("SupplyOverV", supplyOverV);
+            supplyUnstable = table.getBooleanArray("SupplyUnstable", supplyUnstable);
         }
     }
 
@@ -49,9 +91,8 @@ public interface ClosedLoopIO {
      * Run closed loop at the specified velocity.
      *
      * @param velocityRadPerSec Velocity setpoint.
-     * @param ffVolts           Feed forward voltage from model.
      */
-    public default void setVelocity(double velocityRadPerSec, double ffVolts) {
+    public default void setVelocity(double velocityRadPerSec) {
     }
 
     public default void setPosition(double positionRad) {
