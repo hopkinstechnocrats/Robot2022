@@ -4,7 +4,7 @@ import org.junit.*;
 
 import static org.junit.Assert.*;
 
-class LinearInterpolatorTest {
+public class LinearInterpolatorTest {
 
     LinearInterpolator testInterpolator;
 
@@ -20,26 +20,26 @@ class LinearInterpolatorTest {
 
     @Test
     public void testOutOfBounds() {
-        assertEquals(testInterpolator.get(-1), 1, 0);
-        assertEquals(testInterpolator.get(21), 40, 0);
+        assertEquals(1, testInterpolator.get(-1), 0);
+        assertEquals(40, testInterpolator.get(21), 0);
     }
 
     @Test
     public void testInBounds() {
-        assertEquals(testInterpolator.get(0.5), (1+3)/2., 0);
-        assertEquals(testInterpolator.get(7), (2/5.)*(10)+(3/5.)*(20), 0);
+        assertEquals(2, testInterpolator.get(0.5), 0);
+        assertEquals((2/5.)*(10)+(3/5.)*(20), testInterpolator.get(7), 0);
     }
 
     @Test
     public void testOnKey() {
-        assertEquals(testInterpolator.get(5), 10, 0);
-        assertEquals(testInterpolator.get(20), 40, 0);
-        assertEquals(testInterpolator.get(0), 1, 0);
+        assertEquals(10, testInterpolator.get(5), 0);
+        assertEquals(40, testInterpolator.get(20), 0);
+        assertEquals(1, testInterpolator.get(0), 0);
     }
 
 
     @After
-    void tearDown() {
+    public void tearDown() {
         testInterpolator = null;
     }
 }
