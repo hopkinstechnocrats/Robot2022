@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import lib.LinearInterpolator;
 import lib.iotemplates.OpenLoopIO;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -18,13 +19,17 @@ public class LauncherSubsystem extends SubsystemBase {
 
     private final WPI_TalonFX motor1 = new WPI_TalonFX(Constants.LauncherConstants.kCANPort1);
     private final WPI_TalonFX motor2 = new WPI_TalonFX(Constants.LauncherConstants.kCANPort2);
-
+    private LinearInterpolator interpolationTable;
 
     public LauncherSubsystem() {
         // TODO: Set the default command, if any, for this subsystem by calling setDefaultCommand(command)
         //       in the constructor or in the robot coordination class, such as RobotContainer.
         //       Also, you can call addChild(name, sendableChild) to associate sendables with the subsystem
         //       such as SpeedControllers, Encoders, DigitalInputs, etc.
+
+        interpolationTable = new LinearInterpolator();
+
+        // interpolationTable.put(0, 0);
     }
 
     public void spinLauncher(double speed) {
@@ -36,6 +41,10 @@ public class LauncherSubsystem extends SubsystemBase {
 
     public void periodic() {
        
+    }
+
+    public void spinFromDistance(double distance) {
+        spinLauncher(interpolationTable.get(distance));
     }
 }
 
