@@ -19,22 +19,46 @@ public class LinearInterpolator {
     // Interpolates for input value of "key"
     public double get(double key) {
         
-        Double valueAbove = Double.MAX_VALUE;
-        Double valueBelow = Double.MIN_VALUE;
+        Double absoluteMax = Double.MAX_VALUE;
+        Double absoluteMin = Double.MIN_VALUE;
+
+        // finding the minimum key
+        Double min = absoluteMin;
+
+        for (Double j : table.keySet()) {
+            if (j > min) {
+                min = j;
+            }
+        }
+
+        // finding the maximum key
+        Double max = absoluteMax;
+
+        for (Double k : table.keySet()) {
+            if (k < max) {
+                max = k;
+            }
+        }
+
+        Double valueAbove = max;
+        Double valueBelow = min;
 
         for (Double i : table.keySet()) {
-            if (i > valueBelow && i < key) {
+            if (i >= valueBelow && i < key) {
                 valueBelow = i;
             }
-            if (i < valueAbove && i > key) {
+            if (i <= valueAbove && i > key) {
                 valueAbove = i;
             }
         }
 
+        
         Double x1 = valueBelow;
         Double x2 = valueAbove;
         Double y1 = table.get(valueBelow);
         Double y2 = table.get(valueAbove);
+
+        
         
         return ((y2 - y1) / (x2 - x1)) * (key - x1) + y1;
 
