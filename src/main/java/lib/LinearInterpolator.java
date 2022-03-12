@@ -12,12 +12,12 @@ public class LinearInterpolator {
     }
 
     // Add a row to the interpolation table
-    public void put(Double key, Double value) {
+    public void put(double key, double value) {
         table.put(key, value);
     }
 
     // Interpolates for input value of "key"
-    public Double get(Double key) {
+    public double get(double key) {
         
         Double valueAbove = Double.MAX_VALUE;
         Double valueBelow = Double.MIN_VALUE;
@@ -36,7 +36,7 @@ public class LinearInterpolator {
         Double y1 = table.get(valueBelow);
         Double y2 = table.get(valueAbove);
         
-        return ((y2 - y1) / (x2 - x1)) * (key - x1) + y1
+        return ((y2 - y1) / (x2 - x1)) * (key - x1) + y1;
 
     }
 }
