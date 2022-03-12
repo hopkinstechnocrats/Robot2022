@@ -1,17 +1,15 @@
 package lib;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
 class LinearInterpolatorTest {
 
     LinearInterpolator testInterpolator;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         testInterpolator = new LinearInterpolator();
         testInterpolator.put(0,1);
         testInterpolator.put(1,3);
@@ -21,26 +19,26 @@ class LinearInterpolatorTest {
     }
 
     @Test
-    void testOutOfBounds() {
-        assertEquals(testInterpolator.get(-1), 1);
-        assertEquals(testInterpolator.get(21), 40);
+    public void testOutOfBounds() {
+        assertEquals(testInterpolator.get(-1), 1, 0);
+        assertEquals(testInterpolator.get(21), 40, 0);
     }
 
     @Test
-    void testInBounds() {
-        assertEquals(testInterpolator.get(0.5), (1+3)/2);
-        assertEquals(testInterpolator.get(7), (2/5)*(10)+(3/5)*(20));
+    public void testInBounds() {
+        assertEquals(testInterpolator.get(0.5), (1+3)/2., 0);
+        assertEquals(testInterpolator.get(7), (2/5.)*(10)+(3/5.)*(20), 0);
     }
 
     @Test
-    void testOnKey() {
-        assertEquals(testInterpolator.get(5), 10);
-        assertEquals(testInterpolator.get(20), 40);
-        assertEquals(testInterpolator.get(0), 1);
+    public void testOnKey() {
+        assertEquals(testInterpolator.get(5), 10, 0);
+        assertEquals(testInterpolator.get(20), 40, 0);
+        assertEquals(testInterpolator.get(0), 1, 0);
     }
 
 
-    @AfterEach
+    @After
     void tearDown() {
         testInterpolator = null;
     }
