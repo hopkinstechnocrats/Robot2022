@@ -62,7 +62,7 @@ public class RobotContainer {
   private final IntakeSubsystem m_intake;
   private final ClimberSubsystem m_climber;
   private final FeedSubsystem m_feed;
-  private final LauncherSubsystem m_launcher;
+//  private final LauncherSubsystem m_launcher;
   public final Compressor phCompressor = new Compressor(PneumaticsModuleType.REVPH);
   public Pose2d zeroPose = new Pose2d(new Translation2d(0, 0), new Rotation2d());
 
@@ -84,11 +84,11 @@ public class RobotContainer {
 //   }
 
 
-    TunableNumber.setTuningMode(false);
+    TunableNumber.setTuningMode(true);
     m_intake = new IntakeSubsystem();
     m_climber = new ClimberSubsystem();
     m_feed = new FeedSubsystem();
-    m_launcher = new LauncherSubsystem();
+//    m_launcher = new LauncherSubsystem();
       Solenoid obj = new Solenoid(PneumaticsModuleType.REVPH, 0);
       obj.set(true);
     phCompressor.enableAnalog(100, 120);
@@ -133,11 +133,11 @@ public class RobotContainer {
 
     TunableNumber launcherSpeed = new TunableNumber("launcher/launcherSpeedRPM", 0);
 
-    m_launcher.setDefaultCommand(
-      new RunCommand(
-        () -> m_launcher.spinLauncher(launcherSpeed.get()),
-        m_launcher)
-    );
+//    m_launcher.setDefaultCommand(
+//      new RunCommand(
+//        () ->  {m_launcher.spinLauncher(launcherSpeed.get()); System.out.println("RUNNING LAUNCHER DEFAULT COMMAND");},
+//        m_launcher)
+//    );
     // singleModuleTestFixture.setDefaultCommand(
     //         new RunCommand(
     //             () -> 
@@ -201,13 +201,13 @@ public class RobotContainer {
       OLIn.whenHeld(new RunCommand(() -> m_climber.spinClimber(12), m_climber));
 
 
-      ORIn.whenHeld(new RunCommand(() -> m_launcher.spinFromDistance(m_robotDrive.getPose().getTranslation().getDistance(new Translation2d(0, 0))), m_launcher));
-      ORBumper.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
-
-      ODPadTop.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.75), m_launcher));
-      ODPadLeft.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.1), m_launcher));
-      ODPadRight.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.35), m_launcher));
-      ODPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.26), m_launcher));
+//      ORIn.whenHeld(new RunCommand(() -> m_launcher.spinFromDistance(m_robotDrive.getPose().getTranslation().getDistance(new Translation2d(0, 0))), m_launcher));
+//      ORBumper.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
+//
+//      ODPadTop.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.75), m_launcher));
+//      ODPadLeft.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.1), m_launcher));
+//      ODPadRight.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.35), m_launcher));
+//      ODPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.26), m_launcher));
 
       // DPadTop.whenPressed(new InstantCommand(() -> .(90)));
 
@@ -296,11 +296,11 @@ public class RobotContainer {
       new RunCommand(() -> m_robotDrive.drive(1, 0, 0), m_robotDrive).withTimeout(1),
       new RunCommand(() -> m_robotDrive.drive(0, 0, 0), m_robotDrive).withTimeout(0.5),
       // new InstantCommand(() -> m_robotDrive.drive(0,0,0), m_robotDrive),
-      new RunCommand(() -> m_launcher.spinLauncher(0.34), m_launcher).withTimeout(2),
-      new ParallelCommandGroup(
-        new RunCommand(() -> m_launcher.spinLauncher(0.34),m_launcher).withTimeout(7),
-        new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(7)
-      ),
+//      new RunCommand(() -> m_launcher.spinLauncher(0.34), m_launcher).withTimeout(2),
+//      new ParallelCommandGroup(
+//        new RunCommand(() -> m_launcher.spinLauncher(0.34),m_launcher).withTimeout(7),
+//        new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(7)
+//      ),
       // new InstantCommand(m_intake::EndIntake),
       new InstantCommand(m_intake::intakeOut),
       new RunCommand(() -> m_robotDrive.drive(0.5, 0.1, 0), m_robotDrive).withTimeout(2)

@@ -14,7 +14,7 @@ import org.littletonrobotics.junction.Logger;
 public class IntakeSubsystem extends SubsystemBase {
 
     private final OpenLoopIOTalonSRXBase motorIO = new OpenLoopIOTalonSRXBase(Constants.IntakeConstants.kCANPort);
-    private final OpenLoopIO.OpenLoopIOInputs motorInputs = new OpenLoopIO.OpenLoopIOInputs();
+    private final OpenLoopIO.OpenLoopIOInputs motorInputs = new OpenLoopIO.OpenLoopIOInputs(1);
 
     private final SolenoidIOBase solenoidIO = new SolenoidIOBase(6, 7);
     private final SolenoidIO.SolenoidIOInputs solenoidInputs = new SolenoidIO.SolenoidIOInputs();
