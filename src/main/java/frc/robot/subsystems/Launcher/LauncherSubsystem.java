@@ -1,46 +1,52 @@
 package frc.robot.subsystems.Launcher;
 
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import lib.LinearInterpolator;
+import lib.iotemplates.ClosedLoopIO;
+import lib.iotemplates.ClosedLoopIOInputs;
 import lib.iotemplates.OpenLoopIO;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import lib.iotemplates.VelocityClosedLoopIOBase;
 import org.littletonrobotics.junction.Logger;
 
 public class LauncherSubsystem extends SubsystemBase {
 
-    private final WPI_TalonFX motor1 = new WPI_TalonFX(Constants.LauncherConstants.kCANPort1);
-    private final WPI_TalonFX motor2 = new WPI_TalonFX(Constants.LauncherConstants.kCANPort2);
+    private final VelocityClosedLoopIOBase io = new VelocityClosedLoopIOBase(
+            "launcher",
+            new int[] {Constants.LauncherConstants.kCANPort1, Constants.LauncherConstants.kCANPort2},
+            Constants.LauncherConstants.kP,
+            Constants.LauncherConstants.kI,
+            Constants.LauncherConstants.kD,
+            Constants.LauncherConstants.kF,
+            Constants.LauncherConstants.kEncoderTicksPerRevolution
+            );
+    private final ClosedLoopIO.ClosedLoopIOInputs inputs = new ClosedLoopIO.ClosedLoopIOInputs();
     private LinearInterpolator interpolationTable;
 
     public LauncherSubsystem() {
-        // TODO: Set the default command, if any, for this subsystem by calling setDefaultCommand(command)
-        //       in the constructor or in the robot coordination class, such as RobotContainer.
-        //       Also, you can call addChild(name, sendableChild) to associate sendables with the subsystem
-        //       such as SpeedControllers, Encoders, DigitalInputs, etc.
-
         interpolationTable = new LinearInterpolator();
 
         // interpolationTable.put(0, 0);
     }
 
-    public void spinLauncher(double speed) {
-        SmartDashboard.putNumber("Launcher Voltage", -1* 12* speed);
-        motor1.setVoltage(-1* 12* speed);
-        motor2.setVoltage(-1* 12* speed);
+    public void spinLauncher(double speedRPM) {
+        io.setVelocity(Units.rotationsPerMinuteToRadiansPerSecond(speedRPM));
     }
 
 
     public void periodic() {
-       
+       io.updateInputs(inputs);
+       Logger.getInstance().processInputs("launcher", inputs);
     }
 
     public void spinFromDistance(double distance) {
