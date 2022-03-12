@@ -2,6 +2,7 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2022.4.1"
+    id "com.peterabeles.gversion" version "1.10"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -108,3 +109,13 @@ test {
 deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
+
+project.compileJava.dependsOn(createVersionFile)
+gversion {
+    srcDir       = "src/main/java/"
+    classPackage = "frc.robot"
+    className    = "BuildConstants"
+    dateFormat   = "yyyy-MM-dd HH:mm:ss"
+    timeZone     = "America/Chicago"
+    indent       = "  "
+}

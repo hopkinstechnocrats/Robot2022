@@ -34,7 +34,23 @@ public class Robot extends LoggedRobot {
   public void robotInit() {
     setUseTiming(isReal());
     LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
-    Logger.getInstance().recordMetadata("ProjectName", "Robot2022");
+    Logger.getInstance().recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+    Logger.getInstance().recordMetadata("RuntimeType", getRuntimeType().toString());
+    Logger.getInstance().recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+    Logger.getInstance().recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+    Logger.getInstance().recordMetadata("GitDate", BuildConstants.GIT_DATE);
+    Logger.getInstance().recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+    switch (BuildConstants.DIRTY) {
+      case 0:
+        Logger.getInstance().recordMetadata("GitDirty", "All changes committed");
+        break;
+      case 1:
+        Logger.getInstance().recordMetadata("GitDirty", "Uncomitted changes");
+        break;
+      default:
+        Logger.getInstance().recordMetadata("GitDirty", "Unknown");
+        break;
+    }
 
     if (isReal()) {
       Logger.getInstance().addDataReceiver(new ByteLogReceiver("/home/lvuser/"));
