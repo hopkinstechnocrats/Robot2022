@@ -27,7 +27,7 @@ public class LinearInterpolatorTest {
     @Test
     public void testInBounds() {
         assertEquals(2, testInterpolator.get(0.5), 0);
-        assertEquals((2/5.)*(10)+(3/5.)*(20), testInterpolator.get(7), 0);
+        assertEquals((3/5.)*(10)+(2/5.)*(20), testInterpolator.get(7), 0);
     }
 
     @Test
