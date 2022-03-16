@@ -6,26 +6,48 @@ package frc.robot.subsystems.Limelight;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class LimelightSubsystem extends SubsystemBase {
   /** Creates a new LimelightSubsystem. */
+  NetworkTableEntry tv;
+  NetworkTableEntry tx;
+  double P = 1;
+  double I, D = 0;
+  double period = 0.1;
+  PIDController aiming = new PIDController(P, I, D, period);
+
   public LimelightSubsystem() {
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    NetworkTableEntry tx = table.getEntry("tx");
+    tx = table.getEntry("tx");
     //NetworkTableEntry ty = table.getEntry("ty");
-
-    double x = tx.getDouble(0.0);
+    tv = table.getEntry("tv");
+    double horizontalAngle = tx.getDouble(0.0);
     //double y = ty.getDouble(0.0);
-    
-    SmartDashboard.putNumber("LimelightX", x);
+    SmartDashboard.putNumber("LimelightX", horizontalAngle);
     //SmartDashboard.putNumber("LimelightY", y);
-    }
+  }
 
   @Override
   public void periodic() { 
     // This method will be called once per scheduler run
+  }
+
+  public boolean isTargetVisible(){
+    if (tv.getDouble(0) == 1){
+      return true;
+    }
+    else {
+      return false;
+    }
+    
+  }
+
+  public double getRotationSpeed(){
+    
+    return aiming.calculate(tx.getDouble(0), 0);
   }
 }
