@@ -205,7 +205,7 @@ public class RobotContainer {
       OLIn.whenHeld(new RunCommand(() -> m_climber.spinClimber(12), m_climber));
 
 
-      ORIn.whenHeld(new RunCommand(() -> m_launcher.spinFromDistance(m_robotDrive.getPose().getTranslation().getDistance(new Translation2d(0, 0))), m_launcher));
+      ORIn.whenHeld(new RunCommand(() -> m_launcher.spinFromDistance(2.64/(Math.tan(m_limelight.getVerticalAngle()))), m_launcher));
       ORBumper.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
 
       ODPadTop.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.75), m_launcher));
