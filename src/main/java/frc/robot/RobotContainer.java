@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import lib.Loggable;
+import lib.util.TunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 
@@ -55,8 +56,8 @@ import org.littletonrobotics.junction.Logger;
  */
 public class RobotContainer {
   // The robot's subsystems
-  String trajectoryJSON = "paths/output/GoGoGadgets.wpilib.json";
-  Trajectory trajectory = new Trajectory();
+//  String trajectoryJSON = "paths/output/GoGoGadgets.wpilib.json";
+//  Trajectory trajectory = new Trajectory();
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final IntakeSubsystem m_intake;
   private final ClimberSubsystem m_climber;
@@ -64,6 +65,8 @@ public class RobotContainer {
   private final LauncherSubsystem m_launcher;
   public final Compressor phCompressor = new Compressor(PneumaticsModuleType.REVPH);
   public Pose2d zeroPose = new Pose2d(new Translation2d(0, 0), new Rotation2d());
+
+
   // private final SingleModuleTestFixture singleModuleTestFixture = new SingleModuleTestFixture();
 
   // The driver's controller
@@ -73,13 +76,15 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    try {
-      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-   } catch (IOException ex) {
-      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
-   }
+//    try {
+//      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+//      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+//   } catch (IOException ex) {
+//      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+//   }
 
+
+    TunableNumber.setTuningMode(false);
     m_intake = new IntakeSubsystem();
     m_climber = new ClimberSubsystem();
     m_feed = new FeedSubsystem();
@@ -126,9 +131,11 @@ public class RobotContainer {
         m_feed)
     );
 
+    TunableNumber launcherSpeed = new TunableNumber("launcher/launcherSpeedRPM", 0);
+
     m_launcher.setDefaultCommand(
       new RunCommand(
-        () -> m_launcher.spinLauncher(0),
+        () -> m_launcher.spinLauncher(launcherSpeed.get()),
         m_launcher)
     );
     // singleModuleTestFixture.setDefaultCommand(
@@ -194,7 +201,7 @@ public class RobotContainer {
       OLIn.whenHeld(new RunCommand(() -> m_climber.spinClimber(12), m_climber));
 
 
-      ORIn.whenHeld(new RunCommand(() -> m_feed.spinFeed(1), m_feed));
+      ORIn.whenHeld(new RunCommand(() -> m_launcher.spinFromDistance(m_robotDrive.getPose().getTranslation().getDistance(new Translation2d(0, 0))), m_launcher));
       ORBumper.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
 
       ODPadTop.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.75), m_launcher));
@@ -262,7 +269,7 @@ public class RobotContainer {
             );
 
     // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(trajectory.getInitialPose());
+//    m_robotDrive.resetOdometry(trajectory.getInitialPose());
 
     // new ParallelCommandGroup(
     //     new RunCommand(() -> m_launcher.spinLauncher(0.1)), m_launcher),

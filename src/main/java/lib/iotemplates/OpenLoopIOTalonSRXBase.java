@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class OpenLoopIOTalonSRXBase implements OpenLoopIO {
 
-    private List<WPI_TalonSRX> motors;
+    protected List<WPI_TalonSRX> motors;
 
     public OpenLoopIOTalonSRXBase(int... CANIDs) {
         motors = Arrays.stream(CANIDs).mapToObj(WPI_TalonSRX::new).collect(Collectors.toList());
