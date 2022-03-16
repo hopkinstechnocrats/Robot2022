@@ -23,6 +23,7 @@ import frc.robot.subsystems.Climber.ClimberSubsystem;
 import frc.robot.subsystems.Feed.FeedSubsystem;
 import frc.robot.subsystems.Intake.IntakeSubsystem;
 import frc.robot.subsystems.Launcher.LauncherSubsystem;
+import frc.robot.subsystems.Limelight.LimelightSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -47,6 +48,7 @@ import lib.Loggable;
 import org.littletonrobotics.junction.Logger;
 
 
+
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -62,6 +64,7 @@ public class RobotContainer {
   private final ClimberSubsystem m_climber;
   private final FeedSubsystem m_feed;
   private final LauncherSubsystem m_launcher;
+  private final LimelightSubsystem m_limelight;
   public final Compressor phCompressor = new Compressor(PneumaticsModuleType.REVPH);
   public Pose2d zeroPose = new Pose2d(new Translation2d(0, 0), new Rotation2d());
   // private final SingleModuleTestFixture singleModuleTestFixture = new SingleModuleTestFixture();
@@ -84,6 +87,7 @@ public class RobotContainer {
     m_climber = new ClimberSubsystem();
     m_feed = new FeedSubsystem();
     m_launcher = new LauncherSubsystem();
+    m_limelight = new LimelightSubsystem();
       Solenoid obj = new Solenoid(PneumaticsModuleType.REVPH, 0);
       obj.set(true);
     phCompressor.enableAnalog(100, 120);
@@ -178,7 +182,7 @@ public class RobotContainer {
       POVButton ODPadBottom = new POVButton(m_operatorController, 270);
       POVButton ODPadLeft = new POVButton(m_operatorController, 0);
 
-      AButton.whenPressed(new InstantCommand(m_robotDrive::zeroHeading));
+      AButton.whenHeld(new RunCommand(() -> m_robotDrive.drive(0, 0, m_limelight.getRotationSpeed()), m_robotDrive));
       BButton.whenPressed(new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)));
       YButton.whenPressed(new InstantCommand(m_robotDrive::fieldON));
       XButton.whenPressed(new InstantCommand(m_robotDrive::fieldOFF));
@@ -201,6 +205,7 @@ public class RobotContainer {
       ODPadLeft.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.1), m_launcher));
       ODPadRight.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.35), m_launcher));
       ODPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.26), m_launcher));
+
 
       // DPadTop.whenPressed(new InstantCommand(() -> .(90)));
 
