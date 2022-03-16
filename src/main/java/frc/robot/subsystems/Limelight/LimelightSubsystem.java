@@ -13,6 +13,8 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class LimelightSubsystem extends SubsystemBase {
   /** Creates a new LimelightSubsystem. */
+  NetworkTableEntry tv;
+  NetworkTableEntry tx;
   double P = 1;
   double I, D = 0;
   double period = 0.1;
@@ -20,19 +22,32 @@ public class LimelightSubsystem extends SubsystemBase {
 
   public LimelightSubsystem() {
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    NetworkTableEntry tx = table.getEntry("tx");
+    tx = table.getEntry("tx");
     //NetworkTableEntry ty = table.getEntry("ty");
-    
-
+    tv = table.getEntry("tv");
     double horizontalAngle = tx.getDouble(0.0);
     //double y = ty.getDouble(0.0);
-    
     SmartDashboard.putNumber("LimelightX", horizontalAngle);
     //SmartDashboard.putNumber("LimelightY", y);
-    }
+  }
 
   @Override
   public void periodic() { 
     // This method will be called once per scheduler run
+  }
+
+  public boolean isTargetVisible(){
+    if (tv.getDouble(0) == 1){
+      return true;
+    }
+    else {
+      return false;
+    }
+    
+  }
+
+  public double getRotationSpeed(){
+    
+    return aiming.calculate(tx.getDouble(0), 0);
   }
 }
