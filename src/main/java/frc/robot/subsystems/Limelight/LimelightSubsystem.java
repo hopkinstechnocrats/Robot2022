@@ -18,7 +18,7 @@ public class LimelightSubsystem extends SubsystemBase {
   NetworkTableEntry tx;
   double horizontalAngle;
   double verticalAngle;
-  double P = 1;
+  double P = 20;
   double I, D = 0;
   double period = 0.1;
   PIDController aiming = new PIDController(P, I, D, period);
@@ -50,8 +50,9 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   public double getRotationSpeed(){
-    
+    System.out.println(tx.getDouble(0));
     return aiming.calculate(tx.getDouble(0), 0);
+    
   }
 
   public double getVerticalAngle() {

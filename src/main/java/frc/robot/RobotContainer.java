@@ -189,7 +189,11 @@ public class RobotContainer {
       POVButton ODPadBottom = new POVButton(m_operatorController, 270);
       POVButton ODPadLeft = new POVButton(m_operatorController, 0);
 
-      AButton.whenHeld(new RunCommand(() -> m_robotDrive.drive(0, 0, m_limelight.getRotationSpeed()), m_robotDrive));
+      AButton.whenHeld(new RunCommand(() -> {
+      m_robotDrive.drive(0, 0, -1*m_limelight.getRotationSpeed()); 
+      System.out.println("Testing Limelight Rotation" + m_limelight.getRotationSpeed());
+    } ));
+    
       BButton.whenPressed(new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)));
       YButton.whenPressed(new InstantCommand(m_robotDrive::fieldON));
       XButton.whenPressed(new InstantCommand(m_robotDrive::fieldOFF));
