@@ -36,7 +36,7 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kF = 0;
-    public static final double kEncoderTicksPerRevolution = 0;
+    public static final double kEncoderTicksPerRevolution = 3700;
   }
 
   public static final class TestFixtureConstants {
@@ -107,7 +107,7 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 4;
 
     public static final double kFrontRightOffset = -2.998932440316429;
-    public static final double kFrontLeftOffset = 0.796136928912 - Math.PI;
+    public static final double kFrontLeftOffset = 0.796136928912 - Math.PI + 0.034;
     public static final double kRearRightOffset = -1.0507768370;
     public static final double kRearLeftOffset = (-0.069029 + Math.PI) % Math.PI;
   }

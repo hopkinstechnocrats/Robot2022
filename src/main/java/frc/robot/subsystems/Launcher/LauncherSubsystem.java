@@ -30,7 +30,7 @@ public class LauncherSubsystem extends SubsystemBase {
             Constants.LauncherConstants.kF,
             Constants.LauncherConstants.kEncoderTicksPerRevolution
             );
-    private final ClosedLoopIO.ClosedLoopIOInputs inputs = new ClosedLoopIO.ClosedLoopIOInputs();
+    private final ClosedLoopIO.ClosedLoopIOInputs inputs = new ClosedLoopIO.ClosedLoopIOInputs(2);
     private LinearInterpolator interpolationTable;
 
     public LauncherSubsystem() {

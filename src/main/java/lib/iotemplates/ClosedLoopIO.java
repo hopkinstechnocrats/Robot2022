@@ -13,6 +13,7 @@ public interface ClosedLoopIO {
     public static class ClosedLoopIOInputs implements LoggableInputs {
         public double positionRad = 0.0;
         public double velocityRadPerSec = 0.0;
+        public double velocitySetpointRadPerSec = 0;
         public double appliedVolts = 0.0;
         public double[] supplyCurrentAmps = new double[] {};
         public double[] statorCurrentAmps = new double[] {};
@@ -32,9 +33,30 @@ public interface ClosedLoopIO {
         public boolean[] supplyOverV = new boolean[] {};
         public boolean[] supplyUnstable = new boolean[] {};
 
+        public ClosedLoopIOInputs(int numMotors) {
+            supplyCurrentAmps = new double[numMotors];
+            statorCurrentAmps = new double[numMotors];
+            tempCelcius = new double[numMotors];
+            underVoltage = new boolean[numMotors];
+            forwardLimitSwitch = new boolean[numMotors];
+            reverseLimitSwitch = new boolean[numMotors];
+            forwardSoftLimit = new boolean[numMotors];
+            reverseSoftLimit = new boolean[numMotors];
+            hardwareFailure = new boolean[numMotors];
+            resetDuringEn = new boolean[numMotors];
+            sensorOverflow = new boolean[numMotors];
+            sensorOutOfPhase = new boolean[numMotors];
+            hardwareESDReset = new boolean[numMotors];
+            remoteLossOfSignal = new boolean[numMotors];
+            APIError = new boolean[numMotors];
+            supplyOverV = new boolean[numMotors];
+            supplyUnstable = new boolean[numMotors];
+        }
+
         public void toLog(LogTable table) {
             table.put("PositionRad", positionRad);
             table.put("VelocityRadPerSec", velocityRadPerSec);
+            table.put("SetpointRadPerSec", velocitySetpointRadPerSec);
             table.put("AppliedVolts", appliedVolts);
             table.put("SupplyCurrentAmps", supplyCurrentAmps);
             table.put("StatorCurrentAmps", statorCurrentAmps);
@@ -76,6 +98,7 @@ public interface ClosedLoopIO {
             APIError = table.getBooleanArray("APIError", APIError);
             supplyOverV = table.getBooleanArray("SupplyOverV", supplyOverV);
             supplyUnstable = table.getBooleanArray("SupplyUnstable", supplyUnstable);
+            velocitySetpointRadPerSec = table.getDouble("SetpointRadPerSec", velocitySetpointRadPerSec);
         }
     }
 

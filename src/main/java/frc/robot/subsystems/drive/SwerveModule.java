@@ -32,8 +32,8 @@ public class SwerveModule {
 
     steerIO = new ModuleSteerIO(turningMotorPort, turningEncoderPort, turningEncoderOffset);
     driveIO = new ModuleDriveIO(driveMotorPort, true, corners);
-    steerInputs = new ClosedLoopIO.ClosedLoopIOInputs();
-    driveInputs = new ClosedLoopIO.ClosedLoopIOInputs();
+    steerInputs = new ClosedLoopIO.ClosedLoopIOInputs(1);
+    driveInputs = new ClosedLoopIO.ClosedLoopIOInputs(1);
     desiredState = new SwerveModuleState(0, new Rotation2d(0));
     this.corners = corners;
     this.offset = turningEncoderOffset;

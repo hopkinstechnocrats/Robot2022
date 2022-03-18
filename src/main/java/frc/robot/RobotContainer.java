@@ -87,7 +87,7 @@ public class RobotContainer {
 //   }
 
 
-    TunableNumber.setTuningMode(false);
+    TunableNumber.setTuningMode(true);
     m_intake = new IntakeSubsystem();
     m_climber = new ClimberSubsystem();
     m_feed = new FeedSubsystem();
@@ -139,7 +139,7 @@ public class RobotContainer {
 
     m_launcher.setDefaultCommand(
       new RunCommand(
-        () -> m_launcher.spinLauncher(launcherSpeed.get()),
+        () ->  {m_launcher.spinLauncher(launcherSpeed.get()); System.out.println("RUNNING LAUNCHER DEFAULT COMMAND");},
         m_launcher)
     );
     // singleModuleTestFixture.setDefaultCommand(
@@ -301,11 +301,11 @@ public class RobotContainer {
       new RunCommand(() -> m_robotDrive.drive(1, 0, 0), m_robotDrive).withTimeout(1),
       new RunCommand(() -> m_robotDrive.drive(0, 0, 0), m_robotDrive).withTimeout(0.5),
       // new InstantCommand(() -> m_robotDrive.drive(0,0,0), m_robotDrive),
-      new RunCommand(() -> m_launcher.spinLauncher(0.34), m_launcher).withTimeout(2),
-      new ParallelCommandGroup(
-        new RunCommand(() -> m_launcher.spinLauncher(0.34),m_launcher).withTimeout(7),
-        new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(7)
-      ),
+//      new RunCommand(() -> m_launcher.spinLauncher(0.34), m_launcher).withTimeout(2),
+//      new ParallelCommandGroup(
+//        new RunCommand(() -> m_launcher.spinLauncher(0.34),m_launcher).withTimeout(7),
+//        new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(7)
+//      ),
       // new InstantCommand(m_intake::EndIntake),
       new InstantCommand(m_intake::intakeOut),
       new RunCommand(() -> m_robotDrive.drive(0.5, 0.1, 0), m_robotDrive).withTimeout(2)

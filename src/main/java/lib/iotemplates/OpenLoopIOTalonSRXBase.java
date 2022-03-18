@@ -13,6 +13,7 @@ public class OpenLoopIOTalonSRXBase implements OpenLoopIO {
 
     public OpenLoopIOTalonSRXBase(int... CANIDs) {
         motors = Arrays.stream(CANIDs).mapToObj(WPI_TalonSRX::new).collect(Collectors.toList());
+        System.out.println("INTAKE MOTOR ARRAY SIZE:" + motors.size());
     }
 
     public void updateInputs(OpenLoopIOInputs inputs) {
