@@ -139,7 +139,7 @@ public class RobotContainer {
 
     m_launcher.setDefaultCommand(
       new RunCommand(
-        () ->  {m_launcher.spinLauncher(launcherSpeed.get()); System.out.println("RUNNING LAUNCHER DEFAULT COMMAND");},
+        () ->  m_launcher.spinLauncher(0), //m_launcher.spinLauncher(launcherSpeed.get()); System.out.println("RUNNING LAUNCHER DEFAULT COMMAND");},
         m_launcher)
     );
     // singleModuleTestFixture.setDefaultCommand(
@@ -192,7 +192,7 @@ public class RobotContainer {
       AButton.whenHeld(new RunCommand(() -> {
       m_robotDrive.drive(0, 0, -1*m_limelight.getRotationSpeed()); 
       System.out.println("Testing Limelight Rotation" + m_limelight.getRotationSpeed());
-    } ));
+    }, m_robotDrive));
     
       BButton.whenPressed(new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)));
       YButton.whenPressed(new InstantCommand(m_robotDrive::fieldON));

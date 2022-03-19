@@ -1,6 +1,7 @@
 package lib.iotemplates;
 
 import com.ctre.phoenix.motorcontrol.Faults;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -35,7 +36,12 @@ public class VelocityClosedLoopIOBase implements ClosedLoopIO{
         this.kF = new TunableNumber(name+"/kF", kF);
         feedback = new PIDController(kP, kI, kD);
         feedforward = new SimpleMotorFeedforward(0, kF);
-        motors = Arrays.stream(motorPort).mapToObj(WPI_TalonSRX::new).collect(Collectors.toList());
+        motors = Arrays.stream(motorPort).mapToObj((int canID) -> {
+            WPI_TalonSRX motor = new WPI_TalonSRX(canID);
+            motor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20);
+            return motor;
+        }).collect(Collectors.toList());
+
     }
 
     public void updateInputs(ClosedLoopIOInputs inputs) {

@@ -37,6 +37,9 @@ public class LauncherSubsystem extends SubsystemBase {
         interpolationTable = new LinearInterpolator();
 
         // interpolationTable.put(0, 0);
+        interpolationTable.put(2.34, 5200);
+        interpolationTable.put(3.33, 6250);
+        
     }
 
     public void spinLauncher(double speedRPM) {

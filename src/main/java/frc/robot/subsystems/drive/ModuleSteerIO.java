@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.math.controller.PIDController;
@@ -27,6 +28,8 @@ public class ModuleSteerIO implements ClosedLoopIO {
         steerMotor = new WPI_TalonFX(motorPort);
         steerMotor.configAllSettings(new BaseTalonFXConfiguration());
         steerMotor.setNeutralMode(NeutralMode.Brake);
+                // set status frame period of steer motor
+        steerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20);
         m_steeringPIDController.enableContinuousInput(-Math.PI, Math.PI);
         encoder = new CANCoder(encoderPort);
         offset = new Rotation2d(encoderOffset);

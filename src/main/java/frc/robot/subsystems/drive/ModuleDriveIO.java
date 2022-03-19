@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -31,6 +32,8 @@ public class ModuleDriveIO implements ClosedLoopIO {
     public ModuleDriveIO(int motorPort, boolean inverted, String corners) {
         this.inverted = inverted;
         driveMotor = new WPI_TalonFX(motorPort);
+        // set status frame period of drive motor
+        driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20);
         driveMotor.configAllSettings(new BaseTalonFXConfiguration());
         driveMotor.setNeutralMode(NeutralMode.Brake);
         this.corners = corners;
