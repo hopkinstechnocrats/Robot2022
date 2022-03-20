@@ -37,7 +37,8 @@ public final class Constants {
     public static final double kD = 0;
     public static final double kF = 0;
     public static final double kEncoderTicksPerRevolution = 3700;
-  }
+    public static final double heightOfHighHubReflectors =2.64; //check it :/ above ground or limelight?  
+   }
 
   public static final class TestFixtureConstants {
     public static final int kDriveMotorPort = 1;

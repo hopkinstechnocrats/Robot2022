@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.auto.AutoRoutines;
 import frc.robot.commands.FixHeadingCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Climber.ClimberSubsystem;
@@ -228,98 +229,23 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics);
 
-    // An example trajectory to follow.  All units in meters.
-    Trajectory exampleTrajectory =
-        TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(0, 1)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(0, 2, new Rotation2d(0)),
-            config);
-
-    var thetaController =
-        new ProfiledPIDController(
-            AutoConstants.kPThetaController, AutoConstants.kIThetaController, AutoConstants.kDThetaController, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    SwerveControllerCommand swerveControllerCommand =
-        new SwerveControllerCommand(
-            exampleTrajectory,
-            m_robotDrive::getPose, // Functional interface to feed supplier
-            DriveConstants.kDriveKinematics,
-
-            // Position controllers
-            new PIDController(AutoConstants.kPXController, 0, 0),
-            new PIDController(AutoConstants.kPYController, 0, 0),
-            thetaController,
-            m_robotDrive::setModuleStates,
-            m_robotDrive);
-
-    Command autonomousLogCommand =
-            new RunCommand(
-                    () -> {
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerGoalPosition", thetaController.getGoal().position);
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerGoalVelocity", thetaController.getGoal().velocity);
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerSetpointPosition", thetaController.getSetpoint().position);
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerSetpointVelocity", thetaController.getSetpoint().velocity);
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerPositionError", thetaController.getPositionError());
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerVelocityError", thetaController.getVelocityError());
-                    }
-            );
-
-    // Reset odometry to the starting pose of the trajectory.
-//    m_robotDrive.resetOdometry(trajectory.getInitialPose());
-
-    // new ParallelCommandGroup(
-    //     new RunCommand(() -> m_launcher.spinLauncher(0.1)), m_launcher),
-    //     new RunCommand(() -> m_feed.spinFeed(), m_feed)
-    // ).andThen(swerveControllerCommand)
-    // .andThen(() -> m_robotDrive.drive(0, 0, 0));
-    
-    // Run path following command, then stop at the end.
     m_robotDrive.fieldOFF();
-    // return new SequentialCommandGroup(
-    //   new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
-    //   new InstantCommand(() -> m_intake.intakeIn()),
-    //   new RunCommand(() -> m_launcher.spinLauncher(0.18), m_launcher).withTimeout(2),
-    //   new ParallelCommandGroup(
-    //     new RunCommand(() -> m_launcher.spinLauncher(0.18),m_launcher).withTimeout(3),
-    //     new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(3)
-    //   ),
-    //   new RunCommand(() -> m_robotDrive.drive(.7, 0, 0), m_robotDrive).withTimeout(8)
-    // );
+    
+    AutoRoutines myAutoRoutines = new AutoRoutines(); 
+    
+
 
     return new SequentialCommandGroup(
       new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
       new InstantCommand(m_intake::intakeIn),
       new RunCommand(() -> m_robotDrive.drive(1, 0, 0), m_robotDrive).withTimeout(1),
       new RunCommand(() -> m_robotDrive.drive(0, 0, 0), m_robotDrive).withTimeout(0.5),
-      // new InstantCommand(() -> m_robotDrive.drive(0,0,0), m_robotDrive),
-//      new RunCommand(() -> m_launcher.spinLauncher(0.34), m_launcher).withTimeout(2),
-//      new ParallelCommandGroup(
-//        new RunCommand(() -> m_launcher.spinLauncher(0.34),m_launcher).withTimeout(7),
-//        new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(7)
-//      ),
-      // new InstantCommand(m_intake::EndIntake),
+     
       new InstantCommand(m_intake::intakeOut),
       new RunCommand(() -> m_robotDrive.drive(0.5, 0.1, 0), m_robotDrive).withTimeout(2)
       // new RunCommand(() -> m_robotDrive.drive(.7, 0, 0), m_robotDrive).withTimeout(8)
     );
-    // )ParallelCommandGroup(
-    //   swerveControllerCommand,
-
-    //         // .deadlineWith(autonomousLogCommand)
-    //         .andThen(() -> m_robotDrive.drive(0, 0, 0));
-            
+    
   }
 }
