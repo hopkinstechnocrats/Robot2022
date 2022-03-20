@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import lib.LinearInterpolator;
 import lib.iotemplates.ClosedLoopIO;
-import lib.iotemplates.ClosedLoopIOInputs;
 import lib.iotemplates.OpenLoopIO;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
