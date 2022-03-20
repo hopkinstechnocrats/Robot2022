@@ -16,6 +16,7 @@ public class ModuleSteerIO implements ClosedLoopIO {
     WPI_TalonFX steerMotor;
     CANCoder encoder;
     Rotation2d offset;
+    double positionSetPointRad;
 
     private final PIDController m_steeringPIDController =
             new PIDController(
@@ -42,6 +43,7 @@ public class ModuleSteerIO implements ClosedLoopIO {
         inputs.statorCurrentAmps = new double[] {steerMotor.getStatorCurrent()};
         inputs.supplyCurrentAmps = new double[] {steerMotor.getSupplyCurrent()};
         inputs.tempCelcius = new double[] {steerMotor.getTemperature()};
+        inputs.positionSetpointRad = positionSetPointRad;
     }
 
     private Rotation2d getPosition() {
@@ -49,6 +51,7 @@ public class ModuleSteerIO implements ClosedLoopIO {
     }
 
     public void setPosition(Rotation2d positionRad) {
+        positionSetPointRad = positionRad.getRadians();
         final double turnOutput = m_steeringPIDController.calculate(
                 getPosition().getRadians(),
                 positionRad.getRadians()
