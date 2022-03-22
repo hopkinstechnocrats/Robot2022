@@ -7,6 +7,7 @@ package frc.robot.subsystems.drive;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -88,6 +89,9 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearLeft.periodic();
     m_rearRight.periodic();
     SmartDashboard.putNumber("Heading", getHeading().getDegrees());
+    // SmartDashboard.putNumber("KPTurningController", 4);
+    // SmartDashboard.putNumber("KITurningController", 64);
+    // SmartDashboard.putNumber("KDTurningController", 0.01);
     m_field.setRobotPose(getPose());
 
     Logger.getInstance().recordOutput("Odometry/RobotPose",
