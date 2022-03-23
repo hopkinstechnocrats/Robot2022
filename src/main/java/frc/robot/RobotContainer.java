@@ -18,6 +18,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.auto.AutoRoutines;
+import frc.robot.auto.FieldPositions;
 import frc.robot.commands.FixHeadingCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Climber.ClimberSubsystem;
@@ -231,21 +232,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
 
     m_robotDrive.fieldOFF();
-    
-    AutoRoutines myAutoRoutines = new AutoRoutines(); 
-    
-
-
-    return new SequentialCommandGroup(
-      new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
-      new InstantCommand(m_intake::intakeIn),
-      new RunCommand(() -> m_robotDrive.drive(1, 0, 0), m_robotDrive).withTimeout(1),
-      new RunCommand(() -> m_robotDrive.drive(0, 0, 0), m_robotDrive).withTimeout(0.5),
-     
-      new InstantCommand(m_intake::intakeOut),
-      new RunCommand(() -> m_robotDrive.drive(0.5, 0.1, 0), m_robotDrive).withTimeout(2)
-      // new RunCommand(() -> m_robotDrive.drive(.7, 0, 0), m_robotDrive).withTimeout(8)
-    );
-    
+    Pose2d zeroPose = FieldPositions.R3startingPosition;
+    AutoRoutines myAutoRoutines = new AutoRoutines(m_robotDrive, m_feed, m_intake, m_limelight, m_launcher); 
+    return myAutoRoutines.TwoBallAutoRoutine(zeroPose);
   }
 }
