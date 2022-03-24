@@ -92,8 +92,7 @@ public class AutoRoutines {
                 });
                 return swerveControllerCommand;
         }
-
-        public SequentialCommandGroup TwoBallAutoRoutine(Pose2d zeroPose) {
+               public SequentialCommandGroup TwoBallAutoRoutine(Pose2d zeroPose) {
                 return new SequentialCommandGroup(new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
                                 new InstantCommand(m_intake::intakeIn), // actually out lol
 
@@ -124,4 +123,57 @@ public class AutoRoutines {
                                 )));
 
         }
+
+ //red three ball auto routine
+
+ /* 
+public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
+
+        return new SequentialCommandGroup(new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
+        new ParallelCommandGroup(new RunCommand(() -> m_launcher
+                                        .spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors
+                                                        / (Math.tan(m_limelight.getVerticalAngle()))),
+                                        m_launcher).withTimeout(4), 
+                                        new RunCommand(() -> m_feed.spinFeed(-1), m_feed)
+                                                                        .withTimeout(4)),
+
+                        new InstantCommand(m_intake::intakeIn), // actually out lol
+                        new ParalellCommandGroup((
+                this.DriveBetweenPoints(zeroPose.getTranslation(),
+                                        FieldPositions.R1, FieldPositions.R2, m_robotDrive), m_robotDrive)
+                                                        .withTimeout(5),
+                                                   new RunCommand(() -> m_intake.StartIntakeIn(), m_intake).withTimeout(5)
+                                      
+                                                
+        )
+        // turn on robot aiming
+        new RunCommand(() -> m_robotDrive.drive(0, 0, -1*m_limelight.getRotationSpeed()), m_robotDrive).withtimeout(2)
+        // turn on feed
+
+                        // turn on launcher have enough time to speed up
+                        new ParallelCommandGroup(new RunCommand(() -> m_launcher
+                                        .spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors
+                                                        / (Math.tan(m_limelight.getVerticalAngle()))),
+                                        m_launcher).withTimeout(15), new SequentialCommandGroup(
+                                                        // aim the robot towards the hub
+                                                        new RunCommand(() -> {
+                                                                m_robotDrive.drive(0, 0, -1 * m_limelight
+                                                                                .getRotationSpeed());
+                                                        }, m_robotDrive).withTimeout(2.0), // this time is too
+                                                                                           // long...maybe
+                                                        // turn on the feed
+                                                        new RunCommand(() -> m_feed.spinFeed(-1), m_feed)
+                                                                        .withTimeout(10),
+                                                        // LAUNCH 2 balls (assuming recovery time)
+                                                        // turn off feed
+                                                        // turn off launcher
+                                                        new InstantCommand(m_intake::intakeOut) // actually back
+                                                                                                // in lmao
+                        // make sure off the tarmac
+
+                        )));
+                        
+
+        }
+*/
 }
