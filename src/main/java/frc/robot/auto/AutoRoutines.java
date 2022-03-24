@@ -58,7 +58,7 @@ public class AutoRoutines {
                                 // Start at the origin facing the +X direction
                                 new Pose2d(startingPosition, new Rotation2d(0)),
                                 // Pass through these two interior waypoints, making an 's' curve path
-                                List.of((midPosition)),
+                                List.of(),
                                 // End 3 meters straight ahead of where we started, facing forward
                                 new Pose2d(endingPosition, new Rotation2d(0)), config);
 
@@ -73,32 +73,34 @@ public class AutoRoutines {
 
                                 // Position controllers
                                 new PIDController(AutoConstants.kPXController, 0, 0),
-                                new PIDController(AutoConstants.kPYController, 0, 0), thetaController,
+                                new PIDController(AutoConstants.kPYController, 0, 0), new ProfiledPIDController(0,0,0, AutoConstants.kThetaControllerConstraints),
                                 m_robotDrive::setModuleStates, m_robotDrive);
 
-                Command autonomousLogCommand = new RunCommand(() -> {
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerGoalPosition",
-                                        thetaController.getGoal().position);
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerGoalVelocity",
-                                        thetaController.getGoal().velocity);
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerSetpointPosition",
-                                        thetaController.getSetpoint().position);
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerSetpointVelocity",
-                                        thetaController.getSetpoint().velocity);
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerPositionError",
-                                        thetaController.getPositionError());
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerVelocityError",
-                                        thetaController.getVelocityError());
-                });
+                // Command autonomousLogCommand = new RunCommand(() -> {
+                //         Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerGoalPosition",
+                //                         thetaController.getGoal().position);
+                //         Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerGoalVelocity",
+                //                         thetaController.getGoal().velocity);
+                //         Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerSetpointPosition",
+                //                         thetaController.getSetpoint().position);
+                //         Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerSetpointVelocity",
+                //                         thetaController.getSetpoint().velocity);
+                //         Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerPositionError",
+                //                         thetaController.getPositionError());
+                //         Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerVelocityError",
+                //                         thetaController.getVelocityError());
+                // });
                 return swerveControllerCommand;
         }
                public SequentialCommandGroup TwoBallAutoRoutine(Pose2d zeroPose) {
                 return new SequentialCommandGroup(new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
                                 new InstantCommand(m_intake::intakeIn), // actually out lol
+                                new InstantCommand(m_intake::StartIntakeOut),
+                                this.DriveBetweenPoints(zeroPose.getTranslation(),
+                                               new Translation2d(-0.5,0), FieldPositions.R3, m_robotDrive).withTimeout(6),
+                                // this.DriveBetweenPoints(new Translation2d(0, 0),
+                                //                                 new Translation2d(1, 0), new Translation2d(2, 0), m_robotDrive),
 
-                                new RunCommand(() -> this.DriveBetweenPoints(zeroPose.getTranslation(),
-                                                FieldPositions.R3, FieldPositions.R3, m_robotDrive), m_robotDrive)
-                                                                .withTimeout(0.5),
                                 // turn on launcher have enough time to speed up
                                 new ParallelCommandGroup(new RunCommand(() -> m_launcher
                                                 .spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors
