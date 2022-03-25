@@ -45,13 +45,15 @@ public class AutoRoutines {
                 this.m_limelight = m_limelight;
                 this.m_launcher = m_launcher;
         }
+        
 
         public SwerveControllerCommand DriveBetweenPoints(Translation2d startingPosition, Translation2d midPosition,
-                        Translation2d endingPosition, DriveSubsystem m_robotDrive) {
-                TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
-                                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                                                // Add kinematics to ensure max speed is actually obeyed
-                                                .setKinematics(DriveConstants.kDriveKinematics);
+                        Translation2d endingPosition, Rotation2d targetAngle, DriveSubsystem m_robotDrive) {
+                                m_robotDrive.setTargetAngle(targetAngle);
+                 TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
+                         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                                // Add kinematics to ensure max speed is actually obeyed
+                                .setKinematics(DriveConstants.kDriveKinematics);
 
                 // An example trajectory to follow. All units in meters.
                 Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
@@ -66,15 +68,16 @@ public class AutoRoutines {
                                 AutoConstants.kIThetaController, AutoConstants.kDThetaController,
                                 AutoConstants.kThetaControllerConstraints);
                 thetaController.enableContinuousInput(-Math.PI, Math.PI);
+               
 
                 SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(exampleTrajectory,
                                 m_robotDrive::getPose, // Functional interface to feed supplier
                                 DriveConstants.kDriveKinematics,
-
                                 // Position controllers
                                 new PIDController(AutoConstants.kPXController, 0, 0),
                                 new PIDController(AutoConstants.kPYController, 0, 0),
                                 new ProfiledPIDController(0, 0, 0, AutoConstants.kThetaControllerConstraints),
+                                m_robotDrive::getTargetAngle,
                                 m_robotDrive::setModuleStates, m_robotDrive);
 
                 // Command autonomousLogCommand = new RunCommand(() -> {
@@ -99,11 +102,10 @@ public class AutoRoutines {
                                 new InstantCommand(m_intake::intakeIn), // actually out lol
                                 new InstantCommand(m_intake::StartIntakeOut),
                                 this.DriveBetweenPoints(zeroPose.getTranslation(),
-                                                new Translation2d(-0.5, 0), FieldPositions.R3, m_robotDrive)
-                                                .withTimeout(6),
+                                                new Translation2d(-0.5, 0), FieldPositions.R3, new Rotation2d(0), m_robotDrive)
+                                                .withTimeout(6), 
                                 // this.DriveBetweenPoints(new Translation2d(0, 0),
                                 // new Translation2d(1, 0), new Translation2d(2, 0), m_robotDrive),
-
                                 // turn on launcher have enough time to speed up
                                 new ParallelCommandGroup(new RunCommand(() -> m_launcher
                                                 .spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors
@@ -130,7 +132,6 @@ public class AutoRoutines {
         }
 
         // red three ball auto routine
-
 public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
 
         return new SequentialCommandGroup(
@@ -139,40 +140,37 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
                                         .spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors
                                                         / (Math.tan(m_limelight.getVerticalAngle()))),
                                         m_launcher).withTimeout(4), 
-                new RunCommand(() -> m_feed.spinFeed(-1), m_feed)
-                                                                        .withTimeout(4)),
-
-                new InstantCommand(m_intake::intakeIn), // actually out lol
+                new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(4)),
+                new InstantCommand(m_intake::intakeIn), 
                 new ParallelCommandGroup(
                         this.DriveBetweenPoints(
                                 zeroPose.getTranslation(),
                                 FieldPositions.R1, 
-                                FieldPositions.R2, 
+                                FieldPositions.R1, 
+                                new Rotation2d(30),
                                 m_robotDrive).withTimeout(5),
+                                
                         new RunCommand(() -> m_intake.StartIntakeIn(), m_intake).withTimeout(5)
-                ),                                 
+                ), 
+                        this.DriveBetweenPoints(
+                        FieldPositions.R1, 
+                        FieldPositions.R1, 
+                        FieldPositions.R2,
+                        new Rotation2d(0),
+                        m_robotDrive).withTimeout(5),                                
                 new RunCommand(() -> m_robotDrive.drive(0, 0, -1*m_limelight.getRotationSpeed()), m_robotDrive).withTimeout(2),
-                        // turn on launcher have enough time to speed up
                 new ParallelCommandGroup(new RunCommand(() -> m_launcher
                                         .spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors
                                                         / (Math.tan(m_limelight.getVerticalAngle()))),
                                         m_launcher).withTimeout(15), 
                         new SequentialCommandGroup(
-                                                        // aim the robot towards the hub
                                 new RunCommand(() -> {
                                                                 m_robotDrive.drive(0, 0, -1 * m_limelight
                                                                                 .getRotationSpeed());
-                                                        }, m_robotDrive).withTimeout(2.0), // this time is too
-                                                                                           // long...maybe
-                                                        // turn on the feed
+                                                        }, m_robotDrive).withTimeout(2.0), 
                                 new RunCommand(() -> m_feed.spinFeed(-1), m_feed)
                                                                         .withTimeout(10),
-                                                        // LAUNCH 2 balls (assuming recovery time)
-                                                        // turn off feed
-                                                        // turn off launcher
-                                new InstantCommand(m_intake::intakeOut) // actually back
-                                                                                                // in lmao
-                        // make sure off the tarmac
+                                new InstantCommand(m_intake::intakeOut) 
 
                         )));
                         

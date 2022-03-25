@@ -53,7 +53,7 @@ public class DriveSubsystem extends SubsystemBase {
               DriveConstants.kRearRightTurningEncoderPort,
               "RearRight", DriveConstants.kRearRightOffset);
   
-  
+              Rotation2d targetAngle;
 
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(SerialPort.Port.kMXP);
@@ -102,6 +102,13 @@ public class DriveSubsystem extends SubsystemBase {
    public Pose2d getPose() {
      return m_odometry.getPoseMeters();
    }
+   public void setTargetAngle(Rotation2d targetAngle){
+    this.targetAngle = targetAngle;
+   }
+
+   public Rotation2d getTargetAngle(){
+    return targetAngle;
+}
 
   /**
    * Resets the odometry to the specified pose.
