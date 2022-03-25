@@ -43,6 +43,7 @@ public class LauncherSubsystem extends SubsystemBase {
 
     public void spinLauncher(double speedRPM) {
         io.setVelocity(Units.rotationsPerMinuteToRadiansPerSecond(speedRPM));
+        SmartDashboard.putNumber("Launcher RPM", speedRPM);
     }
 
 

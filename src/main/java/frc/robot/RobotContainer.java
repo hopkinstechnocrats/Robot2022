@@ -212,10 +212,10 @@ public class RobotContainer {
       ORIn.whenHeld(new RunCommand(() -> m_launcher.spinFromDistance(2.64/(Math.tan(m_limelight.getVerticalAngle()))), m_launcher));
       ORBumper.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
 
-      ODPadTop.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.75), m_launcher));
-      ODPadLeft.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.1), m_launcher));
-      ODPadRight.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.35), m_launcher));
-      ODPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.26), m_launcher));
+      ODPadTop.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(3000), m_launcher));
+      ODPadLeft.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(4000), m_launcher));
+      ODPadRight.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(5000), m_launcher));
+      ODPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(6000), m_launcher));
 
 
       // DPadTop.whenPressed(new InstantCommand(() -> .(90)));
