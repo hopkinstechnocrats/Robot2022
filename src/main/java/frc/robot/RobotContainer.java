@@ -186,9 +186,10 @@ public class RobotContainer {
       POVButton DPadRight = new POVButton(m_driverController, 180);
       DPadRight.whenPressed(myAutoRoutines.drivePositiveX());
       POVButton DPadBottom = new POVButton(m_driverController, 270);
-      DPadBottom.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(270), m_driverController));
+      DPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(6000), m_launcher));
+      // DPadBottom.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(270), m_driverController));
       POVButton DPadLeft = new POVButton(m_driverController, 0);
-      DPadLeft.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(0), m_driverController));
+      // DPadLeft.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(0), m_driverController));
 
       POVButton ODPadTop = new POVButton(m_operatorController, 90);
       POVButton ODPadRight = new POVButton(m_operatorController, 180);
@@ -237,6 +238,6 @@ public class RobotContainer {
 
     m_robotDrive.fieldOFF();
     Pose2d zeroPose = FieldPositions.R3startingPosition;
-    return myAutoRoutines.TwoBallAutoRoutine(zeroPose);
+    return myAutoRoutines.FiveBallAutoRoutine(zeroPose);
   }
 }

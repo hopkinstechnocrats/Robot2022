@@ -47,54 +47,60 @@ public class AutoRoutines {
         }
         
 
-        public SwerveControllerCommand DriveBetweenPoints(Translation2d startingPosition,
+        public Command DriveBetweenPoints(Translation2d startingPosition,
                         Translation2d endingPosition, Rotation2d targetAngle, DriveSubsystem m_robotDrive) {
                                 m_robotDrive.setTargetAngle(targetAngle);
                  TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
                          AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                                 // Add kinematics to ensure max speed is actually obeyed
                                 .setKinematics(DriveConstants.kDriveKinematics);
-
+                var transform = endingPosition.minus(startingPosition);
                 // An example trajectory to follow. All units in meters.
                 Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
                                 // Start at the origin facing the +X direction
-                                new Pose2d(startingPosition, new Rotation2d(0)),
+                                new Pose2d(startingPosition, new Rotation2d(transform.getX(), transform.getY())),
                                 // Pass through these two interior waypoints, making an 's' curve path
                                 List.of(),
                                 // End 3 meters straight ahead of where we started, facing forward
-                                new Pose2d(endingPosition, new Rotation2d(0)), config);
+                                new Pose2d(endingPosition,  new Rotation2d(transform.getX(), transform.getY())), config);
 
                 var thetaController = new ProfiledPIDController(AutoConstants.kPThetaController,
                                 AutoConstants.kIThetaController, AutoConstants.kDThetaController,
                                 AutoConstants.kThetaControllerConstraints);
-                thetaController.enableContinuousInput(-Math.PI, Math.PI);
+                // var thetaController = new ProfiledPIDController(0,0,0,AutoConstants.kThetaControllerConstraints);
+                // thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+                var xPIDController = new PIDController(AutoConstants.kPXController, 0, 0);
+                var yPIDController = new PIDController(AutoConstants.kPYController, 0, 0);
                
 
-                SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(exampleTrajectory,
+                Command swerveControllerCommand = new SwerveControllerCommand(exampleTrajectory,
                                 m_robotDrive::getPose, // Functional interface to feed supplier
                                 DriveConstants.kDriveKinematics,
                                 // Position controllers
-                                new PIDController(AutoConstants.kPXController, 0, 0),
-                                new PIDController(AutoConstants.kPYController, 0, 0),
-                                new ProfiledPIDController(0, 0, 0, AutoConstants.kThetaControllerConstraints),
-                                m_robotDrive::getTargetAngle,
-                                m_robotDrive::setModuleStates, m_robotDrive);
+                                xPIDController,
+                                yPIDController,
+                                thetaController,
+                                m_robotDrive::setModuleStates, m_robotDrive)
+                                .andThen(() -> m_robotDrive.drive(0,0,0));
 
-                // Command autonomousLogCommand = new RunCommand(() -> {
-                // Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerGoalPosition",
-                // thetaController.getGoal().position);
-                // Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerGoalVelocity",
-                // thetaController.getGoal().velocity);
-                // Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerSetpointPosition",
-                // thetaController.getSetpoint().position);
-                // Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerSetpointVelocity",
-                // thetaController.getSetpoint().velocity);
-                // Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerPositionError",
-                // thetaController.getPositionError());
-                // Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerVelocityError",
-                // thetaController.getVelocityError());
-                // });
-                return swerveControllerCommand;
+                Command autonomousLogCommand = new RunCommand(() -> {
+                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerGoalPosition",
+                        thetaController.getGoal().position);
+                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerGoalVelocity",
+                        thetaController.getGoal().velocity);
+                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerSetpointPosition",
+                        thetaController.getSetpoint().position);
+                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerSetpointVelocity",
+                        thetaController.getSetpoint().velocity);
+                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerPositionError",
+                        thetaController.getPositionError());
+                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerVelocityError",
+                        thetaController.getVelocityError());
+                        Logger.getInstance().recordOutput("DriveSubsystem/XTargetPosition", xPIDController.getSetpoint());
+                        Logger.getInstance().recordOutput("DriveSubsystem/YTargetPosition", yPIDController.getSetpoint());
+                });
+                return new ParallelCommandGroup(swerveControllerCommand, autonomousLogCommand);
         }
 
         public Command drivePositiveX() {
@@ -146,42 +152,110 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
 
         return new SequentialCommandGroup(
                 new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
-                new ParallelCommandGroup(new RunCommand(() -> m_launcher
-                                        .spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors
-                                                        / (Math.tan(m_limelight.getVerticalAngle()))),
-                                        m_launcher).withTimeout(4), 
-                new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(4)),
+                new ParallelCommandGroup(
+                        new RunCommand(() -> m_launcher.spinLauncher(3000), m_launcher).withTimeout(4),
+                        // new RunCommand(() -> m_launcher
+                        //                 .spinFromDistance(m_robotDrive.getPose().getTranslation().getNorm()),
+                        //                 m_launcher).withTimeout(4), 
+                        new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(4)
+                ),
                 new InstantCommand(m_intake::intakeIn), 
                 new ParallelCommandGroup(
                         this.DriveBetweenPoints(
                                 zeroPose.getTranslation(),
                                 FieldPositions.R1, 
-                                new Rotation2d(30),
+                                Rotation2d.fromDegrees(270),
                                 m_robotDrive).withTimeout(5),
-                                
-                        new RunCommand(() -> m_intake.StartIntakeIn(), m_intake).withTimeout(5)
+                        new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(5)
                 ), 
+                new ParallelCommandGroup(
                         this.DriveBetweenPoints(
-                        FieldPositions.R1,  
-                        FieldPositions.R2,
-                        new Rotation2d(0),
-                        m_robotDrive).withTimeout(5),                                
-                new RunCommand(() -> m_robotDrive.drive(0, 0, -1*m_limelight.getRotationSpeed()), m_robotDrive).withTimeout(2),
-                new ParallelCommandGroup(new RunCommand(() -> m_launcher
-                                        .spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors
-                                                        / (Math.tan(m_limelight.getVerticalAngle()))),
-                                        m_launcher).withTimeout(15), 
+                                FieldPositions.R1,  
+                                FieldPositions.R2,
+                                new Rotation2d(150),
+                                m_robotDrive).withTimeout(5),
+                        new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(5)
+              
+                ),                                
+                // new RunCommand(() -> m_robotDrive.drive(0, 0, -1*m_limelight.getRotationSpeed()), m_robotDrive).withTimeout(2),
+                new ParallelCommandGroup(
+                        new RunCommand(() -> m_launcher.spinLauncher(3000), m_launcher).withTimeout(10),
+                        // new RunCommand(() -> m_launcher
+                        //                 .spinFromDistance(m_robotDrive.getPose().getTranslation().getNorm()),
+                        //                 m_launcher).withTimeout(15), 
                         new SequentialCommandGroup(
-                                new RunCommand(() -> {
-                                                                m_robotDrive.drive(0, 0, -1 * m_limelight
-                                                                                .getRotationSpeed());
-                                                        }, m_robotDrive).withTimeout(2.0), 
+                                new RunCommand(() -> m_feed.spinFeed(0), m_feed).withTimeout(2),
+                                // new RunCommand(() -> {
+                                //                                 m_robotDrive.drive(0, 0, -1 * m_limelight
+                                //                                                 .getRotationSpeed());
+                                //                         }, m_robotDrive).withTimeout(2.0), 
                                 new RunCommand(() -> m_feed.spinFeed(-1), m_feed)
                                                                         .withTimeout(10),
                                 new InstantCommand(m_intake::intakeOut) 
 
-                        )));
+                )));
                         
 
         }
+
+        public SequentialCommandGroup FiveBallAutoRoutine(Pose2d zeroPose) {
+
+                return new SequentialCommandGroup(
+                        new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
+                        new ParallelCommandGroup(
+                                new RunCommand(() -> m_launcher.spinLauncher(5000), m_launcher).withTimeout(4),
+                                // new RunCommand(() -> m_launcher
+                                //                 .spinFromDistance(m_robotDrive.getPose().getTranslation().getNorm()),
+                                //                 m_launcher).withTimeout(4), 
+                                new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(4)
+                        ),
+                        new InstantCommand(m_intake::intakeIn), 
+                        new ParallelCommandGroup(
+                                this.DriveBetweenPoints(
+                                        zeroPose.getTranslation(),
+                                        FieldPositions.R1, 
+                                        Rotation2d.fromDegrees(270),
+                                        m_robotDrive).withTimeout(5),
+                                new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(5)
+                        ), 
+                        new ParallelCommandGroup(
+                                this.DriveBetweenPoints(
+                                        FieldPositions.R1,  
+                                        FieldPositions.R2,
+                                        new Rotation2d(150),
+                                        m_robotDrive).withTimeout(5),
+                                new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(5)
+                      
+                        ),                                
+                        // new RunCommand(() -> m_robotDrive.drive(0, 0, -1*m_limelight.getRotationSpeed()), m_robotDrive).withTimeout(2),
+                        new ParallelCommandGroup(
+                                new RunCommand(() -> m_launcher.spinLauncher(5000), m_launcher).withTimeout(5),
+                                // new RunCommand(() -> m_launcher
+                                //                 .spinFromDistance(m_robotDrive.getPose().getTranslation().getNorm()),
+                                //                 m_launcher).withTimeout(15), 
+                                new SequentialCommandGroup(
+                                        new RunCommand(() -> m_feed.spinFeed(0), m_feed).withTimeout(2),
+                                        // new RunCommand(() -> {
+                                        //                                 m_robotDrive.drive(0, 0, -1 * m_limelight
+                                        //                                                 .getRotationSpeed());
+                                        //                         }, m_robotDrive).withTimeout(2.0), 
+                                        new RunCommand(() -> m_feed.spinFeed(-1), m_feed)
+                                                                                .withTimeout(3),
+                                        new InstantCommand(m_intake::intakeOut) 
+        
+                        )),
+                        new ParallelCommandGroup(
+                                this.DriveBetweenPoints(
+                                        FieldPositions.R2,  
+                                        FieldPositions.R7,
+                                        new Rotation2d(30),
+                                        m_robotDrive).withTimeout(5),
+                                new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(5)
+                      
+                        ),
+                        new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(5)
+                        );
+                                
+        
+                }
 }
