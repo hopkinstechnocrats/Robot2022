@@ -62,7 +62,7 @@ public class RobotContainer {
   // The robot's subsystems
 //  String trajectoryJSON = "paths/output/GoGoGadgets.wpilib.json";
 //  Trajectory trajectory = new Trajectory();
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final DriveSubsystem m_robotDrive;
   private final IntakeSubsystem m_intake;
   private final ClimberSubsystem m_climber;
   private final FeedSubsystem m_feed;
@@ -90,6 +90,7 @@ public class RobotContainer {
 
 
     TunableNumber.setTuningMode(true);
+    m_robotDrive = new DriveSubsystem();
     m_intake = new IntakeSubsystem();
     m_climber = new ClimberSubsystem();
     m_feed = new FeedSubsystem();
@@ -214,10 +215,10 @@ public class RobotContainer {
       ORIn.whenHeld(new RunCommand(() -> m_launcher.spinFromDistance(2.64/(Math.tan(m_limelight.getVerticalAngle()))), m_launcher));
       ORBumper.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
 
-      ODPadTop.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.75), m_launcher));
-      ODPadLeft.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.1), m_launcher));
-      ODPadRight.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.35), m_launcher));
-      ODPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(.26), m_launcher));
+      ODPadTop.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(3000), m_launcher));
+      ODPadLeft.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(4000), m_launcher));
+      ODPadRight.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(5000), m_launcher));
+      ODPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(6000), m_launcher));
 
 
       // DPadTop.whenPressed(new InstantCommand(() -> .(90)));

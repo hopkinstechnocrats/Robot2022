@@ -7,6 +7,7 @@ package lib.iotemplates;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
+
 /** Template hardware interface for a closed loop subsystem. */
 public interface ClosedLoopIO {
     /** Contains all of the input data received from hardware. */
@@ -14,6 +15,7 @@ public interface ClosedLoopIO {
         public double positionRad = 0.0;
         public double velocityRadPerSec = 0.0;
         public double velocitySetpointRadPerSec = 0;
+        public double positionSetpointRad = 0;
         public double appliedVolts = 0.0;
         public double[] supplyCurrentAmps = new double[] {};
         public double[] statorCurrentAmps = new double[] {};
@@ -57,6 +59,7 @@ public interface ClosedLoopIO {
             table.put("PositionRad", positionRad);
             table.put("VelocityRadPerSec", velocityRadPerSec);
             table.put("SetpointRadPerSec", velocitySetpointRadPerSec);
+            table.put("PositionSetpointRad", positionSetpointRad);
             table.put("AppliedVolts", appliedVolts);
             table.put("SupplyCurrentAmps", supplyCurrentAmps);
             table.put("StatorCurrentAmps", statorCurrentAmps);
@@ -99,6 +102,7 @@ public interface ClosedLoopIO {
             supplyOverV = table.getBooleanArray("SupplyOverV", supplyOverV);
             supplyUnstable = table.getBooleanArray("SupplyUnstable", supplyUnstable);
             velocitySetpointRadPerSec = table.getDouble("SetpointRadPerSec", velocitySetpointRadPerSec);
+            positionSetpointRad = table.getDouble("PositionSetpointRad", positionSetpointRad);
         }
     }
 

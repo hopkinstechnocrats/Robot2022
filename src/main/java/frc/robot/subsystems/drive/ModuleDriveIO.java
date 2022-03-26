@@ -15,19 +15,16 @@ public class ModuleDriveIO implements ClosedLoopIO {
 
     private final WPI_TalonFX driveMotor;
     private boolean inverted;
+    double driveOutput;
+    double velocitySetpointRadPerSec;
 
-    private final PIDController m_drivePIDController =
-            new PIDController(
-                    Constants.ModuleConstants.kPModuleDriveController,
-                    Constants.ModuleConstants.kIModuleDriveController,
-                    Constants.ModuleConstants.kDModuleDriveController
-            );
+    private final PIDController m_drivePIDController = new PIDController(
+            Constants.ModuleConstants.kPModuleDriveController, Constants.ModuleConstants.kIModuleDriveController,
+            Constants.ModuleConstants.kDModuleDriveController);
 
-    private final SimpleMotorFeedforward m_feedforward =
-            new SimpleMotorFeedforward(0, 8.634, 0);
+    private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(0, 8.634, 0);
 
     String corners;
-
 
     public ModuleDriveIO(int motorPort, boolean inverted, String corners) {
         this.inverted = inverted;
@@ -50,20 +47,23 @@ public class ModuleDriveIO implements ClosedLoopIO {
         inputs.statorCurrentAmps = new double [] {driveMotor.getStatorCurrent()};
         inputs.supplyCurrentAmps = new double [] {driveMotor.getSupplyCurrent()};
         inputs.tempCelcius = new double [] {driveMotor.getTemperature()};
+        inputs.velocitySetpointRadPerSec = velocitySetpointRadPerSec;
     }
 
     private double getPositionRad() {
-        return Units.rotationsToRadians(driveMotor.getSelectedSensorPosition()/
-                Constants.ModuleConstants.kDriveEncoderTicksPerRevolution);
+        return Units.rotationsToRadians(
+                driveMotor.getSelectedSensorPosition() / Constants.ModuleConstants.kDriveEncoderTicksPerRevolution);
     }
 
     private double getVelocityRadPerSecond() {
-        return Units.rotationsToRadians(driveMotor.getSelectedSensorVelocity() /
-                Constants.ModuleConstants.kDriveEncoderTicksPerRevolution * 10);
+        return Units.rotationsToRadians(driveMotor.getSelectedSensorVelocity()
+                / Constants.ModuleConstants.kDriveEncoderTicksPerRevolution * 10);
     }
 
     public void setVelocityRadPerSec(double desiredSpeedRadPerSecond) {
-        final double driveOutput = desiredSpeedRadPerSecond / 8.6+ (
+        velocitySetpointRadPerSec = desiredSpeedRadPerSecond;
+        driveOutput = desiredSpeedRadPerSecond / 8.6
+                + (
                 inverted ?
                 m_drivePIDController.calculate(getVelocityRadPerSecond(), desiredSpeedRadPerSecond)
                 : -1*m_drivePIDController.calculate(getVelocityRadPerSecond(), desiredSpeedRadPerSecond));

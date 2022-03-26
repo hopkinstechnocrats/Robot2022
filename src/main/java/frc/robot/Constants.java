@@ -32,10 +32,10 @@ public final class Constants {
   public static final class LauncherConstants {
     public static final int kCANPort1 = 18;
     public static final int kCANPort2 = 17;
-    public static final double kP = 0;
-    public static final double kI = 0;
-    public static final double kD = 0;
-    public static final double kF = 0;
+    public static final double kP = -0.04;
+    public static final double kI = 0.0001;
+    public static final double kD = 0.001;
+    public static final double kF = -0.01;
     public static final double kEncoderTicksPerRevolution = 3700;
     public static final double heightOfHighHubReflectors =2.64; //check it :/ above ground or limelight?  
    }
@@ -116,7 +116,11 @@ public final class Constants {
   public static final class ModuleConstants {
     public static final double kMaxModuleAngularSpeedRadiansPerSecond = 0.5 * Math.PI;
     public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 0.5 * Math.PI;
-    public static final double kPModuleTurningController = 4.3;
+    public static double kUModuleTurningController = 10.25;  
+    public static double kPModuleTurningController = .6*kUModuleTurningController;
+    public static double tUModuleTurningController = .25;
+    public static double kIModuleTurningController = (1.2*kUModuleTurningController)/tUModuleTurningController;
+    public static double kDModuleTurningController = 0.0075*kUModuleTurningController*tUModuleTurningController;
 
     public static final double kPModuleDriveController = 0.15;
     public static final double kDModuleDriveController = 0;

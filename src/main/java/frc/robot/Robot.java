@@ -33,7 +33,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     setUseTiming(isReal());
-    LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
+    //LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
     Logger.getInstance().recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.getInstance().recordMetadata("RuntimeType", getRuntimeType().toString());
     Logger.getInstance().recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
