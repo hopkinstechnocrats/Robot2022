@@ -60,7 +60,7 @@ public class RobotContainer {
   // The robot's subsystems
 //  String trajectoryJSON = "paths/output/GoGoGadgets.wpilib.json";
 //  Trajectory trajectory = new Trajectory();
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final DriveSubsystem m_robotDrive;
   private final IntakeSubsystem m_intake;
   private final ClimberSubsystem m_climber;
   private final FeedSubsystem m_feed;
@@ -88,6 +88,7 @@ public class RobotContainer {
 
 
     TunableNumber.setTuningMode(true);
+    m_robotDrive = new DriveSubsystem();
     m_intake = new IntakeSubsystem();
     m_climber = new ClimberSubsystem();
     m_feed = new FeedSubsystem();
