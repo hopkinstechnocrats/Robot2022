@@ -47,7 +47,7 @@ public class AutoRoutines {
         }
         
 
-        public SwerveControllerCommand DriveBetweenPoints(Translation2d startingPosition, Translation2d midPosition,
+        public SwerveControllerCommand DriveBetweenPoints(Translation2d startingPosition,
                         Translation2d endingPosition, Rotation2d targetAngle, DriveSubsystem m_robotDrive) {
                                 m_robotDrive.setTargetAngle(targetAngle);
                  TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
@@ -97,12 +97,22 @@ public class AutoRoutines {
                 return swerveControllerCommand;
         }
 
+        public Command drivePositiveX() {
+                return new SequentialCommandGroup(new InstantCommand(() -> m_robotDrive.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
+                this.DriveBetweenPoints(new Translation2d(0,0), new Translation2d(1, 0), new Rotation2d(0), m_robotDrive));
+        }
+
+        public Command drivePositiveY() {
+                return new SequentialCommandGroup(new InstantCommand(() -> m_robotDrive.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
+                this.DriveBetweenPoints(new Translation2d(0,0), new Translation2d(0, 1), new Rotation2d(0), m_robotDrive));
+        }
+
         public SequentialCommandGroup TwoBallAutoRoutine(Pose2d zeroPose) {
                 return new SequentialCommandGroup(new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
                                 new InstantCommand(m_intake::intakeIn), // actually out lol
                                 new InstantCommand(m_intake::StartIntakeOut),
                                 this.DriveBetweenPoints(zeroPose.getTranslation(),
-                                                new Translation2d(-0.5, 0), FieldPositions.R3, new Rotation2d(0), m_robotDrive)
+                                                 FieldPositions.R3, new Rotation2d(0), m_robotDrive)
                                                 .withTimeout(6), 
                                 // this.DriveBetweenPoints(new Translation2d(0, 0),
                                 // new Translation2d(1, 0), new Translation2d(2, 0), m_robotDrive),
@@ -146,15 +156,13 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
                         this.DriveBetweenPoints(
                                 zeroPose.getTranslation(),
                                 FieldPositions.R1, 
-                                FieldPositions.R1, 
                                 new Rotation2d(30),
                                 m_robotDrive).withTimeout(5),
                                 
                         new RunCommand(() -> m_intake.StartIntakeIn(), m_intake).withTimeout(5)
                 ), 
                         this.DriveBetweenPoints(
-                        FieldPositions.R1, 
-                        FieldPositions.R1, 
+                        FieldPositions.R1,  
                         FieldPositions.R2,
                         new Rotation2d(0),
                         m_robotDrive).withTimeout(5),                                
