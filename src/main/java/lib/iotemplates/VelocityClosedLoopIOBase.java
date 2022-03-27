@@ -92,7 +92,7 @@ public class VelocityClosedLoopIOBase implements ClosedLoopIO{
         Logger.getInstance().recordOutput("FEEDFORWARD", feedforward.calculate(velocityRadPerSec));
         Logger.getInstance().recordOutput("OUTPUT", outputVoltage);
         for (WPI_TalonSRX motor : motors) {
-            motor.setVoltage(outputVoltage);
+            motor.setVoltage(-1*outputVoltage);
         }
     }
 }

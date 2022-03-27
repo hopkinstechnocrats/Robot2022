@@ -68,6 +68,7 @@ public class RobotContainer {
   private final FeedSubsystem m_feed;
   private final LauncherSubsystem m_launcher;
   private final LimelightSubsystem m_limelight;
+  private final AutoRoutines myAutoRoutines;
   public final Compressor phCompressor = new Compressor(PneumaticsModuleType.REVPH);
   public Pose2d zeroPose = new Pose2d(new Translation2d(0, 0), new Rotation2d());
 
@@ -96,6 +97,8 @@ public class RobotContainer {
     m_feed = new FeedSubsystem();
     m_launcher = new LauncherSubsystem();
     m_limelight = new LimelightSubsystem();
+    myAutoRoutines = new AutoRoutines(m_robotDrive, m_feed, m_intake, m_limelight, m_launcher); 
+
       Solenoid obj = new Solenoid(PneumaticsModuleType.REVPH, 0);
       obj.set(true);
     phCompressor.enableAnalog(100, 120);
@@ -179,13 +182,14 @@ public class RobotContainer {
       JoystickButton OXbox = new JoystickButton(m_operatorController, 13);
       // 
       POVButton DPadTop = new POVButton(m_driverController, 90);
-      DPadTop.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(90), m_driverController));
+      DPadTop.whenPressed(myAutoRoutines.drivePositiveY());
       POVButton DPadRight = new POVButton(m_driverController, 180);
-      DPadRight.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(180), m_driverController));
+      DPadRight.whenPressed(myAutoRoutines.drivePositiveX());
       POVButton DPadBottom = new POVButton(m_driverController, 270);
-      DPadBottom.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(270), m_driverController));
+      DPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(6000), m_launcher));
+      // DPadBottom.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(270), m_driverController));
       POVButton DPadLeft = new POVButton(m_driverController, 0);
-      DPadLeft.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(0), m_driverController));
+      // DPadLeft.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(0), m_driverController));
 
       POVButton ODPadTop = new POVButton(m_operatorController, 90);
       POVButton ODPadRight = new POVButton(m_operatorController, 180);
@@ -234,7 +238,6 @@ public class RobotContainer {
 
     m_robotDrive.fieldOFF();
     Pose2d zeroPose = FieldPositions.R3startingPosition;
-    AutoRoutines myAutoRoutines = new AutoRoutines(m_robotDrive, m_feed, m_intake, m_limelight, m_launcher); 
-    return myAutoRoutines.TwoBallAutoRoutine(zeroPose);
+    return myAutoRoutines.FiveBallAutoRoutine(zeroPose);
   }
 }
