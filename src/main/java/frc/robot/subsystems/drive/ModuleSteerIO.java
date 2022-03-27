@@ -29,13 +29,13 @@ public class ModuleSteerIO implements ClosedLoopIO {
             kD.get());
 
     public ModuleSteerIO(int motorPort, int encoderPort, double encoderOffset) {
-        steerMotor = new WPI_TalonFX(motorPort);
+        steerMotor = new WPI_TalonFX(motorPort, "GertrudeGreyser");
         steerMotor.configAllSettings(new BaseTalonFXConfiguration());
         steerMotor.setNeutralMode(NeutralMode.Brake);
         // set status frame period of steer motor
         steerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20);
         m_steeringPIDController.enableContinuousInput(-Math.PI, Math.PI);
-        encoder = new CANCoder(encoderPort);
+        encoder = new CANCoder(encoderPort, "GertrudeGreyser");
         offset = new Rotation2d(encoderOffset);
     }
 
