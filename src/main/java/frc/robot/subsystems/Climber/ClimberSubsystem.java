@@ -12,7 +12,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     private final WPI_TalonFX Motor = new WPI_TalonFX(12);
     DoubleSolenoid Clawssssssss = new DoubleSolenoid(PneumaticsModuleType.REVPH, 8, 9);
-
+    ClimberIO m_climberIO = new ClimberIO("Climb", 12, 0, 0, 0, 2048, 1, 1.25);
     int speed = 0;
 
     public ClimberSubsystem() {
@@ -25,7 +25,9 @@ public class ClimberSubsystem extends SubsystemBase {
     public void spinClimber(double speed) {
         Motor.setVoltage(speed);
     }
-
+    public void goTo(double Pos){
+        m_climberIO.setPosition(Pos);
+    }
     public void clawsOut(){
         Clawssssssss.set(DoubleSolenoid.Value.kForward);
     }
@@ -36,5 +38,6 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public void periodic() {
     }
+
 }
 

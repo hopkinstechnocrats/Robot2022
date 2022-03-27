@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AutoClimb;
+import frc.robot.commands.AutoExtendTelescope;
 import frc.robot.commands.FixHeadingCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Climber.ClimberSubsystem;
@@ -38,6 +40,9 @@ import edu.wpi.first.wpilibj.Filesystem;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import javax.management.InstanceAlreadyExistsException;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -183,7 +188,7 @@ public class RobotContainer {
       POVButton DPadBottom = new POVButton(m_driverController, 270);
       DPadBottom.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(270), m_driverController));
       POVButton DPadLeft = new POVButton(m_driverController, 0);
-      DPadLeft.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(0), m_driverController));
+      DPadLeft.whenPressed(new AutoClimb());
 
       POVButton ODPadTop = new POVButton(m_operatorController, 90);
       POVButton ODPadRight = new POVButton(m_operatorController, 180);

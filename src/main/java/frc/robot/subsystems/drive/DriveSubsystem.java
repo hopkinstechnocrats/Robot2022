@@ -205,6 +205,10 @@ public class DriveSubsystem extends SubsystemBase {
     fieldOriented = false;
     driveNoDeadband(0, 0, 0);
   }
+  public double getRoll() {
+    return m_gyro.getRoll();
+  }
+  
 
   /**
    * Returns the turn rate of the robot.
