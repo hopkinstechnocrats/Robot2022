@@ -11,10 +11,13 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -93,7 +96,7 @@ public class DriveSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("KITurningController", 64);
     // SmartDashboard.putNumber("KDTurningController", 0.01);
     m_field.setRobotPose(getPose());
-
+    Pose2d transformedPose = getPose().transformBy(new Transform2d(new Translation2d(Units.feetToMeters(27),0), new Rotation2d(0))); 
     Logger.getInstance().recordOutput("Odometry/RobotPose",
             new double[] {getPose().getX(), getPose().getY(), getPose().getRotation().getRadians()});
   }

@@ -117,10 +117,10 @@ public final class Constants {
     public static final double kMaxModuleAngularSpeedRadiansPerSecond = 0.5 * Math.PI;
     public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 0.5 * Math.PI;
     public static double kUModuleTurningController = 10.25;  
-    public static double kPModuleTurningController = .6*kUModuleTurningController;
+    public static double kPModuleTurningController = .2*kUModuleTurningController;
     public static double tUModuleTurningController = .25;
-    public static double kIModuleTurningController = (1.2*kUModuleTurningController)/tUModuleTurningController;
-    public static double kDModuleTurningController = 0.0075*kUModuleTurningController*tUModuleTurningController;
+    public static double kIModuleTurningController = (.4*kUModuleTurningController)/tUModuleTurningController;
+    public static double kDModuleTurningController = 0.06666*kUModuleTurningController*tUModuleTurningController;
 
     public static final double kPModuleDriveController = 0.15;
     public static final double kDModuleDriveController = 0;
