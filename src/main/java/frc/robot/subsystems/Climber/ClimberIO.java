@@ -22,22 +22,17 @@ public class ClimberIO implements ClosedLoopIO {
     private TunableNumber kI;
     private TunableNumber kD;
     private ProfiledPIDController feedback;
-    private SimpleMotorFeedforward feedforward;
+    private double positionOffset;
     static private WPI_TalonSRX motor;
-    private final double kEncoderTicksPerRevolution;
-    private double currentVelocity;
-    private double setpoint;
     
     public ClimberIO(String name, int motorPort, double kP, double kI, double kD, double kEncoderTicksPerRevolution, double maxVelocity, double maxAcceleration) {
         this.name = name;
-        this.kEncoderTicksPerRevolution = kEncoderTicksPerRevolution;
-        this.currentVelocity = 0;
         this.kP = new TunableNumber(name+"/kP", kP);
         this.kI = new TunableNumber(name+"/kI", kI);
         this.kD = new TunableNumber(name+"/kD", kD);
         feedback = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
         motor = new WPI_TalonSRX(motorPort);
-
+        positionOffset = 0;
     }
 
     public void updateInputs(ClosedLoopIOInputs inputs) {
@@ -61,10 +56,18 @@ public class ClimberIO implements ClosedLoopIO {
             inputs.APIError[0] = faults.APIError;
             inputs.supplyOverV[0] = faults.SupplyOverV;
             inputs.supplyUnstable[0] = faults.SupplyUnstable;
+
+            feedback.setP(kP.get());
+            feedback.setI(kI.get());
+            feedback.setD(kD.get());
     }
 
-    public static double getPosition() {
-        return motor.getSelectedSensorPosition() * (1/(FalconConstants.kEncoderCPR))*(1/15.34) * (Math.PI * Units.inchesToMeters(1.315));
+    public double getPosition() {
+        return motor.getSelectedSensorPosition() * (1/(FalconConstants.kEncoderCPR))*(1/15.34) * (Math.PI * Units.inchesToMeters(1.315)) - positionOffset;
+    }
+
+    public void zeroPosition() {
+        positionOffset = getPosition();
     }
 
     public void setPosition(double goal) {

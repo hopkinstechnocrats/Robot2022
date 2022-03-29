@@ -38,6 +38,6 @@ public class AutoExtendTelescope extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return(Math.abs(ClimberIO.getPosition()-Pos)) <= (tolerance);
+    return(Math.abs(m_climb.getPosition()-Pos)) <= (tolerance);
   }
 }

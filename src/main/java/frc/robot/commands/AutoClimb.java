@@ -7,13 +7,19 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.Climber.ClimberSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystem;
 
 public class AutoClimb extends CommandBase {
   ClimberSubsystem m_climber;
+  DriveSubsystem m_robotDrive;
+
   /** Creates a new AutoCLimb. */
-  public AutoClimb() {
-    m_climber = new ClimberSubsystem();
+  public AutoClimb(ClimberSubsystem climb, DriveSubsystem drive) {
+    m_climber = climb;
+    m_robotDrive = drive;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -29,33 +35,46 @@ public class AutoClimb extends CommandBase {
       new AutoExtendTelescope(1.4), 
       new AutoExtendTelescope(0), 
       new InstantCommand(() -> m_climber.clawsOut()), 
+      new WaitCommand(2),
       new AutoExtendTelescope(1),
       // wait(),
-      new waitUntilCommanand(() -> m_robotDrive.get
+      new WaitUntilCommand(() -> m_robotDrive.getRoll() <= 60),
+      new WaitUntilCommand(() -> m_robotDrive.getRoll() >= 60),
       // wait(),
       new AutoExtendTelescope(.66),
       new InstantCommand(() -> m_climber.clawsIn()),
+      new WaitCommand(2),
       // wait()
+      new WaitUntilCommand(() -> Math.abs(m_robotDrive.getRoll() - 60) < 5),
 
       // Onto High Rung
       new AutoExtendTelescope(0), 
       new InstantCommand(() -> m_climber.clawsOut()), 
+      new WaitCommand(2),
+
       new AutoExtendTelescope(1),
       // wait(),
+      new WaitUntilCommand(() -> m_robotDrive.getRoll() <= 60),
+      new WaitUntilCommand(() -> m_robotDrive.getRoll() >= 60),
       // wait(),
       new AutoExtendTelescope(1.4),
       new InstantCommand(() -> m_climber.clawsIn()),
-      // wait()
+      new WaitCommand(2),
 
+      // wait()
+      new WaitUntilCommand(() -> Math.abs(m_robotDrive.getRoll() - 60) < 5),
       //Onto Traversal Rung
       new AutoExtendTelescope(0), 
       new InstantCommand(() -> m_climber.clawsOut()), 
+      new WaitCommand(2),
+
       new AutoExtendTelescope(1),
       // wait(),
+      new WaitUntilCommand(() -> m_robotDrive.getRoll() <= 60),
+      new WaitUntilCommand(() -> m_robotDrive.getRoll() >= 60),
       // wait(),
       new AutoExtendTelescope(1.4),
       new InstantCommand(() -> m_climber.clawsIn())
-      // wait()
       );
   }
 

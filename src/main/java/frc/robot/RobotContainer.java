@@ -186,9 +186,9 @@ public class RobotContainer {
       POVButton DPadRight = new POVButton(m_driverController, 180);
       DPadRight.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(180), m_driverController));
       POVButton DPadBottom = new POVButton(m_driverController, 270);
-      DPadBottom.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(270), m_driverController));
+      DPadBottom.whenPressed(new InstantCommand(m_climber::zeroClimberPosition, m_climber));
       POVButton DPadLeft = new POVButton(m_driverController, 0);
-      DPadLeft.whenPressed(new AutoClimb());
+      DPadLeft.whenPressed(new AutoClimb(m_climber,m_robotDrive));
 
       POVButton ODPadTop = new POVButton(m_operatorController, 90);
       POVButton ODPadRight = new POVButton(m_operatorController, 180);
@@ -198,7 +198,7 @@ public class RobotContainer {
       AButton.whenHeld(new RunCommand(() -> {
       m_robotDrive.drive(0, 0, -1*m_limelight.getRotationSpeed()); 
       System.out.println("Testing Limelight Rotation" + m_limelight.getRotationSpeed());
-    }, m_robotDrive));
+      }, m_robotDrive));
     
       BButton.whenPressed(new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)));
       YButton.whenPressed(new InstantCommand(m_robotDrive::fieldON));

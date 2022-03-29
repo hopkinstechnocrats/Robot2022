@@ -37,6 +37,15 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void periodic() {
+        Logger.getInstance().recordOutput("Climb/positionMeters", m_climberIO.getPosition());
+    }
+
+    public void zeroClimberPosition() {
+        m_climberIO.zeroPosition();
+    }
+
+    public double getPosition() {
+        return m_climberIO.getPosition();
     }
 
 }
