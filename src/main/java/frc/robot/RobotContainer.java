@@ -66,12 +66,12 @@ public class RobotContainer {
 //  String trajectoryJSON = "paths/output/GoGoGadgets.wpilib.json";
 //  Trajectory trajectory = new Trajectory();
   private final DriveSubsystem m_robotDrive;
-  private final IntakeSubsystem m_intake;
+ // private final IntakeSubsystem m_intake; 
   private final ClimberSubsystem m_climber;
-  private final FeedSubsystem m_feed;
-  private final LauncherSubsystem m_launcher;
-  private final LimelightSubsystem m_limelight;
-  public final Compressor phCompressor = new Compressor(PneumaticsModuleType.REVPH);
+  // private final FeedSubsystem m_feed;
+ //  private final LauncherSubsystem m_launcher;
+ //  private final LimelightSubsystem m_limelight;
+ //  public final Compressor phCompressor = new Compressor(PneumaticsModuleType.REVPH);
   public Pose2d zeroPose = new Pose2d(new Translation2d(0, 0), new Rotation2d());
 
 
@@ -94,21 +94,21 @@ public class RobotContainer {
 
     TunableNumber.setTuningMode(true);
     m_robotDrive = new DriveSubsystem();
-    m_intake = new IntakeSubsystem();
+    // m_intake = new IntakeSubsystem();
     m_climber = new ClimberSubsystem();
-    m_feed = new FeedSubsystem();
-    m_launcher = new LauncherSubsystem();
-    m_limelight = new LimelightSubsystem();
+   //  m_feed = new FeedSubsystem();
+    // m_launcher = new LauncherSubsystem();
+    // m_limelight = new LimelightSubsystem();
       Solenoid obj = new Solenoid(PneumaticsModuleType.REVPH, 0);
       obj.set(true);
-    phCompressor.enableAnalog(100, 120);
+    // phCompressor.enableAnalog(100, 120);
      // Configure the button bindings
     configureButtonBindings();
-    m_intake.setDefaultCommand(
-        new RunCommand( () -> 
+   ///  m_intake.setDefaultCommand(
+     /*    new RunCommand( () -> 
             SmartDashboard.putNumber("Compressor Pressure", phCompressor.getPressure())
         , m_intake)
-    );
+    ); */ 
 
     // Configure default commands
     // Set the default drive command to split-stick arcade drive
@@ -123,11 +123,11 @@ public class RobotContainer {
                      3*m_driverController.getRightX()
                      ), m_robotDrive)); // use this to change from field oriented to non-field oriented
 
-    m_intake.setDefaultCommand(
+  /*   m_intake.setDefaultCommand(
             new RunCommand(
                     m_intake::spinIntake
-            , m_intake)
-    );
+            , m_intake) 
+    ); */
 
     m_climber.setDefaultCommand(
         new RunCommand(
@@ -135,19 +135,22 @@ public class RobotContainer {
         , m_climber)
     );
 
+    /* 
     m_feed.setDefaultCommand(
       new RunCommand(
         () -> m_feed.spinFeed(0),
         m_feed)
-    );
+    ); */
 
     TunableNumber launcherSpeed = new TunableNumber("launcher/launcherSpeedRPM", 0);
 
+    /* 
     m_launcher.setDefaultCommand(
       new RunCommand(
         () ->  m_launcher.spinLauncher(0), //m_launcher.spinLauncher(launcherSpeed.get()); System.out.println("RUNNING LAUNCHER DEFAULT COMMAND");},
         m_launcher)
-    );
+    ); */
+
     // singleModuleTestFixture.setDefaultCommand(
     //         new RunCommand(
     //             () -> 
@@ -188,7 +191,7 @@ public class RobotContainer {
       POVButton DPadBottom = new POVButton(m_driverController, 270);
       DPadBottom.whenPressed(new InstantCommand(m_climber::zeroClimberPosition, m_climber));
       POVButton DPadLeft = new POVButton(m_driverController, 0);
-      DPadLeft.whenPressed(new AutoClimb(m_climber,m_robotDrive));
+      DPadLeft.whenPressed(new AutoClimb(m_climber, m_robotDrive));
 
       POVButton ODPadTop = new POVButton(m_operatorController, 90);
       POVButton ODPadRight = new POVButton(m_operatorController, 180);
@@ -196,17 +199,19 @@ public class RobotContainer {
       POVButton ODPadLeft = new POVButton(m_operatorController, 0);
 
       AButton.whenHeld(new RunCommand(() -> {
-      m_robotDrive.drive(0, 0, -1*m_limelight.getRotationSpeed()); 
-      System.out.println("Testing Limelight Rotation" + m_limelight.getRotationSpeed());
+     // m_robotDrive.drive(0, 0, -1*m_limelight.getRotationSpeed()); 
+      // System.out.println("Testing Limelight Rotation" + m_limelight.getRotationSpeed());
       }, m_robotDrive));
     
       BButton.whenPressed(new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)));
       YButton.whenPressed(new InstantCommand(m_robotDrive::fieldON));
       XButton.whenPressed(new InstantCommand(m_robotDrive::fieldOFF));
 
+      /* 
       OAButton.whenPressed(new InstantCommand(m_intake::intakeIn));
       OXButton.whenPressed(new InstantCommand(m_intake::intakeOut));
       OLBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
+      */
       
       OBButton.whenPressed(new InstantCommand(m_climber::clawsOut));
       OYButton.whenPressed(new InstantCommand(m_climber::clawsIn));
@@ -215,13 +220,15 @@ public class RobotContainer {
       OLIn.whenHeld(new RunCommand(() -> m_climber.spinClimber(12), m_climber));
 
 
-      ORIn.whenHeld(new RunCommand(() -> m_launcher.spinFromDistance(2.64/(Math.tan(m_limelight.getVerticalAngle()))), m_launcher));
-      ORBumper.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
+     // ORIn.whenHeld(new RunCommand(() -> m_launcher.spinFromDistance(2.64/(Math.tan(m_limelight.getVerticalAngle()))), m_launcher));
+      // ORBumper.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
 
+      /* 
       ODPadTop.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(3000), m_launcher));
       ODPadLeft.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(4000), m_launcher));
       ODPadRight.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(5000), m_launcher));
       ODPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(6000), m_launcher));
+      */
 
 
       // DPadTop.whenPressed(new InstantCommand(() -> .(90)));
@@ -257,7 +264,7 @@ public class RobotContainer {
         new ProfiledPIDController(
             AutoConstants.kPThetaController, AutoConstants.kIThetaController, AutoConstants.kDThetaController, AutoConstants.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
+/* 
     SwerveControllerCommand swerveControllerCommand =
         new SwerveControllerCommand(
             exampleTrajectory,
@@ -269,7 +276,7 @@ public class RobotContainer {
             new PIDController(AutoConstants.kPYController, 0, 0),
             thetaController,
             m_robotDrive::setModuleStates,
-            m_robotDrive);
+            m_robotDrive); */
 
     Command autonomousLogCommand =
             new RunCommand(
@@ -307,7 +314,7 @@ public class RobotContainer {
 
     return new SequentialCommandGroup(
       new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
-      new InstantCommand(m_intake::intakeIn),
+    //  new InstantCommand(m_intake::intakeIn),
       new RunCommand(() -> m_robotDrive.drive(1, 0, 0), m_robotDrive).withTimeout(1),
       new RunCommand(() -> m_robotDrive.drive(0, 0, 0), m_robotDrive).withTimeout(0.5),
       // new InstantCommand(() -> m_robotDrive.drive(0,0,0), m_robotDrive),
@@ -317,7 +324,7 @@ public class RobotContainer {
 //        new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(7)
 //      ),
       // new InstantCommand(m_intake::EndIntake),
-      new InstantCommand(m_intake::intakeOut),
+     // new InstantCommand(m_intake::intakeOut),
       new RunCommand(() -> m_robotDrive.drive(0.5, 0.1, 0), m_robotDrive).withTimeout(2)
       // new RunCommand(() -> m_robotDrive.drive(.7, 0, 0), m_robotDrive).withTimeout(8)
     );

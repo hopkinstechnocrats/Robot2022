@@ -25,6 +25,7 @@ import edu.wpi.first.math.MathUtil;
 public class DriveSubsystem extends SubsystemBase {
   boolean fieldOriented = false;
   // Robot swerve modules
+  /* 
   private final SwerveModule m_frontLeft =
       new SwerveModule(
           DriveConstants.kFrontLeftDriveMotorPort,
@@ -53,7 +54,7 @@ public class DriveSubsystem extends SubsystemBase {
           DriveConstants.kRearRightTurningMotorPort,
               DriveConstants.kRearRightTurningEncoderPort,
               "RearRight", DriveConstants.kRearRightOffset);
-  
+  */ 
   
 
   // The gyro sensor
@@ -78,8 +79,10 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void periodic() {
     // Update the odometry in the periodic block
+    /* 
     m_odometry.update(
       getHeading(),
+      
       m_frontLeft.getState(),
       m_rearLeft.getState(),
       m_frontRight.getState(),
@@ -88,6 +91,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.periodic();
     m_rearLeft.periodic();
     m_rearRight.periodic();
+    */ 
     SmartDashboard.putNumber("Heading", getHeading().getDegrees());
     // SmartDashboard.putNumber("KPTurningController", 4);
     // SmartDashboard.putNumber("KITurningController", 64);
@@ -134,16 +138,16 @@ public class DriveSubsystem extends SubsystemBase {
     ySpeed = ySpeedFilter.calculate(ySpeed);
     xSpeed = xSpeedFilter.calculate(xSpeed);
     
-    driveNoDeadband(xSpeed, ySpeed, rot);
+  //  driveNoDeadband(xSpeed, ySpeed, rot);
   }
 
-  public void driveNoDeadband(double xSpeed, double ySpeed, double rot) {
+//  public void driveNoDeadband(double xSpeed, double ySpeed, double rot) {
   
     
-    Logger.getInstance().recordOutput("DriveSubsystem/Rotation Command", rot);
-    Logger.getInstance().recordOutput("DriveSubsystem/xSpeed Command", xSpeed);
-    Logger.getInstance().recordOutput("DriveSubsystem/ySpeed Command", ySpeed);
-
+ //   Logger.getInstance().recordOutput("DriveSubsystem/Rotation Command", rot);
+  //  Logger.getInstance().recordOutput("DriveSubsystem/xSpeed Command", xSpeed);
+  //  Logger.getInstance().recordOutput("DriveSubsystem/ySpeed Command", ySpeed);
+/* 
     SwerveModuleState[] swerveModuleStates;
     if (fieldOriented) {
       swerveModuleStates =
@@ -154,7 +158,7 @@ public class DriveSubsystem extends SubsystemBase {
       swerveModuleStates =
         DriveConstants.kDriveKinematics.toSwerveModuleStates(
           new ChassisSpeeds(xSpeed, ySpeed, rot));
-    }
+    } 
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
             swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -162,13 +166,14 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearLeft.setDesiredState(swerveModuleStates[1]);
     m_frontRight.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
-  }
-
+  } 
+  */ 
   /**
    * Sets the swerve ModuleStates.
    *
    * @param desiredStates The desired SwerveModule states.
    */
+  /* 
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
         desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -177,7 +182,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(desiredStates[2]);
     m_rearRight.setDesiredState(desiredStates[3]);
   }
-
+*/
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
     m_gyro.zeroYaw();
@@ -198,12 +203,12 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void fieldON() {
     fieldOriented = true;
-    driveNoDeadband(0, 0, 0);
+  //  driveNoDeadband(0, 0, 0);
   }
 
   public void fieldOFF() {
     fieldOriented = false;
-    driveNoDeadband(0, 0, 0);
+  //  driveNoDeadband(0, 0, 0);
   }
   public double getRoll() {
     return m_gyro.getRoll();
