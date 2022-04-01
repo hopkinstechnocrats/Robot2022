@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -17,16 +18,16 @@ public class AutoClimb extends SequentialCommandGroup {
 
     addCommands(
       // Onto Mid Rung
-      new AutoExtendTelescope(1.4), 
+      new AutoExtendTelescope(1.016), 
       new AutoExtendTelescope(0), 
       new InstantCommand(() -> m_climber.clawsOut()), 
       new WaitCommand(2),
-      new AutoExtendTelescope(1),
+      new AutoExtendTelescope(.74),
       // wait(),
       new WaitUntilCommand(() -> m_robotDrive.getRoll() <= 60),
       new WaitUntilCommand(() -> m_robotDrive.getRoll() >= 60),
       // wait(),
-      new AutoExtendTelescope(.66),
+      new AutoExtendTelescope(1.016),
       new InstantCommand(() -> m_climber.clawsIn()),
       new WaitCommand(2),
       // wait()
@@ -37,12 +38,12 @@ public class AutoClimb extends SequentialCommandGroup {
       new InstantCommand(() -> m_climber.clawsOut()), 
       new WaitCommand(2),
 
-      new AutoExtendTelescope(1),
+      new AutoExtendTelescope(.74),
       // wait(),
       new WaitUntilCommand(() -> m_robotDrive.getRoll() <= 60),
       new WaitUntilCommand(() -> m_robotDrive.getRoll() >= 60),
       // wait(),
-      new AutoExtendTelescope(1.4),
+      new AutoExtendTelescope(0),
       new InstantCommand(() -> m_climber.clawsIn()),
       new WaitCommand(2),
 
@@ -53,12 +54,12 @@ public class AutoClimb extends SequentialCommandGroup {
       new InstantCommand(() -> m_climber.clawsOut()), 
       new WaitCommand(2),
 
-      new AutoExtendTelescope(1),
+      new AutoExtendTelescope(.74),
       // wait(),
       new WaitUntilCommand(() -> m_robotDrive.getRoll() <= 60),
       new WaitUntilCommand(() -> m_robotDrive.getRoll() >= 60),
       // wait(),
-      new AutoExtendTelescope(1.4),
+      new AutoExtendTelescope(1),
       new InstantCommand(() -> m_climber.clawsIn())
       );
   }

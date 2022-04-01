@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import lib.iotemplates.ClosedLoopIO;
 import lib.motorspecs.FalconConstants;
 import lib.util.TunableNumber;
@@ -21,12 +22,15 @@ public class ClimberIO implements ClosedLoopIO {
     private TunableNumber kP;
     private TunableNumber kI;
     private TunableNumber kD;
-    private ProfiledPIDController feedback;
+    public ProfiledPIDController feedback;
     private double positionOffset;
-    static private WPI_TalonSRX motor;
+    static WPI_TalonSRX motor;
+    private AnalogPotentiometer stringClimber;
+
     
     public ClimberIO(String name, int motorPort, double kP, double kI, double kD, double kEncoderTicksPerRevolution, double maxVelocity, double maxAcceleration) {
         this.name = name;
+        stringClimber = new AnalogPotentiometer(0, 2.037, 0);
         this.kP = new TunableNumber(name+"/kP", kP);
         this.kI = new TunableNumber(name+"/kI", kI);
         this.kD = new TunableNumber(name+"/kD", kD);
@@ -56,14 +60,13 @@ public class ClimberIO implements ClosedLoopIO {
             inputs.APIError[0] = faults.APIError;
             inputs.supplyOverV[0] = faults.SupplyOverV;
             inputs.supplyUnstable[0] = faults.SupplyUnstable;
-
             feedback.setP(kP.get());
             feedback.setI(kI.get());
             feedback.setD(kD.get());
     }
 
     public double getPosition() {
-        return motor.getSelectedSensorPosition() * (1/(FalconConstants.kEncoderCPR))*(1/15.34) * (Math.PI * Units.inchesToMeters(1.315)) - positionOffset;
+        return stringClimber.get()-.365;
     }
 
     public void zeroPosition() {

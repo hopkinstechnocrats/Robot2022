@@ -67,7 +67,7 @@ public class RobotContainer {
 //  Trajectory trajectory = new Trajectory();
   private final DriveSubsystem m_robotDrive;
  // private final IntakeSubsystem m_intake; 
-  private final ClimberSubsystem m_climber;
+  final ClimberSubsystem m_climber;
   // private final FeedSubsystem m_feed;
  //  private final LauncherSubsystem m_launcher;
  //  private final LimelightSubsystem m_limelight;
@@ -185,13 +185,14 @@ public class RobotContainer {
       JoystickButton OXbox = new JoystickButton(m_operatorController, 13);
       // 
       POVButton DPadTop = new POVButton(m_driverController, 90);
-      DPadTop.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(90), m_driverController));
+      //DPadTop.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(90), m_driverController));
       POVButton DPadRight = new POVButton(m_driverController, 180);
-      DPadRight.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(180), m_driverController));
+      //DPadRight.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(180), m_driverController));
       POVButton DPadBottom = new POVButton(m_driverController, 270);
-      DPadBottom.whenPressed(new InstantCommand(m_climber::zeroClimberPosition, m_climber));
+      DPadBottom.whenHeld(new RunCommand(() -> {m_climber.m_climberIO.setPosition(.86);System.out.println("GOGOGOGOGOGOGOGOGO");}, m_climber));
       POVButton DPadLeft = new POVButton(m_driverController, 0);
-      DPadLeft.whenPressed(new AutoClimb(m_climber, m_robotDrive));
+      DPadLeft.whenHeld(new RunCommand(() -> {m_climber.m_climberIO.setPosition(0);System.out.println("GOGOGOGOGOGOGOGOGO");}, m_climber));
+      //DPadLeft.whenPressed(new AutoClimb(m_climber, m_robotDrive));
 
       POVButton ODPadTop = new POVButton(m_operatorController, 90);
       POVButton ODPadRight = new POVButton(m_operatorController, 180);
