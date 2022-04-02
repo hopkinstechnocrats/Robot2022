@@ -224,4 +224,8 @@ public class DriveSubsystem extends SubsystemBase {
   public double getTurnRate() {
     return m_gyro.getRate();
   }
+
+public float getRoll() {
+    return m_gyro.getRoll();
+}
 }

@@ -64,7 +64,7 @@ public class RobotContainer {
 //  Trajectory trajectory = new Trajectory();
   private final DriveSubsystem m_robotDrive;
   private final IntakeSubsystem m_intake;
-  private final ClimberSubsystem m_climber;
+  final ClimberSubsystem m_climber;
   private final FeedSubsystem m_feed;
   private final LauncherSubsystem m_launcher;
   private final LimelightSubsystem m_limelight;

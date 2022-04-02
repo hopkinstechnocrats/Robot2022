@@ -13,7 +13,7 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public class ClimberSubsystem extends SubsystemBase {
 
-    //DoubleSolenoid Clawssssssss = new DoubleSolenoid(PneumaticsModuleType.REVPH, 8, 9);
+    DoubleSolenoid Clawssssssss = new DoubleSolenoid(PneumaticsModuleType.REVPH, 8, 9);
     public ClimberIO m_climberIO = new ClimberIO("Climb", 12, 0, 0, 0, 2048, .75, .5);
     ClosedLoopIOInputs inputs;
     int speed = 0;
@@ -33,12 +33,12 @@ public class ClimberSubsystem extends SubsystemBase {
         m_climberIO.setPosition(Pos);
     }
     public void clawsOut(){
-        // Clawssssssss.set(DoubleSolenoid.Value.kForward);
+        Clawssssssss.set(DoubleSolenoid.Value.kForward);
         System.out.println("Hooker Reppeled");
     }
 
     public void clawsIn(){
-        // Clawssssssss.set(DoubleSolenoid.Value.kReverse);
+        Clawssssssss.set(DoubleSolenoid.Value.kReverse);
         System.out.println("Hooker Attracted");
     }
 
