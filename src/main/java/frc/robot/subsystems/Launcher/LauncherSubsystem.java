@@ -46,6 +46,10 @@ public class LauncherSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Launcher RPM", speedRPM);
     }
 
+    public void stopLauncher() {
+        io.setVoltage(0);
+    }
+
 
     public void periodic() {
        io.updateInputs(inputs);

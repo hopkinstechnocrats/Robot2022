@@ -95,4 +95,10 @@ public class VelocityClosedLoopIOBase implements ClosedLoopIO{
             motor.setVoltage(-1*outputVoltage);
         }
     }
+
+    public void setVoltage(double volts) {
+        for (WPI_TalonSRX motor : motors) {
+            motor.setVoltage(-1*volts);
+        }
+    }
 }

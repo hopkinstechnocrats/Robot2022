@@ -145,7 +145,7 @@ public class RobotContainer {
 
     m_launcher.setDefaultCommand(
       new RunCommand(
-        () ->  m_launcher.spinLauncher(0), //m_launcher.spinLauncher(launcherSpeed.get()); System.out.println("RUNNING LAUNCHER DEFAULT COMMAND");},
+        () ->  m_launcher.stopLauncher(), //m_launcher.spinLauncher(launcherSpeed.get()); System.out.println("RUNNING LAUNCHER DEFAULT COMMAND");},
         m_launcher)
     );
     // singleModuleTestFixture.setDefaultCommand(
@@ -186,8 +186,8 @@ public class RobotContainer {
       POVButton DPadRight = new POVButton(m_driverController, 180);
       DPadRight.whenPressed(myAutoRoutines.drivePositiveX());
       POVButton DPadBottom = new POVButton(m_driverController, 270);
-      DPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(6000), m_launcher));
-      // DPadBottom.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(270), m_driverController));
+      DPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(5500), m_launcher));
+      DPadBottom.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(270)));
       POVButton DPadLeft = new POVButton(m_driverController, 0);
       // DPadLeft.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(0), m_driverController));
 
@@ -201,7 +201,7 @@ public class RobotContainer {
       System.out.println("Testing Limelight Rotation" + m_limelight.getRotationSpeed());
     }, m_robotDrive));
     
-      BButton.whenPressed(new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)));
+      BButton.whenPressed(new InstantCommand(() -> m_robotDrive.resetOdometry(new Pose2d(-1.06+0.444, -2.76+0.444, new Rotation2d(0,-1)))));
       YButton.whenPressed(new InstantCommand(m_robotDrive::fieldON));
       XButton.whenPressed(new InstantCommand(m_robotDrive::fieldOFF));
 
@@ -235,7 +235,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-
+    // return (new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(270)));
     m_robotDrive.fieldOFF();
     Pose2d zeroPose = FieldPositions.R3startingPosition;
     return myAutoRoutines.FiveBallAutoRoutine(zeroPose);

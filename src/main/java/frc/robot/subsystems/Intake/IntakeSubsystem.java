@@ -9,11 +9,15 @@ import lib.iotemplates.OpenLoopIO;
 import lib.iotemplates.OpenLoopIOTalonSRXBase;
 import lib.iotemplates.SolenoidIO;
 import lib.iotemplates.SolenoidIOBase;
+
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeSubsystem extends SubsystemBase {
 
     private final OpenLoopIOTalonSRXBase motorIO = new OpenLoopIOTalonSRXBase(Constants.IntakeConstants.kCANPort);
+    private final WPI_VictorSPX kicker = new WPI_VictorSPX(1);
     private final OpenLoopIO.OpenLoopIOInputs motorInputs = new OpenLoopIO.OpenLoopIOInputs(1);
 
     private final SolenoidIOBase solenoidIO = new SolenoidIOBase(6, 7);
@@ -23,6 +27,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void spinIntake() {
         motorIO.setVoltage(-12 * speed);
+        kicker.setVoltage(12 * speed);
     }
 
     public void StartIntakeOut() {

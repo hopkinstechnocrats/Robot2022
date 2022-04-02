@@ -32,7 +32,7 @@ public final class Constants {
   public static final class LauncherConstants {
     public static final int kCANPort1 = 18;
     public static final int kCANPort2 = 17;
-    public static final double kP = 0.04;
+    public static final double kP = 0.035;
     public static final double kI = -0.0001;
     public static final double kD = -0.001;
     public static final double kF = 0.01;
@@ -107,20 +107,20 @@ public final class Constants {
 
     public static final double kMaxSpeedMetersPerSecond = 4;
 
-    public static final double kFrontRightOffset = -2.998932440316429;
+    public static final double kFrontRightOffset = 0.16413594430376363 + Math.PI;
     public static final double kFrontLeftOffset = 0.796136928912 - Math.PI + 0.034;
-    public static final double kRearRightOffset = -1.0507768370;
-    public static final double kRearLeftOffset = (-0.069029 + Math.PI) % Math.PI;
+    public static final double kRearRightOffset = -1.0507768370 - 0.00920388742897792;
+    public static final double kRearLeftOffset = (-0.069029 + Math.PI) % Math.PI + 0.013805691636116895;
   }
 
   public static final class ModuleConstants {
     public static final double kMaxModuleAngularSpeedRadiansPerSecond = 0.5 * Math.PI;
     public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 0.5 * Math.PI;
     public static double kUModuleTurningController = 10.25;  
-    public static double kPModuleTurningController = .2*kUModuleTurningController;
-    public static double tUModuleTurningController = .25;
-    public static double kIModuleTurningController = (.4*kUModuleTurningController)/tUModuleTurningController;
-    public static double kDModuleTurningController = 0.06666*kUModuleTurningController*tUModuleTurningController;
+    public static double kPModuleTurningController = 0.5*kUModuleTurningController;
+    public static double tUModuleTurningController = 0.25;
+    public static double kIModuleTurningController = (1.2*kUModuleTurningController)/tUModuleTurningController;
+    public static double kDModuleTurningController = 0.075*kUModuleTurningController*tUModuleTurningController;
 
     public static final double kPModuleDriveController = 0.15;
     public static final double kDModuleDriveController = 0;
@@ -144,12 +144,12 @@ public final class Constants {
 
     public static final double kPXController = 4;
     public static final double kPYController = 4;
-    public static final double kPThetaController = 18*2*Math.PI/360;
+    public static final double kPThetaController = -3;
     public static final double kIThetaController = 0;
     public static final double kDThetaController = 0;
     // Constraint for the motion profilied robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
         new TrapezoidProfile.Constraints(
-            1000, 1000);
+            6, 6);
   }
 }

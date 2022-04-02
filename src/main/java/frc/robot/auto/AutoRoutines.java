@@ -4,6 +4,7 @@
 
 package frc.robot.auto;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -25,6 +26,7 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.auto.FieldPositions;
+import frc.robot.commands.FixHeadingCommand;
 
 /** Add your docs here. */
 public class AutoRoutines {
@@ -202,22 +204,23 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
 
                 return new SequentialCommandGroup(
                         new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
-                        new ParallelCommandGroup(
-                                new RunCommand(() -> m_launcher.spinLauncher(5000), m_launcher).withTimeout(4),
-                                // new RunCommand(() -> m_launcher
-                                //                 .spinFromDistance(m_robotDrive.getPose().getTranslation().getNorm()),
-                                //                 m_launcher).withTimeout(4), 
-                                new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(4)
-                        ),
+
                         new InstantCommand(m_intake::intakeIn), 
                         new ParallelCommandGroup(
                                 this.DriveBetweenPoints(
                                         zeroPose.getTranslation(),
                                         FieldPositions.R1, 
-                                        Rotation2d.fromDegrees(270),
+                                        Rotation2d.fromDegrees(250),
                                         m_robotDrive).withTimeout(5),
                                 new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(5)
                         ), 
+                        new ParallelCommandGroup(
+                                new RunCommand(() -> m_launcher.spinLauncher(5500), m_launcher).withTimeout(6),
+                                // new RunCommand(() -> m_launcher
+                                //                 .spinFromDistance(m_robotDrive.getPose().getTranslation().getNorm()),
+                                //                 m_launcher).withTimeout(4), 
+                                new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(6)
+                        ),
                         new ParallelCommandGroup(
                                 this.DriveBetweenPoints(
                                         FieldPositions.R1,  
@@ -226,7 +229,8 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
                                         m_robotDrive).withTimeout(5),
                                 new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(5)
                       
-                        ),                                
+                        ),     
+                        new FixHeadingCommand(m_robotDrive, new Rotation2d(-1*FieldPositions.R2.getX(), -1*FieldPositions.R2.getY())).withTimeout(5),                           
                         // new RunCommand(() -> m_robotDrive.drive(0, 0, -1*m_limelight.getRotationSpeed()), m_robotDrive).withTimeout(2),
                         new ParallelCommandGroup(
                                 new RunCommand(() -> m_launcher.spinLauncher(5000), m_launcher).withTimeout(5),
@@ -240,8 +244,8 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
                                         //                                                 .getRotationSpeed());
                                         //                         }, m_robotDrive).withTimeout(2.0), 
                                         new RunCommand(() -> m_feed.spinFeed(-1), m_feed)
-                                                                                .withTimeout(3),
-                                        new InstantCommand(m_intake::intakeOut) 
+                                                                                .withTimeout(3)
+                                        // new InstantCommand(m_intake::intakeOut) 
         
                         )),
                         new ParallelCommandGroup(
