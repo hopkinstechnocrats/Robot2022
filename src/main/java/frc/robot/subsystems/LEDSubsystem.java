@@ -34,11 +34,11 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public int determineOutput() {
-    return onTarget + 2 * warning + 2^2 * climbing + 2^3 * intaking + 2^4 * launching + 2^5 * allianceColor // if we want the plus one we can keep it+ 1 // the plus one is to make it so the cases range from 1-64 instead of 0-63
+    return onTarget + 2 * warning + 2^2 * climbing + 2^3 * intaking + 2^4 * launching + 2^5 * allianceColor; // if we want the plus one we can keep it+ 1 // the plus one is to make it so the cases range from 1-64 instead of 0-63
   }
 
   public double convertToDutyCycle(int val) {
-    return (val/64)
+    return (val/64);
   }
 
   public void intakeOn() {
