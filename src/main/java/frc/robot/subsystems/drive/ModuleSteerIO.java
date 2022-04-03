@@ -49,8 +49,8 @@ public class ModuleSteerIO implements ClosedLoopIO {
         inputs.positionSetpointRad = positionSetPointRad;
 
         m_steeringPIDController.setP(Constants.ModuleConstants.kPModuleTurningController);
-        m_steeringPIDController.setI(Constants.ModuleConstants.kIModuleDriveController);
-        m_steeringPIDController.setD(Constants.ModuleConstants.kDModuleDriveController);
+        m_steeringPIDController.setI(Constants.ModuleConstants.kIModuleTurningController);
+        m_steeringPIDController.setD(Constants.ModuleConstants.kDModuleTurningController);
     }
 
     private Rotation2d getPosition() {
