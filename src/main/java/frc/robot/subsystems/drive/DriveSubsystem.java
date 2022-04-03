@@ -91,6 +91,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.periodic();
     m_rearLeft.periodic();
     m_rearRight.periodic();
+    Logger.getInstance().recordOutput("Roll", (double) getRoll());
     SmartDashboard.putNumber("Heading", getHeading().getDegrees());
     // SmartDashboard.putNumber("KPTurningController", 4);
     // SmartDashboard.putNumber("KITurningController", 64);
@@ -226,6 +227,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
 public float getRoll() {
-    return m_gyro.getRoll();
+    return -1* m_gyro.getRoll();
 }
 }

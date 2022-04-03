@@ -19,6 +19,8 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.auto.AutoRoutines;
 import frc.robot.auto.FieldPositions;
+import frc.robot.commands.AutoClimb;
+import frc.robot.commands.AutoExtendTelescope;
 import frc.robot.commands.FixHeadingCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Climber.ClimberSubsystem;
@@ -182,13 +184,17 @@ public class RobotContainer {
       JoystickButton OXbox = new JoystickButton(m_operatorController, 13);
       // 
       POVButton DPadTop = new POVButton(m_driverController, 90);
-      DPadTop.whenPressed(myAutoRoutines.drivePositiveY());
+      // DPadTop.whenPressed(myAutoRoutines.drivePositiveY());
       POVButton DPadRight = new POVButton(m_driverController, 180);
-      DPadRight.whenPressed(myAutoRoutines.drivePositiveX());
+      // DPadRight.whenPressed(myAutoRoutines.drivePositiveX());
       POVButton DPadBottom = new POVButton(m_driverController, 270);
-      DPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(5500), m_launcher));
-      DPadBottom.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(270)));
+      //DPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(5500), m_launcher));
+      //DPadBottom.whenPressed(new FixHeadingCommand(m_robo]\[][\]\tDrive, Rotation2d.fromDegrees(270)));
+      DPadBottom.whenHeld(new RunCommand(() -> m_climber.setPosition(0.0), m_climber));
       POVButton DPadLeft = new POVButton(m_driverController, 0);
+      DPadLeft.whenPressed( 
+        new AutoClimb(m_climber, m_robotDrive)
+        );
       // DPadLeft.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(0), m_driverController));
 
       POVButton ODPadTop = new POVButton(m_operatorController, 90);
@@ -211,8 +217,8 @@ public class RobotContainer {
       
       OBButton.whenPressed(new InstantCommand(m_climber::clawsOut));
       OYButton.whenPressed(new InstantCommand(m_climber::clawsIn));
-      OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(3), m_climber));
-      OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(-5), m_climber));
+      OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(8), m_climber));
+      OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(-8), m_climber));
       OLIn.whenHeld(new RunCommand(() -> m_climber.spinClimber(12), m_climber));
 
 

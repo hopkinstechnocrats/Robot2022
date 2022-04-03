@@ -4,6 +4,9 @@ package frc.robot.subsystems.Climber;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.ArrayList;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import lib.iotemplates.OpenLoopIO;
 import lib.iotemplates.ClosedLoopIO.ClosedLoopIOInputs;
@@ -14,7 +17,7 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 public class ClimberSubsystem extends SubsystemBase {
 
     DoubleSolenoid Clawssssssss = new DoubleSolenoid(PneumaticsModuleType.REVPH, 8, 9);
-    public ClimberIO m_climberIO = new ClimberIO("Climb", 12, 0, 0, 0, 2048, .75, .5);
+    public ClimberIO m_climberIO = new ClimberIO("Climb", 12, 7, 0.7, 0, 2048, .9, 1.25);
     ClosedLoopIOInputs inputs;
     int speed = 0;
 
@@ -44,6 +47,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public void periodic() {
         Logger.getInstance().recordOutput("Climb/positionMeters", m_climberIO.getPosition());
+        Logger.getInstance().recordOutput("Climb/positionErrorMeters", m_climberIO.feedback.getPositionError());
         Logger.getInstance().processInputs("Climb", inputs);
         m_climberIO.updateInputs(inputs);
         Logger.getInstance().recordOutput("Climb/goalMeters", m_climberIO.feedback.getGoal().position);
@@ -54,8 +58,16 @@ public class ClimberSubsystem extends SubsystemBase {
         m_climberIO.zeroPosition();
     }
 
+    public void resetController() {
+        m_climberIO.feedback.reset(m_climberIO.getPosition());
+    }
+
     public double getPosition() {
         return m_climberIO.getPosition();
+    }
+
+    public void setPosition(double goal){
+        m_climberIO.setPosition(goal);
     }
 
 }

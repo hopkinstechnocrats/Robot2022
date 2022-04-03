@@ -13,16 +13,19 @@ public class AutoExtendTelescope extends CommandBase {
   double Pos;
   double tolerance;
   /** Creates a new autoClimb. */
-  public AutoExtendTelescope(double Pos) {
+  public AutoExtendTelescope(double Pos, ClimberSubsystem climb, double MaxSpeed, double MaxAccel) {
+    addRequirements(climb);
+    m_climb = climb;
     this.Pos = Pos;
+    m_climb.m_climberIO.setMaxSpeedAndAccel(MaxSpeed, MaxAccel);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_climb = new ClimberSubsystem();
     tolerance = .025;
+    m_climb.resetController();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -33,7 +36,9 @@ public class AutoExtendTelescope extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_climb.spinClimber(0);
+  }
 
   // Returns true when the command should end.
   @Override

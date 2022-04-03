@@ -5,7 +5,7 @@
 package frc.robot.subsystems.Climber;
 
 import com.ctre.phoenix.motorcontrol.Faults;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -24,7 +24,7 @@ public class ClimberIO implements ClosedLoopIO {
     private TunableNumber kD;
     public ProfiledPIDController feedback;
     private double positionOffset;
-    static WPI_TalonSRX motor;
+    static WPI_TalonFX motor;
     private AnalogPotentiometer stringClimber;
 
     
@@ -35,7 +35,7 @@ public class ClimberIO implements ClosedLoopIO {
         this.kI = new TunableNumber(name+"/kI", kI);
         this.kD = new TunableNumber(name+"/kD", kD);
         feedback = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
-        motor = new WPI_TalonSRX(motorPort);
+        motor = new WPI_TalonFX(motorPort, "GertrudeGreyser");
         positionOffset = 0;
     }
 
@@ -67,6 +67,10 @@ public class ClimberIO implements ClosedLoopIO {
 
     public double getPosition() {
         return stringClimber.get()-.365;
+    }
+
+    public void setMaxSpeedAndAccel (double MaxSp, double MaxAcc) {
+        feedback = new ProfiledPIDController(kP.get(), kI.get(), kD.get(), new TrapezoidProfile.Constraints(MaxSp, MaxAcc));
     }
 
     public void zeroPosition() {

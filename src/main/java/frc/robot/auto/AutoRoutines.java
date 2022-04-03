@@ -70,7 +70,7 @@ public class AutoRoutines {
                                 AutoConstants.kIThetaController, AutoConstants.kDThetaController,
                                 AutoConstants.kThetaControllerConstraints);
                 // var thetaController = new ProfiledPIDController(0,0,0,AutoConstants.kThetaControllerConstraints);
-                // thetaController.enableContinuousInput(-Math.PI, Math.PI);
+                thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
                 var xPIDController = new PIDController(AutoConstants.kPXController, 0, 0);
                 var yPIDController = new PIDController(AutoConstants.kPYController, 0, 0);
