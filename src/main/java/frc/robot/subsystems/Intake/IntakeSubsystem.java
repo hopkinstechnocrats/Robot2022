@@ -2,6 +2,7 @@ package frc.robot.subsystems.Intake;
 
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import lib.iotemplates.OpenLoopIO;
@@ -28,6 +29,12 @@ public class IntakeSubsystem extends SubsystemBase {
     public void spinIntake() {
         motorIO.setVoltage(-12 * speed);
         kicker.setVoltage(12 * speed);
+    }
+
+    public void RTrigger(XboxController m_controller) {
+        if (m_controller.getRawAxis(10) == 1) {
+            intakeIn();
+        }
     }
 
     public void StartIntakeOut() {

@@ -16,6 +16,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import lib.iotemplates.VelocityClosedLoopIOBase;
+import lib.util.TunableNumber;
+
 import org.littletonrobotics.junction.Logger;
 
 public class LauncherSubsystem extends SubsystemBase {
@@ -31,6 +33,7 @@ public class LauncherSubsystem extends SubsystemBase {
             );
     private final ClosedLoopIO.ClosedLoopIOInputs inputs = new ClosedLoopIO.ClosedLoopIOInputs(2);
     private LinearInterpolator interpolationTable;
+    TunableNumber spoid = new TunableNumber("Launcher/speed", 4000);
 
     public LauncherSubsystem() {
         interpolationTable = new LinearInterpolator();
@@ -44,6 +47,12 @@ public class LauncherSubsystem extends SubsystemBase {
     public void spinLauncher(double speedRPM) {
         io.setVelocity(Units.rotationsPerMinuteToRadiansPerSecond(speedRPM));
         SmartDashboard.putNumber("Launcher RPM", speedRPM);
+    }
+
+
+    public void spinLauncherTuning() {
+        io.setVelocity(Units.rotationsPerMinuteToRadiansPerSecond(spoid.get()));
+        SmartDashboard.putNumber("Launcher RPM", Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec));
     }
 
     public void stopLauncher() {
