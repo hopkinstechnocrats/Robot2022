@@ -17,7 +17,7 @@ import lib.util.TunableNumber;
 public class FixHeadingCommand extends CommandBase {
     private final DriveSubsystem driveSubsystem;
     private final ProfiledPIDController controller;
-    private final TunableNumber desiredState;
+    private final Rotation2d desiredState;
     private final TunableNumber kP;
     private final TunableNumber kI;
     private final TunableNumber kD;
@@ -25,7 +25,7 @@ public class FixHeadingCommand extends CommandBase {
 
     public FixHeadingCommand(DriveSubsystem driveSubsystem, Rotation2d desiredState) {
         this.driveSubsystem = driveSubsystem;
-        this.desiredState = new TunableNumber("FixHeadingDesiredState", new Rotation2d(MathUtil.angleModulus(desiredState.getRadians())).getRadians());
+        this.desiredState = desiredState;
         kP = new TunableNumber("FixHeadingkP", AutoConstants.kPThetaController);
         kI = new TunableNumber("FixHeadingkI", AutoConstants.kIThetaController);
         kD = new TunableNumber("FixHeadingkD", AutoConstants.kDThetaController);
@@ -47,7 +47,7 @@ public class FixHeadingCommand extends CommandBase {
         controller.setP(kP.get());
         controller.setI(kI.get());
         controller.setD(kD.get());
-        var output = controller.calculate(MathUtil.angleModulus(driveSubsystem.getHeading().getRadians()), MathUtil.angleModulus(desiredState.get()));
+        var output = controller.calculate(MathUtil.angleModulus(driveSubsystem.getHeading().getRadians()), MathUtil.angleModulus(desiredState.getRadians()));
         driveSubsystem.driveNoDeadband(
                 0,//-2*driverController.getLeftY(),
                 0,//-2*driverController.getLeftX(),

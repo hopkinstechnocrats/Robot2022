@@ -212,15 +212,17 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
                                         FieldPositions.R1, 
                                         Rotation2d.fromDegrees(250),
                                         m_robotDrive).withTimeout(5),
-                                new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(5)
-                        ), 
-                        new ParallelCommandGroup(
-                                new RunCommand(() -> m_launcher.spinLauncher(5500), m_launcher).withTimeout(6),
+                                new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(5),
+                                new RunCommand(() -> m_launcher.spinLauncher(5500), m_launcher).withTimeout(5),
                                 // new RunCommand(() -> m_launcher
                                 //                 .spinFromDistance(m_robotDrive.getPose().getTranslation().getNorm()),
                                 //                 m_launcher).withTimeout(4), 
-                                new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(6)
-                        ),
+                                new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(5)
+                        ), 
+                        new InstantCommand(() -> {
+                                m_launcher.stopLauncher();
+                                m_feed.spinFeed(0);
+                        }, m_launcher, m_feed),
                         new ParallelCommandGroup(
                                 this.DriveBetweenPoints(
                                         FieldPositions.R1,  
@@ -230,24 +232,25 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
                                 new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(5)
                       
                         ),     
-                        new FixHeadingCommand(m_robotDrive, new Rotation2d(-1*FieldPositions.R2.getX(), -1*FieldPositions.R2.getY())).withTimeout(5),                           
+                        new FixHeadingCommand(m_robotDrive,new Rotation2d(-1.1)).withTimeout(3).andThen(new InstantCommand(() -> m_robotDrive.drive(0,0,0), m_robotDrive)),                           
                         // new RunCommand(() -> m_robotDrive.drive(0, 0, -1*m_limelight.getRotationSpeed()), m_robotDrive).withTimeout(2),
                         new ParallelCommandGroup(
-                                new RunCommand(() -> m_launcher.spinLauncher(5000), m_launcher).withTimeout(5),
+                                new RunCommand(() -> m_launcher.spinLauncher(5500), m_launcher).withTimeout(10),
                                 // new RunCommand(() -> m_launcher
                                 //                 .spinFromDistance(m_robotDrive.getPose().getTranslation().getNorm()),
                                 //                 m_launcher).withTimeout(15), 
+                                new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(5),
                                 new SequentialCommandGroup(
-                                        new RunCommand(() -> m_feed.spinFeed(0), m_feed).withTimeout(2),
+                                        // new RunCommand(() -> m_feed.spinFeed(0), m_feed).withTimeout(10),
                                         // new RunCommand(() -> {
                                         //                                 m_robotDrive.drive(0, 0, -1 * m_limelight
                                         //                                                 .getRotationSpeed());
                                         //                         }, m_robotDrive).withTimeout(2.0), 
                                         new RunCommand(() -> m_feed.spinFeed(-1), m_feed)
-                                                                                .withTimeout(3)
+                                                                                .withTimeout(10)
                                         // new InstantCommand(m_intake::intakeOut) 
-        
-                        )),
+                                )
+                        ),
                         new ParallelCommandGroup(
                                 this.DriveBetweenPoints(
                                         FieldPositions.R2,  

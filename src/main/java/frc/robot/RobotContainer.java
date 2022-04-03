@@ -186,6 +186,9 @@ public class RobotContainer {
       JoystickButton OLIn = new JoystickButton(m_operatorController, 9);
       JoystickButton ORIn = new JoystickButton(m_operatorController, 10);
       JoystickButton OXbox = new JoystickButton(m_operatorController, 13);
+
+      OLIn.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(0)));
+      ORIn.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(180)));
       // 
       POVButton DPadTop = new POVButton(m_driverController, 0);
       DPadTop.whenHeld(new RunCommand(() -> m_climber.spinClimber(8), m_climber));
@@ -216,9 +219,9 @@ public class RobotContainer {
       RBumper.whenPressed(new InstantCommand(() -> m_intake.intakeIn()));
 
       //OAButton.whenPressed(new InstantCommand(m_intake::intakeIn));
-      OAButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(.5), m_feed));
+      OAButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
       //OXButton.whenPressed(new InstantCommand(m_intake::intakeOut));
-      OXButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(.5), m_feed));
+      OXButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(1), m_feed));
       //OLBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
       OYButton.whenHeld(new RunCommand(() -> m_launcher.spinLauncherTuning(), m_launcher));
       

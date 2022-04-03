@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import lib.motorspecs.FalconConstants;
 
 /**
@@ -37,7 +38,7 @@ public final class Constants {
     public static final double kD = -0.001;
     public static final double kF = 0.01;
     public static final double kEncoderTicksPerRevolution = 3700;
-    public static final double heightOfHighHubReflectors =2.64; //check it :/ above ground or limelight?  
+    public static final double heightOfHighHubReflectors = Units.inchesToMeters(70); //check it :/ above ground or limelight?  
    }
 
   public static final class TestFixtureConstants {
@@ -144,7 +145,7 @@ public final class Constants {
 
     public static final double kPXController = 4;
     public static final double kPYController = 4;
-    public static final double kPThetaController = -3;
+    public static final double kPThetaController = -5;
     public static final double kIThetaController = 0;
     public static final double kDThetaController = 0;
     // Constraint for the motion profilied robot angle controller

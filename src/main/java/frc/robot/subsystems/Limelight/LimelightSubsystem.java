@@ -5,6 +5,7 @@
 package frc.robot.subsystems.Limelight;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
@@ -17,8 +18,9 @@ public class LimelightSubsystem extends SubsystemBase {
   NetworkTableEntry tv;
   NetworkTableEntry ty;
   NetworkTableEntry tx;
-  double horizontalAngle;
-  double verticalAngle;
+  double horizontalAngle = 0;
+  double verticalAngle = 0;
+  double isTargetVisible = 0;
   double P = 0.15;
   double I = 0;
   double D = 0;
@@ -35,18 +37,22 @@ public class LimelightSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() { 
-    horizontalAngle = tx.getDouble(0.0);
-    verticalAngle = ty.getDouble(0.0);
+    horizontalAngle = tx.getDouble(horizontalAngle);
+    if (Math.abs(ty.getDouble(verticalAngle))>0) {
+      verticalAngle = ty.getDouble(verticalAngle);
+    }
+    
     SmartDashboard.putNumber("LimelightX", horizontalAngle);
     SmartDashboard.putNumber("LimelightY", verticalAngle);
     System.out.println("Running Limelight Periodic");
-    SmartDashboard.putNumber("Distanceawayfromtarget", (2.64/(Math.tan(Units.degreesToRadians(getVerticalAngle()+38.37)))));
-    System.out.println("Distance away from target: "+(2.64/(Math.tan(Units.degreesToRadians(getVerticalAngle()+38.37)))));
+    SmartDashboard.putNumber("Distanceawayfromtarget", (Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(getVerticalAngle()+30)))));
+    System.out.println("Distance away from target: "+(2.64/(Math.tan(Units.degreesToRadians(getVerticalAngle()+30)))));
     // This method will be called once per scheduler run
   }
 
   public boolean isTargetVisible(){
-    if (tv.getDouble(0) == 1){
+    isTargetVisible = tv.getDouble(isTargetVisible);
+    if (isTargetVisible == 1){
       return true;
     }
     else {
