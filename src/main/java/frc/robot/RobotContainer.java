@@ -198,7 +198,11 @@ public class RobotContainer {
       DPadTop.whenHeld(new RunCommand(() -> m_climber.spinClimber(8), m_climber));
       // DPadTop.whenPressed(myAutoRoutines.drivePositiveY());
       POVButton DPadRight = new POVButton(m_driverController, 90);
-      DPadRight.whenPressed(new AutoClimb(m_climber, m_robotDrive));
+      Command autoClimb = new AutoClimb(m_climber, m_robotDrive)
+              .beforeStarting(new InstantCommand(m_led::climbingOn))
+              .andThen(new InstantCommand(m_led::climbingOff));
+      DPadRight.whenPressed(autoClimb);
+      Back.whenPressed(new InstantCommand(m_led::climbingOff, m_climber));
       // DPadRight.whenPressed(myAutoRoutines.drivePositiveX());
       POVButton DPadBottom = new POVButton(m_driverController, 180);
       DPadTop.whenHeld(new RunCommand(() -> m_climber.spinClimber(-8), m_climber));
