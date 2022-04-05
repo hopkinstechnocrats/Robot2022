@@ -30,6 +30,26 @@ public interface OpenLoopIO {
         public boolean[] supplyOverV = new boolean[] {};
         public boolean[] supplyUnstable = new boolean[] {};
 
+        public OpenLoopIOInputs(int numMotors) {
+            supplyCurrentAmps = new double[numMotors];
+            statorCurrentAmps = new double[numMotors];
+            tempCelcius = new double[numMotors];
+            underVoltage = new boolean[numMotors];
+            forwardLimitSwitch = new boolean[numMotors];
+            reverseLimitSwitch = new boolean[numMotors];
+            forwardSoftLimit = new boolean[numMotors];
+            reverseSoftLimit = new boolean[numMotors];
+            hardwareFailure = new boolean[numMotors];
+            resetDuringEn = new boolean[numMotors];
+            sensorOverflow = new boolean[numMotors];
+            sensorOutOfPhase = new boolean[numMotors];
+            hardwareESDReset = new boolean[numMotors];
+            remoteLossOfSignal = new boolean[numMotors];
+            APIError = new boolean[numMotors];
+            supplyOverV = new boolean[numMotors];
+            supplyUnstable = new boolean[numMotors];
+        }
+
         public void toLog(LogTable table) {
             table.put("AppliedVolts", appliedVolts);
             table.put("SupplyCurrentAmps", supplyCurrentAmps);
@@ -70,7 +90,6 @@ public interface OpenLoopIO {
             APIError = table.getBooleanArray("APIError", APIError);
             supplyOverV = table.getBooleanArray("SupplyOverV", supplyOverV);
             supplyUnstable = table.getBooleanArray("SupplyUnstable", supplyUnstable);
-
 
         }
     }

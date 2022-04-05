@@ -10,6 +10,7 @@ public class TunableNumber {
     private final double defaultValue;
 
     public TunableNumber(String dashboardKey, double defaultValue) {
+        System.out.println("CREATE TUNABLE NUMBER"+dashboardKey);
         this.key = tableKey + "/" + dashboardKey;
         this.defaultValue = defaultValue;
         if (tuningMode) {
