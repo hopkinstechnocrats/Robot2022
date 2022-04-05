@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -129,11 +130,7 @@ public class RobotContainer {
                      ), m_robotDrive)); // use this to change from field oriented to non-field oriented
 
     m_intake.setDefaultCommand(
-            new RunCommand(() -> {
-                    m_intake.spinIntake();
-                    m_intake.RTrigger(m_driverController);
-
-            }, m_intake)
+            new RunCommand(m_intake::spinIntake, m_intake)
     );
 
     m_climber.setDefaultCommand(
@@ -249,7 +246,9 @@ public class RobotContainer {
       ODPadRight.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(5000), m_launcher));
       ODPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(4000), m_launcher));
 
-
+      // Pull intake in on right trigger press
+      Trigger RTrigger = new Trigger(() -> m_driverController.getRawAxis(10) == 1);
+      RTrigger.whenActive(new InstantCommand(m_intake::intakeIn));
       // DPadTop.whenPressed(new InstantCommand(() -> .(90)));
 
   }
