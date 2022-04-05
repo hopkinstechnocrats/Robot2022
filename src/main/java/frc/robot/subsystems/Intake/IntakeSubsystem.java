@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.LEDSubsystem;
 import lib.iotemplates.OpenLoopIO;
 
 import lib.iotemplates.OpenLoopIOTalonSRXBase;
@@ -17,6 +18,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class IntakeSubsystem extends SubsystemBase {
 
+    private final LEDSubsystem m_led;
+
     private final OpenLoopIOTalonSRXBase motorIO = new OpenLoopIOTalonSRXBase(Constants.IntakeConstants.kCANPort);
     private final WPI_VictorSPX kicker = new WPI_VictorSPX(1);
     private final OpenLoopIO.OpenLoopIOInputs motorInputs = new OpenLoopIO.OpenLoopIOInputs(1);
@@ -25,6 +28,10 @@ public class IntakeSubsystem extends SubsystemBase {
     private final SolenoidIO.SolenoidIOInputs solenoidInputs = new SolenoidIO.SolenoidIOInputs();
 
     double speed = 0;
+
+    public IntakeSubsystem(LEDSubsystem led) {
+        m_led = led;
+    }
 
     public void spinIntake() {
         motorIO.setVoltage(-12 * speed);
@@ -40,6 +47,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void StartIntakeOut() {
         speed = -.8;
         spinIntake();
+        m_led.intakeOn();
     }
 
     public void StartIntakeIn() {
@@ -50,6 +58,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void EndIntake() {
         speed = 0;
         spinIntake();
+        m_led.intakeOff();
     }
 
     public void intakeOut(){

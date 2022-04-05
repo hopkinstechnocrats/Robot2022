@@ -22,6 +22,7 @@ import frc.robot.auto.FieldPositions;
 import frc.robot.commands.AutoClimb;
 import frc.robot.commands.AutoExtendTelescope;
 import frc.robot.commands.FixHeadingCommand;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Climber.ClimberSubsystem;
 import frc.robot.subsystems.Feed.FeedSubsystem;
@@ -65,6 +66,7 @@ public class RobotContainer {
 //  String trajectoryJSON = "paths/output/GoGoGadgets.wpilib.json";
 //  Trajectory trajectory = new Trajectory();
   private final DriveSubsystem m_robotDrive;
+  private final LEDSubsystem m_led;
   private final IntakeSubsystem m_intake;
   final ClimberSubsystem m_climber;
   private final FeedSubsystem m_feed;
@@ -93,11 +95,12 @@ public class RobotContainer {
 
 
     TunableNumber.setTuningMode(true);
+    m_led = new LEDSubsystem();
     m_robotDrive = new DriveSubsystem();
-    m_intake = new IntakeSubsystem();
+    m_intake = new IntakeSubsystem(m_led);
     m_climber = new ClimberSubsystem();
     m_feed = new FeedSubsystem();
-    m_launcher = new LauncherSubsystem();
+    m_launcher = new LauncherSubsystem(m_led);
     m_limelight = new LimelightSubsystem();
     myAutoRoutines = new AutoRoutines(m_robotDrive, m_feed, m_intake, m_limelight, m_launcher); 
 
@@ -174,6 +177,7 @@ public class RobotContainer {
       JoystickButton YButton = new JoystickButton(m_driverController, 4);
       JoystickButton LBumper = new JoystickButton(m_driverController, 5);
       JoystickButton RBumper = new JoystickButton(m_driverController, 6);
+      JoystickButton Back = new JoystickButton(m_driverController, 7);
 
       JoystickButton OAButton = new JoystickButton(m_operatorController, 1);
       JoystickButton OBButton = new JoystickButton(m_operatorController, 2);
@@ -216,14 +220,14 @@ public class RobotContainer {
       XButton.whenPressed(new InstantCommand(m_robotDrive::fieldOFF));
 
       LBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
-      RBumper.whenPressed(new InstantCommand(() -> m_intake.intakeIn()));
+      RBumper.whenPressed(new InstantCommand(m_intake::intakeIn));
 
       //OAButton.whenPressed(new InstantCommand(m_intake::intakeIn));
       OAButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
       //OXButton.whenPressed(new InstantCommand(m_intake::intakeOut));
       OXButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(1), m_feed));
       //OLBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
-      OYButton.whenHeld(new RunCommand(() -> m_launcher.spinLauncherTuning(), m_launcher));
+      OYButton.whenHeld(new RunCommand(m_launcher::spinLauncherTuning, m_launcher));
       
       //OBButton.whenPressed(new InstantCommand(m_climber::clawsOut));
       //OYButton.whenPressed(new InstantCommand(m_climber::clawsIn));
