@@ -74,8 +74,11 @@ public class LauncherSubsystem extends SubsystemBase {
 
 
     public void periodic() {
+       double startTime = Logger.getInstance().getRealTimestamp();
        io.updateInputs(inputs);
        Logger.getInstance().processInputs("launcher", inputs);
+       double endTime = Logger.getInstance().getRealTimestamp();
+       Logger.getInstance().recordOutput("LauncherCodeSec", endTime-startTime);
     }
 
     public void spinFromDistance(double distance) {

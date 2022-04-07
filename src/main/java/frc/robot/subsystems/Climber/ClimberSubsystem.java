@@ -46,12 +46,15 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void periodic() {
+        double startTime = Logger.getInstance().getRealTimestamp();
         Logger.getInstance().recordOutput("Climb/positionMeters", m_climberIO.getPosition());
         Logger.getInstance().recordOutput("Climb/positionErrorMeters", m_climberIO.feedback.getPositionError());
         Logger.getInstance().processInputs("Climb", inputs);
         m_climberIO.updateInputs(inputs);
         Logger.getInstance().recordOutput("Climb/goalMeters", m_climberIO.feedback.getGoal().position);
         Logger.getInstance().recordOutput("Climb/setpointMeters", m_climberIO.feedback.getSetpoint().position);
+        double endTime = Logger.getInstance().getRealTimestamp();
+        Logger.getInstance().recordOutput("ClimberCodeSec", endTime-startTime);
     }
 
     public void zeroClimberPosition() {

@@ -87,10 +87,12 @@ public class DriveSubsystem extends SubsystemBase {
       m_rearLeft.getState(),
       m_frontRight.getState(),
       m_rearRight.getState());
+    double startTime = Logger.getInstance().getRealTimestamp();
     m_frontLeft.periodic();
     m_frontRight.periodic();
     m_rearLeft.periodic();
     m_rearRight.periodic();
+    double endTime = Logger.getInstance().getRealTimestamp();
     Logger.getInstance().recordOutput("Roll", (double) getRoll());
     SmartDashboard.putNumber("Heading", getHeading().getDegrees());
     // SmartDashboard.putNumber("KPTurningController", 4);
@@ -100,6 +102,7 @@ public class DriveSubsystem extends SubsystemBase {
     Pose2d transformedPose = getPose().transformBy(new Transform2d(new Translation2d(Units.feetToMeters(27),0), new Rotation2d(0))); 
     Logger.getInstance().recordOutput("Odometry/RobotPose",
             new double[] {getPose().getX(), getPose().getY(), getPose().getRotation().getRadians()});
+    Logger.getInstance().recordOutput("PeriodicCodeSec", endTime-startTime);
   }
 
   /**

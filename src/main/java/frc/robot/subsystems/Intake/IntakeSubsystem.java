@@ -70,10 +70,13 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void periodic() {
+        double startTime = Logger.getInstance().getRealTimestamp();
        motorIO.updateInputs(motorInputs);
        Logger.getInstance().processInputs("IntakeMotor", motorInputs);
        solenoidIO.updateInputs(solenoidInputs);
        Logger.getInstance().processInputs("IntakeSolenoid", solenoidInputs);
+       double endTime = Logger.getInstance().getRealTimestamp();
+       Logger.getInstance().recordOutput("IntakeCodeSec", endTime-startTime);
     }
 }
 

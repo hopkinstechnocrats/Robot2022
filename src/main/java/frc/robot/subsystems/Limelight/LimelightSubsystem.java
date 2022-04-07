@@ -7,6 +7,9 @@ package frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
@@ -36,10 +39,13 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() { 
+  public void periodic() {
+    double startTime = Logger.getInstance().getRealTimestamp();
     horizontalAngle = tx.getDouble(horizontalAngle);
     if (Math.abs(ty.getDouble(verticalAngle))>0) {
       verticalAngle = ty.getDouble(verticalAngle);
+      double endTime = Logger.getInstance().getRealTimestamp();
+      Logger.getInstance().recordOutput("LimelighteCodeSec", endTime-startTime);
     }
     
     SmartDashboard.putNumber("LimelightX", horizontalAngle);
