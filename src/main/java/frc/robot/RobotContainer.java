@@ -202,10 +202,10 @@ public class RobotContainer {
       Back.whenPressed(new InstantCommand(m_led::climbingOff, m_climber));
       // DPadRight.whenPressed(myAutoRoutines.drivePositiveX());
       POVButton DPadBottom = new POVButton(m_driverController, 180);
-      DPadTop.whenHeld(new RunCommand(() -> m_climber.spinClimber(-8), m_climber));
+      DPadTop.whenHeld(new RunCommand(() -> m_climber.spinClimber(8), m_climber));
       //DPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(5500), m_launcher));
       //DPadBottom.whenPressed(new FixHeadingCommand(m_robo]\[][\]\tDrive, Rotation2d.fromDegrees(270)));
-      DPadBottom.whenHeld(new RunCommand(() -> m_climber.setPosition(0.0), m_climber));
+      DPadBottom.whenHeld(new RunCommand(() -> m_climber.spinClimber(-8), m_climber));
       POVButton DPadLeft = new POVButton(m_driverController, 270); 
       DPadLeft.toggleWhenPressed(new StartEndCommand(m_climber::clawsOut, m_climber::clawsIn, m_climber));
       // DPadLeft.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(0), m_driverController));
@@ -247,8 +247,8 @@ public class RobotContainer {
       ODPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(4000), m_launcher));
 
       // Pull intake in on right trigger press
-      Trigger RTrigger = new Trigger(() -> m_driverController.getRawAxis(10) == 1);
-      RTrigger.whenActive(new InstantCommand(m_intake::intakeIn));
+      Trigger RTrigger = new Trigger(() -> m_driverController.getRawAxis(10) >= .7);
+      RTrigger.whenActive(new InstantCommand(m_intake::intakeOut));
       // DPadTop.whenPressed(new InstantCommand(() -> .(90)));
 
   }
