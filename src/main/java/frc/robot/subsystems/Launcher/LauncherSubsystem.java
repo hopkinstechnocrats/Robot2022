@@ -32,10 +32,22 @@ public class LauncherSubsystem extends SubsystemBase {
         motor1.setVoltage(-1* 12* speed);
         motor2.setVoltage(-1* 12* speed);
     }
+    public void stopLauncher() {
+        //io.setVoltage(0);
+        spinLauncher(0);
+    }
 
 
     public void periodic() {
-       
+        double startTime = Logger.getInstance().getRealTimestamp();
+       io.updateInputs(inputs);
+       Logger.getInstance().processInputs("launcher", inputs);
+       double endTime = Logger.getInstance().getRealTimestamp();
+       Logger.getInstance().recordOutput("LauncherCodeSec", endTime-startTime);
+    }
+
+    public void spinFromDistance(double distance) {
+        spinLauncher(interpolationTable.get(distance));
     }
 }
 

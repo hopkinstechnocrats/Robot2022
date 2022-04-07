@@ -28,8 +28,11 @@ public class FeedSubsystem extends SubsystemBase {
     }
 
     public void periodic() {
-       io.updateInputs(inputs);
-       Logger.getInstance().processInputs("FeedMotor", inputs);
+        double startTime = Logger.getInstance().getRealTimestamp();
+        io.updateInputs(inputs);
+        Logger.getInstance().processInputs("FeedMotor", inputs);
+        double endTime = Logger.getInstance().getRealTimestamp();
+        Logger.getInstance().recordOutput("FeedCodeSec", endTime-startTime);
     }
 }
 

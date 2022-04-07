@@ -83,15 +83,19 @@ public class DriveSubsystem extends SubsystemBase {
       m_rearLeft.getState(),
       m_frontRight.getState(),
       m_rearRight.getState());
+    double startTime = Logger.getInstance().getRealTimestamp();
     m_frontLeft.periodic();
     m_frontRight.periodic();
     m_rearLeft.periodic();
     m_rearRight.periodic();
+    double endTime = Logger.getInstance().getRealTimestamp();
+    Logger.getInstance().recordOutput("Roll", (double) getRoll());
     SmartDashboard.putNumber("Heading", getHeading().getDegrees());
     m_field.setRobotPose(getPose());
 
     Logger.getInstance().recordOutput("Odometry/RobotPose",
             new double[] {getPose().getX(), getPose().getY(), getPose().getRotation().getRadians()});
+    Logger.getInstance().recordOutput("PeriodicCodeSec", endTime-startTime);
   }
 
   /**

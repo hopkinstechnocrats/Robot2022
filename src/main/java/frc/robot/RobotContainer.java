@@ -89,24 +89,23 @@ public class RobotContainer {
     phCompressor.enableAnalog(100, 120);
      // Configure the button bindings
     configureButtonBindings();
-    m_intake.setDefaultCommand(
-        new RunCommand( () -> 
-            SmartDashboard.putNumber("Compressor Pressure", phCompressor.getPressure())
-        , m_intake)
-    );
+    // m_intake.setDefaultCommand(
+    //     new RunCommand( () -> 
+    //         SmartDashboard.putNumber("Compressor Pressure", phCompressor.getPressure())
+    //     , m_intake)
+    // );
 
     // Configure default commands
     // Set the default drive command to split-stick arcade drive
-    m_robotDrive.setDefaultCommand(
-        // A split-stick arcade command, with forward/backward controlled by the left
-        // hand, and turning controlled by the right.
-        new RunCommand(
-            () ->
-                m_robotDrive.drive(
-                    -2*m_driverController.getLeftY(),
-                    -2*m_driverController.getLeftX(),
-                     3*m_driverController.getRightX()
-                     ), m_robotDrive)); // use this to change from field oriented to non-field oriented
+    CommandBase driveDefaultCommand = new RunCommand(
+      () ->
+          m_robotDrive.drive(
+              -2*m_driverController.getLeftY(),
+              -2*m_driverController.getLeftX(),
+               3*m_driverController.getRightX()
+               ), m_robotDrive);
+    driveDefaultCommand.setName("DriveDefaultCommand");
+    m_robotDrive.setDefaultCommand(driveDefaultCommand); // use this to change from field oriented to non-field oriented
 
     m_intake.setDefaultCommand(
             new RunCommand(
