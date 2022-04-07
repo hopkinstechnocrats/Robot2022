@@ -20,7 +20,7 @@ public class FeedSubsystem extends SubsystemBase {
     private final OpenLoopIO.OpenLoopIOInputs inputs;
 
     public FeedSubsystem() {
-        inputs = new OpenLoopIO.OpenLoopIOInputs();
+        inputs = new OpenLoopIO.OpenLoopIOInputs(1);
     }
 
     public void spinFeed(double speed) {

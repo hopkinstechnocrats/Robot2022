@@ -7,13 +7,17 @@ package frc.robot.subsystems.drive;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -53,7 +57,7 @@ public class DriveSubsystem extends SubsystemBase {
               DriveConstants.kRearRightTurningEncoderPort,
               "RearRight", DriveConstants.kRearRightOffset);
   
-  
+              Rotation2d targetAngle;
 
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(SerialPort.Port.kMXP);
@@ -61,8 +65,8 @@ public class DriveSubsystem extends SubsystemBase {
   //field
   private final Field2d m_field = new Field2d();
 
-  private final SlewRateLimiter xSpeedFilter = new SlewRateLimiter(10);
-  private final SlewRateLimiter ySpeedFilter = new SlewRateLimiter(10);
+  private final SlewRateLimiter xSpeedFilter = new SlewRateLimiter(5);
+  private final SlewRateLimiter ySpeedFilter = new SlewRateLimiter(5);
   private final SlewRateLimiter rotFilter = new SlewRateLimiter(25);
 
   // Odometry class for tracking robot pose
@@ -91,8 +95,11 @@ public class DriveSubsystem extends SubsystemBase {
     double endTime = Logger.getInstance().getRealTimestamp();
     Logger.getInstance().recordOutput("Roll", (double) getRoll());
     SmartDashboard.putNumber("Heading", getHeading().getDegrees());
+    // SmartDashboard.putNumber("KPTurningController", 4);
+    // SmartDashboard.putNumber("KITurningController", 64);
+    // SmartDashboard.putNumber("KDTurningController", 0.01);
     m_field.setRobotPose(getPose());
-
+    Pose2d transformedPose = getPose().transformBy(new Transform2d(new Translation2d(Units.feetToMeters(27),0), new Rotation2d(0))); 
     Logger.getInstance().recordOutput("Odometry/RobotPose",
             new double[] {getPose().getX(), getPose().getY(), getPose().getRotation().getRadians()});
     Logger.getInstance().recordOutput("PeriodicCodeSec", endTime-startTime);
@@ -106,6 +113,13 @@ public class DriveSubsystem extends SubsystemBase {
    public Pose2d getPose() {
      return m_odometry.getPoseMeters();
    }
+   public void setTargetAngle(Rotation2d targetAngle){
+    this.targetAngle = targetAngle;
+   }
+
+   public Rotation2d getTargetAngle(){
+    return targetAngle;
+}
 
   /**
    * Resets the odometry to the specified pose.
@@ -189,7 +203,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public Rotation2d getHeading() {
-    return Rotation2d.fromDegrees(m_gyro.getFusedHeading());
+    return Rotation2d.fromDegrees(-1*m_gyro.getFusedHeading());
   }
 
   public Rotation2d setRotation() {
@@ -214,4 +228,8 @@ public class DriveSubsystem extends SubsystemBase {
   public double getTurnRate() {
     return m_gyro.getRate();
   }
+
+public float getRoll() {
+    return -1* m_gyro.getRoll();
+}
 }

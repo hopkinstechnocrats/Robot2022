@@ -1,6 +1,7 @@
 package lib.iotemplates;
 
 import com.ctre.phoenix.motorcontrol.Faults;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import java.util.Arrays;
@@ -9,10 +10,15 @@ import java.util.stream.Collectors;
 
 public class OpenLoopIOTalonSRXBase implements OpenLoopIO {
 
-    private List<WPI_TalonSRX> motors;
+    protected List<WPI_TalonSRX> motors;
 
     public OpenLoopIOTalonSRXBase(int... CANIDs) {
-        motors = Arrays.stream(CANIDs).mapToObj(WPI_TalonSRX::new).collect(Collectors.toList());
+        motors = Arrays.stream(CANIDs).mapToObj((int canID) -> {
+            WPI_TalonSRX motor = new WPI_TalonSRX(canID);
+            motor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20);
+        return motor;
+        }).collect(Collectors.toList());
+        System.out.println("INTAKE MOTOR ARRAY SIZE:" + motors.size());
     }
 
     public void updateInputs(OpenLoopIOInputs inputs) {
