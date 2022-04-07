@@ -246,7 +246,8 @@ public class RobotContainer {
       ODPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(4000), m_launcher));
 
       // Pull intake in on right trigger press
-      Trigger RTrigger = new Trigger(() -> m_driverController.getRawAxis(10) >= .7);
+      Trigger RTrigger = new Trigger(() -> m_driverController.getRawAxis(3) >= .7);
+
       RTrigger.whenActive(new InstantCommand(m_intake::intakeOut));
       // DPadTop.whenPressed(new InstantCommand(() -> .(90)));
 

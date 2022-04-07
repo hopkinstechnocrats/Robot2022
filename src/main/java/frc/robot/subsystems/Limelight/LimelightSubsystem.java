@@ -71,7 +71,6 @@ public class LimelightSubsystem extends SubsystemBase {
     System.out.println(tx.getDouble(0));
     System.out.println("Aiming speed: "+aiming.calculate(tx.getDouble(0), 0));
     return aiming.calculate(tx.getDouble(0), 0);
-    
   }
 
   public double getVerticalAngle() {

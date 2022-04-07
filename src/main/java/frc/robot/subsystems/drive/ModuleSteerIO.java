@@ -4,6 +4,9 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -40,6 +43,11 @@ public class ModuleSteerIO implements ClosedLoopIO {
     }
 
     public void updateInputs(ClosedLoopIOInputs inputs) {
+        double startTime = Logger.getInstance().getRealTimestamp();
+        steerMotor.getMotorOutputVoltage();
+    
+        double elapsedTime = Logger.getInstance().getRealTimestamp() - startTime;
+        Logger.getInstance().recordOutput("GetMotorOutputVoltageSec", elapsedTime);
         inputs.positionRad = getPosition().getRadians();
         inputs.velocityRadPerSec = Units.degreesToRadians(encoder.getVelocity());
         inputs.appliedVolts = steerMotor.getMotorOutputVoltage();

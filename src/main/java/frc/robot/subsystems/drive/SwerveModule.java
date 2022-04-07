@@ -40,15 +40,21 @@ public class SwerveModule {
   }
 
   public void periodic() {
+    double startTime = Logger.getInstance().getRealTimestamp();
     steerIO.updateInputs(steerInputs);
     driveIO.updateInputs(driveInputs);
+    double elapsed = Logger.getInstance().getRealTimestamp() - startTime;
+    Logger.getInstance().recordOutput("DriveIOInputUpdateSec", elapsed);
 
     Logger.getInstance().processInputs("DriveSubsystem/" + corners + " Steer", steerInputs);
     Logger.getInstance().processInputs("DriveSubsystem/" + corners + " Drive", driveInputs);
 
+    startTime = Logger.getInstance().getRealTimestamp();
     desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
     steerIO.setPosition(desiredState.angle);
     driveIO.setVelocityRadPerSec(desiredState.speedMetersPerSecond / (kWheelHeight / 2));
+    elapsed = Logger.getInstance().getRealTimestamp();
+    Logger.getInstance().recordOutput("DriveIOSetpointUpdateSec", elapsed);
 
     Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " ModuleAngleRad", getState().angle.getRadians());
     Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " ModuleSpeedMetersPerSecond", getState().speedMetersPerSecond);

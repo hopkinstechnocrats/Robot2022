@@ -222,8 +222,8 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
                         new InstantCommand(() -> {
                                 m_launcher.stopLauncher();
                                 m_feed.spinFeed(0);
-                        }, m_launcher, m_feed)
-                        /* new ParallelCommandGroup(
+                        }, m_launcher, m_feed),
+                        new ParallelCommandGroup(
                                 this.DriveBetweenPoints(
                                         FieldPositions.R1,  
                                         FieldPositions.R2,
@@ -261,7 +261,7 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
                       
                         ),
                         new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(5)
-                        */);
+                        );
                                 
         
                 }
