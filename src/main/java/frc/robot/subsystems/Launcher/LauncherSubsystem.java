@@ -71,10 +71,6 @@ public class LauncherSubsystem extends SubsystemBase {
         m_led.launchingOff();
         m_led.onTargetOff();
     }
-    public void stopLauncher() {
-        //io.setVoltage(0);
-        spinLauncher(0);
-    }
 
 
     public void periodic() {
