@@ -104,7 +104,7 @@ public class RobotContainer {
     m_launcher = new LauncherSubsystem(m_led);
     m_limelight = new LimelightSubsystem();
     myAutoRoutines = new AutoRoutines(m_robotDrive, m_feed, m_intake, m_limelight, m_launcher); 
-
+    SmartDashboard.putData(myAutoRoutines.getAutoChooser());
       Solenoid obj = new Solenoid(PneumaticsModuleType.REVPH, 0);
       obj.set(true);
     phCompressor.enableAnalog(100, 120);
@@ -148,7 +148,7 @@ public class RobotContainer {
 
     m_launcher.setDefaultCommand(
       new RunCommand(
-        () ->  m_launcher.stopLauncher(), //m_launcher.spinLauncher(launcherSpeed.get()); System.out.println("RUNNING LAUNCHER DEFAULT COMMAND");},
+        () ->  m_launcher.spinLauncherTuning(), //m_launcher.spinLauncher(launcherSpeed.get()); System.out.println("RUNNING LAUNCHER DEFAULT COMMAND");},
         m_launcher)
     );
     // singleModuleTestFixture.setDefaultCommand(
@@ -260,8 +260,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // return (new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(270)));
-    m_robotDrive.fieldOFF();
-    Pose2d zeroPose = FieldPositions.R3startingPosition;
-    return myAutoRoutines.FiveBallAutoRoutine(zeroPose);
+    return myAutoRoutines.getAutoCommand();
   }
 }

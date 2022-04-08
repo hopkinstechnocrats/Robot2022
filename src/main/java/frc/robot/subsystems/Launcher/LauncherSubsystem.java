@@ -17,14 +17,14 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import lib.iotemplates.VelocityClosedLoopIOBase;
+import lib.iotemplates.VelocityClosedLoopIOTalon;
 import lib.util.TunableNumber;
 
 import org.littletonrobotics.junction.Logger;
 
 public class LauncherSubsystem extends SubsystemBase {
 
-    private final VelocityClosedLoopIOBase io = new VelocityClosedLoopIOBase(
+    private final VelocityClosedLoopIOTalon io = new VelocityClosedLoopIOTalon(
             "launcher",
             new int[] {Constants.LauncherConstants.kCANPort1, Constants.LauncherConstants.kCANPort2},
             Constants.LauncherConstants.kP,

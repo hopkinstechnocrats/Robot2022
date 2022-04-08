@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -37,6 +38,7 @@ public class AutoRoutines {
         private final LimelightSubsystem m_limelight;
         private final LauncherSubsystem m_launcher;
         private final FieldPositions m_fieldPositions = new FieldPositions();
+        private SendableChooser<Command> chooser;
 
         public AutoRoutines(DriveSubsystem m_robotDrive, FeedSubsystem m_feed, IntakeSubsystem m_intake,
                         LimelightSubsystem m_limelight, LauncherSubsystem m_launcher) {
@@ -46,6 +48,17 @@ public class AutoRoutines {
                 this.m_intake = m_intake;
                 this.m_limelight = m_limelight;
                 this.m_launcher = m_launcher;
+                chooser = new SendableChooser<>();
+                chooser.setDefaultOption("3BallAutoFarSide", FiveBallAutoRoutine(FieldPositions.R3startingPosition));
+                chooser.addOption("2BallAuto", twoBallAutoRoutine(FieldPositions.R3startingPosition));
+        }
+
+        public SendableChooser<Command> getAutoChooser() {
+                return chooser;
+        }
+
+        public Command getAutoCommand() {
+                return chooser.getSelected();
         }
         
 
@@ -265,4 +278,31 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
                                 
         
                 }
+        
+                public SequentialCommandGroup twoBallAutoRoutine(Pose2d zeroPose) {
+
+                        return new SequentialCommandGroup(
+                                new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
+        
+                                new InstantCommand(m_intake::intakeIn), 
+                                new ParallelCommandGroup(
+                                        this.DriveBetweenPoints(
+                                                zeroPose.getTranslation(),
+                                                FieldPositions.R1, 
+                                                Rotation2d.fromDegrees(250),
+                                                m_robotDrive).withTimeout(10),
+                                        new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(10),
+                                        new RunCommand(() -> m_launcher.spinLauncher(5500), m_launcher).withTimeout(10),
+                                        // new RunCommand(() -> m_launcher
+                                        //                 .spinFromDistance(m_robotDrive.getPose().getTranslation().getNorm()),
+                                        //                 m_launcher).withTimeout(4), 
+                                        new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(10)
+                                ), 
+                                new InstantCommand(() -> {
+                                        m_launcher.stopLauncher();
+                                        m_feed.spinFeed(0);
+                                }, m_launcher, m_feed));
+                                        
+                
+                        }
 }
