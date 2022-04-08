@@ -174,6 +174,7 @@ public class RobotContainer {
       JoystickButton LBumper = new JoystickButton(m_driverController, 5);
       JoystickButton RBumper = new JoystickButton(m_driverController, 6);
       JoystickButton Back = new JoystickButton(m_driverController, 7);
+      JoystickButton Start = new JoystickButton(m_driverController, 8);
 
       JoystickButton OAButton = new JoystickButton(m_operatorController, 1);
       JoystickButton OBButton = new JoystickButton(m_operatorController, 2);
@@ -198,7 +199,7 @@ public class RobotContainer {
               .beforeStarting(new InstantCommand(m_led::climbingOn))
               .andThen(new InstantCommand(m_led::climbingOff));
       DPadRight.whenPressed(autoClimb);
-      Back.whenPressed(new InstantCommand(m_led::climbingOff, m_climber));
+      BButton.whenPressed(new InstantCommand(m_led::climbingOff, m_climber));
       // DPadRight.whenPressed(myAutoRoutines.drivePositiveX());
       POVButton DPadBottom = new POVButton(m_driverController, 180);
       DPadTop.whenHeld(new RunCommand(() -> m_climber.spinClimber(8), m_climber));
@@ -213,6 +214,9 @@ public class RobotContainer {
       POVButton ODPadRight = new POVButton(m_operatorController, 90);
       POVButton ODPadBottom = new POVButton(m_operatorController, 180);
       POVButton ODPadLeft = new POVButton(m_operatorController, 270);
+
+      Back.whenPressed(() -> m_robotDrive.makeBackwards(true));
+      Start.whenPressed(() -> m_robotDrive.makeBackwards(false));
 
       AButton.whenHeld(new RunCommand(() -> m_robotDrive.drive(0, 0, -1*m_limelight.getRotationSpeed()), m_robotDrive));
       BButton.whenPressed(new InstantCommand(() -> m_robotDrive.resetOdometry(new Pose2d(-1.06+0.444, -2.76+0.444, new Rotation2d(0,-1)))));
@@ -251,6 +255,14 @@ public class RobotContainer {
       RTrigger.whenActive(new InstantCommand(m_intake::intakeOut));
       // DPadTop.whenPressed(new InstantCommand(() -> .(90)));
 
+  }
+
+  public void drive() {
+     m_robotDrive.drive(
+    -2*m_driverController.getLeftY(),
+    -2*m_driverController.getLeftX(),
+     3*m_driverController.getRightX()
+     );
   }
 
   /**

@@ -226,7 +226,7 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
                                         Rotation2d.fromDegrees(250),
                                         m_robotDrive).withTimeout(10),
                                 new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(10),
-                                new RunCommand(() -> m_launcher.spinLauncher(5500), m_launcher).withTimeout(10),
+                                new RunCommand(() -> m_launcher.spinLauncher(6100), m_launcher).withTimeout(10),
                                 // new RunCommand(() -> m_launcher
                                 //                 .spinFromDistance(m_robotDrive.getPose().getTranslation().getNorm()),
                                 //                 m_launcher).withTimeout(4), 
@@ -292,11 +292,13 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
                                                 Rotation2d.fromDegrees(250),
                                                 m_robotDrive).withTimeout(10),
                                         new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(10),
-                                        new RunCommand(() -> m_launcher.spinLauncher(5500), m_launcher).withTimeout(10),
+                                        new RunCommand(() -> m_launcher.spinLauncher(6100), m_launcher).withTimeout(10),
                                         // new RunCommand(() -> m_launcher
                                         //                 .spinFromDistance(m_robotDrive.getPose().getTranslation().getNorm()),
                                         //                 m_launcher).withTimeout(4), 
-                                        new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(10)
+                                        new SequentialCommandGroup(
+                                        new WaitCommand(2),        
+                                        new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(8))
                                 ), 
                                 new InstantCommand(() -> {
                                         m_launcher.stopLauncher();
