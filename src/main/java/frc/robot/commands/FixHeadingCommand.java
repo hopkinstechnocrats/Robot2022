@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
 
-import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -52,10 +51,6 @@ public class FixHeadingCommand extends CommandBase {
                 0,//-2*driverController.getLeftY(),
                 0,//-2*driverController.getLeftX(),
                 output);
-        Logger.getInstance().recordOutput("DriveSubsystem/FixHeadingGoal", controller.getGoal().position);
-        Logger.getInstance().recordOutput("DriveSubsystem/FixHeadingSetpoint", controller.getSetpoint().position);
-        Logger.getInstance().recordOutput("DriveSubsystem/FixHeadingOutput", output);
-        Logger.getInstance().recordOutput("DriveSubsystem/FixHeadingError", controller.getPositionError());
         
 
 

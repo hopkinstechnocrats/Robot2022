@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
@@ -66,8 +65,6 @@ public class LimelightSubsystem extends SubsystemBase {
     if (Math.abs(tx.getDouble(horizontalAngle))>0.5) {
       horizontalAngle = tx.getDouble(horizontalAngle);
     }
-    Logger.getInstance().recordOutput("Limelight/horizontalAngle", horizontalAngle);
-    Logger.getInstance().recordOutput("Limelight/RotationSpeed",aiming.calculate(horizontalAngle, 0));
     return aiming.calculate(horizontalAngle, 0);
   }
 

@@ -12,7 +12,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import lib.iotemplates.OpenLoopIOTalonSRXBase;
-import org.littletonrobotics.junction.Logger;
 
 public class FeedSubsystem extends SubsystemBase {
 
@@ -28,11 +27,7 @@ public class FeedSubsystem extends SubsystemBase {
     }
 
     public void periodic() {
-        double startTime = Logger.getInstance().getRealTimestamp();
         io.updateInputs(inputs);
-        Logger.getInstance().processInputs("FeedMotor", inputs);
-        double endTime = Logger.getInstance().getRealTimestamp();
-        Logger.getInstance().recordOutput("FeedCodeSec", endTime-startTime);
     }
 }
 

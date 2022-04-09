@@ -7,7 +7,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
 import lib.util.TunableNumber;
-import org.littletonrobotics.junction.Logger;
 
 import java.util.Arrays;
 import java.util.List;
@@ -85,12 +84,7 @@ public class VelocityClosedLoopIOBase implements ClosedLoopIO{
 
     public void setVelocity(double velocityRadPerSec) {
         setpoint = velocityRadPerSec;
-        Logger.getInstance().recordOutput("CURRENT VELOCITY", currentVelocity);
-        Logger.getInstance().recordOutput("SETPOINT", velocityRadPerSec);
         double outputVoltage = feedforward.calculate(velocityRadPerSec) + feedback.calculate(currentVelocity, velocityRadPerSec);
-        Logger.getInstance().recordOutput("FEEDBACK", feedback.calculate(currentVelocity, velocityRadPerSec));
-        Logger.getInstance().recordOutput("FEEDFORWARD", feedforward.calculate(velocityRadPerSec));
-        Logger.getInstance().recordOutput("OUTPUT", outputVoltage);
         for (WPI_TalonSRX motor : motors) {
             motor.setVoltage(-1*outputVoltage);
         }

@@ -20,8 +20,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import lib.iotemplates.VelocityClosedLoopIOTalon;
 import lib.util.TunableNumber;
 
-import org.littletonrobotics.junction.Logger;
-
 public class LauncherSubsystem extends SubsystemBase {
 
     private final VelocityClosedLoopIOTalon io = new VelocityClosedLoopIOTalon(
@@ -74,11 +72,7 @@ public class LauncherSubsystem extends SubsystemBase {
 
 
     public void periodic() {
-       double startTime = Logger.getInstance().getRealTimestamp();
        io.updateInputs(inputs);
-       Logger.getInstance().processInputs("launcher", inputs);
-       double endTime = Logger.getInstance().getRealTimestamp();
-       Logger.getInstance().recordOutput("LauncherCodeSec", endTime-startTime);
     }
 
     public void spinFromDistance(double distance) {

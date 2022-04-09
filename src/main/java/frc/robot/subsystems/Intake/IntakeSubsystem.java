@@ -14,8 +14,6 @@ import lib.iotemplates.SolenoidIOBase;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
-import org.littletonrobotics.junction.Logger;
-
 public class IntakeSubsystem extends SubsystemBase {
 
     private final LEDSubsystem m_led;
@@ -70,13 +68,8 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void periodic() {
-        double startTime = Logger.getInstance().getRealTimestamp();
-       motorIO.updateInputs(motorInputs);
-       Logger.getInstance().processInputs("IntakeMotor", motorInputs);
+      motorIO.updateInputs(motorInputs);
        solenoidIO.updateInputs(solenoidInputs);
-       Logger.getInstance().processInputs("IntakeSolenoid", solenoidInputs);
-       double endTime = Logger.getInstance().getRealTimestamp();
-       Logger.getInstance().recordOutput("IntakeCodeSec", endTime-startTime);
     }
 }
 

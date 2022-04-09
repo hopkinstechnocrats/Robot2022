@@ -4,19 +4,14 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.LoggedRobot;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Climber.ClimberIO;
 
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
-import org.littletonrobotics.junction.io.ByteLogReceiver;
-import org.littletonrobotics.junction.io.ByteLogReplay;
-import org.littletonrobotics.junction.io.LogSocketServer;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -24,7 +19,7 @@ import org.littletonrobotics.junction.io.LogSocketServer;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends LoggedRobot {
+public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -35,39 +30,6 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
-    setUseTiming(isReal());
-    //LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
-    Logger.getInstance().recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
-    Logger.getInstance().recordMetadata("RuntimeType", getRuntimeType().toString());
-    Logger.getInstance().recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
-    Logger.getInstance().recordMetadata("GitSHA", BuildConstants.GIT_SHA);
-    Logger.getInstance().recordMetadata("GitDate", BuildConstants.GIT_DATE);
-    Logger.getInstance().recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
-    switch (BuildConstants.DIRTY) {
-      case 0:
-        Logger.getInstance().recordMetadata("GitDirty", "All changes committed");
-        break;
-      case 1:
-        Logger.getInstance().recordMetadata("GitDirty", "Uncomitted changes");
-        break;
-      default:
-        Logger.getInstance().recordMetadata("GitDirty", "Unknown");
-        break;
-    }
-
-    if (isReal()) {
-      Logger.getInstance().addDataReceiver(new ByteLogReceiver("/home/lvuser/"));
-      Logger.getInstance().addDataReceiver(new LogSocketServer(5800));
-    } else {
-      String path = ByteLogReplay.promptForPath();
-      Logger.getInstance().setReplaySource(new ByteLogReplay(path));
-      Logger.getInstance().addDataReceiver(new ByteLogReceiver(ByteLogReceiver.addPathSuffix(path, "_sim")));
-    }
-
-    Logger.getInstance().start();
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
   }
 
   /**
@@ -79,17 +41,13 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotPeriodic() {
-    double startTime = Logger.getInstance().getRealTimestamp();
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     // SmartDashboard.putNumber("Compressor Pressure", m_robotContainer.phCompressor.getPressure());
-    double endTime =  Logger.getInstance().getRealTimestamp();
-    Logger.getInstance().recordOutput("RealUserCodeSec", endTime-startTime);
-    Logger.getInstance().recordOutput("EndTime", endTime);
-    Logger.getInstance().recordOutput("FPGATime", startTime);
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

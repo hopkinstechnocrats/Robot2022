@@ -8,13 +8,12 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
 import lib.util.TunableNumber;
-import org.littletonrobotics.junction.Logger;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class VelocityClosedLoopIOTalon implements ClosedLoopIO{
+public class VelocityClosedLoopIOTalon implements ClosedLoopIO {
     private String name;
     private TunableNumber kP;
     private TunableNumber kI;
@@ -87,8 +86,6 @@ public class VelocityClosedLoopIOTalon implements ClosedLoopIO{
 
     public void setVelocity(double velocityRadPerSec) {
         setpoint = velocityRadPerSec;
-        Logger.getInstance().recordOutput("CURRENT VELOCITY", currentVelocity);
-        Logger.getInstance().recordOutput("SETPOINT", velocityRadPerSec);
         master.set(ControlMode.Velocity, Units.radiansToRotations(velocityRadPerSec) * kEncoderTicksPerRevolution / 10);
     }
 

@@ -24,7 +24,6 @@ import frc.robot.subsystems.Intake.IntakeSubsystem;
 import frc.robot.subsystems.Launcher.LauncherSubsystem;
 import frc.robot.subsystems.Limelight.LimelightSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
-import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.auto.FieldPositions;
 import frc.robot.commands.FixHeadingCommand;
@@ -99,23 +98,7 @@ public class AutoRoutines {
                                 m_robotDrive::setModuleStates, m_robotDrive)
                                 .andThen(() -> m_robotDrive.drive(0,0,0));
 
-                Command autonomousLogCommand = new RunCommand(() -> {
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerGoalPosition",
-                        thetaController.getGoal().position);
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerGoalVelocity",
-                        thetaController.getGoal().velocity);
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerSetpointPosition",
-                        thetaController.getSetpoint().position);
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerSetpointVelocity",
-                        thetaController.getSetpoint().velocity);
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerPositionError",
-                        thetaController.getPositionError());
-                        Logger.getInstance().recordOutput("DriveSubsystem/ThetaControllerVelocityError",
-                        thetaController.getVelocityError());
-                        Logger.getInstance().recordOutput("DriveSubsystem/XTargetPosition", xPIDController.getSetpoint());
-                        Logger.getInstance().recordOutput("DriveSubsystem/YTargetPosition", yPIDController.getSetpoint());
-                });
-                return new ParallelCommandGroup(swerveControllerCommand, autonomousLogCommand);
+                return new ParallelCommandGroup(swerveControllerCommand);
         }
 
         public Command drivePositiveX() {

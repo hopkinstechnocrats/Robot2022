@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.littletonrobotics.junction.Logger;
 
 public class LEDSubsystem extends SubsystemBase {
   DigitalOutput output;
@@ -32,12 +31,7 @@ public class LEDSubsystem extends SubsystemBase {
   public void periodic() {
     proportionOn = convertToDutyCycle(determineOutput());
     output.updateDutyCycle(proportionOn);
-    Logger.getInstance().recordOutput("LEDSubsystem/intaking", intaking);
-    Logger.getInstance().recordOutput("LEDSubsystem/climbing", climbing);
-    Logger.getInstance().recordOutput("LEDSubsystem/warning", warning);
-    Logger.getInstance().recordOutput("LEDSubsystem/launching", launching);
-    Logger.getInstance().recordOutput("LEDSubsystem/allianceColor", allianceColor);
-    // This method will be called once per scheduler run
+        // This method will be called once per scheduler run
 
     if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
       teamColorBlue();

@@ -7,7 +7,6 @@ package frc.robot.subsystems.drive;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import lib.iotemplates.ClosedLoopIO;
-import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.Constants.DriveConstants.kWheelHeight;
 

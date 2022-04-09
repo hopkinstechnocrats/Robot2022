@@ -1,8 +1,6 @@
-
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2022.4.1"
-    id "com.peterabeles.gversion" version "1.10"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -45,25 +43,7 @@ def deployArtifact = deploy.targets.roborio.artifacts.frcJava
 wpi.java.debugJni = false
 
 // Set this to true to enable desktop support.
-def includeDesktopSupport = true
-
-repositories {
-    maven {
-        url "https://jitpack.io"
-    }
-    maven { url 'https://nexus.otake.pw/repository/maven-public/' }
-    maven {
-        url = uri("https://maven.pkg.github.com/Mechanical-Advantage/AdvantageKit")
-        credentials {
-            username = "Mechanical-Advantage-Bot"
-            password = "\u0067\u0068\u0070\u005f\u006e\u0056\u0051\u006a\u0055\u004f\u004c\u0061\u0079\u0066\u006e\u0078\u006e\u0037\u0051\u0049\u0054\u0042\u0032\u004c\u004a\u006d\u0055\u0070\u0073\u0031\u006d\u0037\u004c\u005a\u0030\u0076\u0062\u0070\u0063\u0051"
-        }
-    }
-}
-
-configurations.all {
-    exclude group: "edu.wpi.first.wpilibj"
-}
+def includeDesktopSupport = false
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
@@ -85,7 +65,7 @@ dependencies {
     nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
     simulationRelease wpi.sim.enableRelease()
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.1'
 }
 
 // Simulation configuration (e.g. environment variables).
@@ -101,21 +81,7 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
-test {
-    useJUnit()
-}
-
 // Configure jar and deploy tasks
 deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
-
-project.compileJava.dependsOn(createVersionFile)
-gversion {
-    srcDir       = "src/main/java/"
-    classPackage = "frc.robot"
-    className    = "BuildConstants"
-    dateFormat   = "yyyy-MM-dd HH:mm:ss"
-    timeZone     = "America/Chicago"
-    indent       = "  "
-}

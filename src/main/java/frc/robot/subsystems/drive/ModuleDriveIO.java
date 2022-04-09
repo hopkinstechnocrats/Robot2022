@@ -9,7 +9,6 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import lib.iotemplates.ClosedLoopIO;
 import lib.talonconfiguration.BaseTalonFXConfiguration;
-import org.littletonrobotics.junction.Logger;
 
 public class ModuleDriveIO implements ClosedLoopIO {
 

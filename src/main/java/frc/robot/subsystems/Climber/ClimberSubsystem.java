@@ -11,9 +11,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import lib.iotemplates.OpenLoopIO;
 import lib.iotemplates.ClosedLoopIO.ClosedLoopIOInputs;
 
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.inputs.LoggableInputs;
-
 public class ClimberSubsystem extends SubsystemBase {
 
     DoubleSolenoid Clawssssssss = new DoubleSolenoid(PneumaticsModuleType.REVPH, 8, 9);
@@ -46,15 +43,9 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void periodic() {
-        double startTime = Logger.getInstance().getRealTimestamp();
-        Logger.getInstance().recordOutput("Climb/positionMeters", m_climberIO.getPosition());
-        Logger.getInstance().recordOutput("Climb/positionErrorMeters", m_climberIO.feedback.getPositionError());
-        Logger.getInstance().processInputs("Climb", inputs);
+       
         m_climberIO.updateInputs(inputs);
-        Logger.getInstance().recordOutput("Climb/goalMeters", m_climberIO.feedback.getGoal().position);
-        Logger.getInstance().recordOutput("Climb/setpointMeters", m_climberIO.feedback.getSetpoint().position);
-        double endTime = Logger.getInstance().getRealTimestamp();
-        Logger.getInstance().recordOutput("ClimberCodeSec", endTime-startTime);
+        
     }
 
     public void zeroClimberPosition() {

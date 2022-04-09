@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.SerialPort;
-import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -88,22 +87,15 @@ public class DriveSubsystem extends SubsystemBase {
       m_rearLeft.getState(),
       m_frontRight.getState(),
       m_rearRight.getState());
-    double startTime = Logger.getInstance().getRealTimestamp();
     m_frontLeft.periodic();
     m_frontRight.periodic();
     m_rearLeft.periodic();
     m_rearRight.periodic();
-    double endTime = Logger.getInstance().getRealTimestamp();
-    Logger.getInstance().recordOutput("Roll", (double) getRoll());
     SmartDashboard.putNumber("Heading", getHeading().getDegrees());
     // SmartDashboard.putNumber("KPTurningController", 4);
     // SmartDashboard.putNumber("KITurningController", 64);
     // SmartDashboard.putNumber("KDTurningController", 0.01);
     m_field.setRobotPose(getPose());
-    Pose2d transformedPose = getPose().transformBy(new Transform2d(new Translation2d(Units.feetToMeters(27),0), new Rotation2d(0))); 
-    Logger.getInstance().recordOutput("Odometry/RobotPose",
-            new double[] {getPose().getX(), getPose().getY(), getPose().getRotation().getRadians()});
-    Logger.getInstance().recordOutput("PeriodicCodeSec", endTime-startTime);
   }
 
   /**
@@ -140,7 +132,6 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
   public void drive(double xSpeed, double ySpeed, double rot) {
-    Logger.getInstance().recordOutput("DriveSubsystem/Raw Rotation Command", rot);
     
     rot =  negate*MathUtil.applyDeadband(rot, 0.4);
     ySpeed = negate*MathUtil.applyDeadband(ySpeed, 0.2);
@@ -154,11 +145,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void driveNoDeadband(double xSpeed, double ySpeed, double rot) {
   
-    
-    Logger.getInstance().recordOutput("DriveSubsystem/Rotation Command", rot);
-    Logger.getInstance().recordOutput("DriveSubsystem/xSpeed Command", xSpeed);
-    Logger.getInstance().recordOutput("DriveSubsystem/ySpeed Command", ySpeed);
-
     SwerveModuleState[] swerveModuleStates;
     if (fieldOriented) {
       swerveModuleStates =
