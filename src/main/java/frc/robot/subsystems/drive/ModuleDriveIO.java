@@ -46,7 +46,7 @@ public class ModuleDriveIO implements ClosedLoopIO {
         inputs.appliedVolts = driveMotor.getMotorOutputVoltage();
         inputs.statorCurrentAmps = new double [] {driveMotor.getStatorCurrent()};
         inputs.supplyCurrentAmps = new double [] {driveMotor.getSupplyCurrent()};
-        inputs.tempCelcius = new double [] {driveMotor.getTemperature()};
+        // inputs.tempCelcius = new double [] {driveMotor.getTemperature()};
         inputs.velocitySetpointRadPerSec = velocitySetpointRadPerSec;
     }
 
@@ -67,9 +67,9 @@ public class ModuleDriveIO implements ClosedLoopIO {
                 inverted ?
                 m_drivePIDController.calculate(getVelocityRadPerSecond(), desiredSpeedRadPerSecond)
                 : -1*m_drivePIDController.calculate(getVelocityRadPerSecond(), desiredSpeedRadPerSecond));
-        Logger.getInstance().recordOutput(corners+" Error", getVelocityRadPerSecond()-desiredSpeedRadPerSecond);
-        Logger.getInstance().recordOutput(corners+" Setpoint", desiredSpeedRadPerSecond);
-        Logger.getInstance().recordOutput(corners+" Measurement", getVelocityRadPerSecond());
+        // Logger.getInstance().recordOutput(corners+" Error", getVelocityRadPerSecond()-desiredSpeedRadPerSecond);
+        // Logger.getInstance().recordOutput(corners+" Setpoint", desiredSpeedRadPerSecond);
+        // Logger.getInstance().recordOutput(corners+" Measurement", getVelocityRadPerSecond());
 
         driveMotor.setVoltage(driveOutput);
     }

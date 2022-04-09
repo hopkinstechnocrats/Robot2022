@@ -53,7 +53,7 @@ public class ModuleSteerIO implements ClosedLoopIO {
         inputs.appliedVolts = steerMotor.getMotorOutputVoltage();
         inputs.statorCurrentAmps = new double[] { steerMotor.getStatorCurrent() };
         inputs.supplyCurrentAmps = new double[] { steerMotor.getSupplyCurrent() };
-        inputs.tempCelcius = new double[] { steerMotor.getTemperature() };
+        // inputs.tempCelcius = new double[] { steerMotor.getTemperature() };
         inputs.positionSetpointRad = positionSetPointRad;
 
         m_steeringPIDController.setP(Constants.ModuleConstants.kPModuleTurningController);

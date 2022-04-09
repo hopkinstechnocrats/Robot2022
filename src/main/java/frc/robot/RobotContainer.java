@@ -148,7 +148,7 @@ public class RobotContainer {
 
     m_launcher.setDefaultCommand(
       new RunCommand(
-        () ->  m_launcher.spinLauncherTuning(), //m_launcher.spinLauncher(launcherSpeed.get()); System.out.println("RUNNING LAUNCHER DEFAULT COMMAND");},
+        () ->  m_launcher.stopLauncher(), //m_launcher.spinLauncher(launcherSpeed.get()); System.out.println("RUNNING LAUNCHER DEFAULT COMMAND");},
         m_launcher)
     );
     // singleModuleTestFixture.setDefaultCommand(

@@ -40,13 +40,8 @@ public class LimelightSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // double startTime = Logger.getInstance().getRealTimestamp();
-    // horizontalAngle = tx.getDouble(horizontalAngle);
-    // if (Math.abs(ty.getDouble(verticalAngle))>0) {
-    //   verticalAngle = ty.getDouble(verticalAngle);
-    //   double endTime = Logger.getInstance().getRealTimestamp();
-    //   Logger.getInstance().recordOutput("LimelighteCodeSec", endTime-startTime);
-    // }
+    
+    
     
     // SmartDashboard.putNumber("LimelightX", horizontalAngle);
     // SmartDashboard.putNumber("LimelightY", verticalAngle);
@@ -68,12 +63,18 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   public double getRotationSpeed(){
-    System.out.println(tx.getDouble(0));
-    System.out.println("Aiming speed: "+aiming.calculate(tx.getDouble(0), 0));
-    return aiming.calculate(tx.getDouble(0), 0);
+    if (Math.abs(tx.getDouble(horizontalAngle))>0.5) {
+      horizontalAngle = tx.getDouble(horizontalAngle);
+    }
+    Logger.getInstance().recordOutput("Limelight/horizontalAngle", horizontalAngle);
+    Logger.getInstance().recordOutput("Limelight/RotationSpeed",aiming.calculate(horizontalAngle, 0));
+    return aiming.calculate(horizontalAngle, 0);
   }
 
   public double getVerticalAngle() {
+    if (Math.abs(ty.getDouble(verticalAngle))>0) {
+      verticalAngle = ty.getDouble(verticalAngle);
+    }
     return verticalAngle;
   }
 }

@@ -44,7 +44,7 @@ public class SwerveModule {
     steerIO.updateInputs(steerInputs);
     driveIO.updateInputs(driveInputs);
     double elapsed = Logger.getInstance().getRealTimestamp() - startTime;
-    Logger.getInstance().recordOutput("DriveIOInputUpdateSec", elapsed);
+    // Logger.getInstance().recordOutput("DriveIOInputUpdateSec", elapsed);
 
     Logger.getInstance().processInputs("DriveSubsystem/" + corners + " Steer", steerInputs);
     Logger.getInstance().processInputs("DriveSubsystem/" + corners + " Drive", driveInputs);
@@ -54,12 +54,12 @@ public class SwerveModule {
     steerIO.setPosition(desiredState.angle);
     driveIO.setVelocityRadPerSec(desiredState.speedMetersPerSecond / (kWheelHeight / 2));
     elapsed = Logger.getInstance().getRealTimestamp();
-    Logger.getInstance().recordOutput("DriveIOSetpointUpdateSec", elapsed);
+    // Logger.getInstance().recordOutput("DriveIOSetpointUpdateSec", elapsed);
 
-    Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " ModuleAngleRad", getState().angle.getRadians());
-    Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " ModuleSpeedMetersPerSecond", getState().speedMetersPerSecond);
-    Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " DesiredModuleAngleRad", desiredState.angle.getRadians());
-    Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " DesiredModuleSpeedMetersPerSecond", desiredState.speedMetersPerSecond);
+    // Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " ModuleAngleRad", getState().angle.getRadians());
+    // Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " ModuleSpeedMetersPerSecond", getState().speedMetersPerSecond);
+    // Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " DesiredModuleAngleRad", desiredState.angle.getRadians());
+    // Logger.getInstance().recordOutput("DriveSubsystem/" + corners + " DesiredModuleSpeedMetersPerSecond", desiredState.speedMetersPerSecond);
   }
 
   public SwerveModuleState getState() {

@@ -43,7 +43,7 @@ public class ClimberIO implements ClosedLoopIO {
         inputs.appliedVolts = motor.getMotorOutputVoltage();
             inputs.supplyCurrentAmps[0] = motor.getSupplyCurrent();
             inputs.statorCurrentAmps[0] = motor.getStatorCurrent();
-            inputs.tempCelcius[0] = motor.getTemperature();
+            // inputs.tempCelcius[0] = motor.getTemperature();
             Faults faults = new Faults();
             motor.getFaults(faults);
             inputs.underVoltage[0] = faults.UnderVoltage;
