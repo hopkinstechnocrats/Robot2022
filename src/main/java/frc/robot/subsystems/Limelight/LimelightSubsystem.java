@@ -24,7 +24,7 @@ public class LimelightSubsystem extends SubsystemBase {
   double horizontalAngle = 0;
   double verticalAngle = 0;
   double isTargetVisible = 0;
-  double P = 0.15;
+  double P = 0.1;
   double I = 0;
   double D = 0;
   double period = 0.1;

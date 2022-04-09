@@ -40,26 +40,26 @@ public class ClimberIO implements ClosedLoopIO {
     }
 
     public void updateInputs(ClosedLoopIOInputs inputs) {
-        inputs.appliedVolts = motor.getMotorOutputVoltage();
-            inputs.supplyCurrentAmps[0] = motor.getSupplyCurrent();
-            inputs.statorCurrentAmps[0] = motor.getStatorCurrent();
-            // inputs.tempCelcius[0] = motor.getTemperature();
-            Faults faults = new Faults();
-            motor.getFaults(faults);
-            inputs.underVoltage[0] = faults.UnderVoltage;
-            inputs.forwardLimitSwitch[0] = faults.ForwardLimitSwitch;
-            inputs.reverseLimitSwitch[0] = faults.ReverseLimitSwitch;
-            inputs.forwardSoftLimit[0] = faults.ForwardSoftLimit;
-            inputs.reverseSoftLimit[0] = faults.ReverseSoftLimit;
-            inputs.hardwareFailure[0] = faults.HardwareFailure;
-            inputs.resetDuringEn[0] = faults.ResetDuringEn;
-            inputs.sensorOverflow[0] = faults.SensorOverflow;
-            inputs.sensorOutOfPhase[0] = faults.SensorOutOfPhase;
-            inputs.hardwareESDReset[0] = faults.HardwareESDReset;
-            inputs.remoteLossOfSignal[0] = faults.RemoteLossOfSignal;
-            inputs.APIError[0] = faults.APIError;
-            inputs.supplyOverV[0] = faults.SupplyOverV;
-            inputs.supplyUnstable[0] = faults.SupplyUnstable;
+        // inputs.appliedVolts = motor.getMotorOutputVoltage();
+            // inputs.supplyCurrentAmps[0] = motor.getSupplyCurrent();
+            // inputs.statorCurrentAmps[0] = motor.getStatorCurrent();
+            // // inputs.tempCelcius[0] = motor.getTemperature();
+            // Faults faults = new Faults();
+            // motor.getFaults(faults);
+            // inputs.underVoltage[0] = faults.UnderVoltage;
+            // inputs.forwardLimitSwitch[0] = faults.ForwardLimitSwitch;
+            // inputs.reverseLimitSwitch[0] = faults.ReverseLimitSwitch;
+            // inputs.forwardSoftLimit[0] = faults.ForwardSoftLimit;
+            // inputs.reverseSoftLimit[0] = faults.ReverseSoftLimit;
+            // inputs.hardwareFailure[0] = faults.HardwareFailure;
+            // inputs.resetDuringEn[0] = faults.ResetDuringEn;
+            // inputs.sensorOverflow[0] = faults.SensorOverflow;
+            // inputs.sensorOutOfPhase[0] = faults.SensorOutOfPhase;
+            // inputs.hardwareESDReset[0] = faults.HardwareESDReset;
+            // inputs.remoteLossOfSignal[0] = faults.RemoteLossOfSignal;
+            // inputs.APIError[0] = faults.APIError;
+            // inputs.supplyOverV[0] = faults.SupplyOverV;
+            // inputs.supplyUnstable[0] = faults.SupplyUnstable;
             feedback.setP(kP.get());
             feedback.setI(kI.get());
             feedback.setD(kD.get());
