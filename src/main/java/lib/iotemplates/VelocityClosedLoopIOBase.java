@@ -46,27 +46,27 @@ public class VelocityClosedLoopIOBase implements ClosedLoopIO{
 
     public void updateInputs(ClosedLoopIOInputs inputs) {
         inputs.appliedVolts = motors.get(0).getMotorOutputVoltage();
-        for (int i = 0; i < motors.size(); i++) {
-            inputs.supplyCurrentAmps[i] = motors.get(i).getSupplyCurrent();
-            inputs.statorCurrentAmps[i] = motors.get(i).getStatorCurrent();
-            inputs.tempCelcius[i] = motors.get(i).getTemperature();
-            Faults faults = new Faults();
-            motors.get(i).getFaults(faults);
-            inputs.underVoltage[i] = faults.UnderVoltage;
-            inputs.forwardLimitSwitch[i] = faults.ForwardLimitSwitch;
-            inputs.reverseLimitSwitch[i] = faults.ReverseLimitSwitch;
-            inputs.forwardSoftLimit[i] = faults.ForwardSoftLimit;
-            inputs.reverseSoftLimit[i] = faults.ReverseSoftLimit;
-            inputs.hardwareFailure[i] = faults.HardwareFailure;
-            inputs.resetDuringEn[i] = faults.ResetDuringEn;
-            inputs.sensorOverflow[i] = faults.SensorOverflow;
-            inputs.sensorOutOfPhase[i] = faults.SensorOutOfPhase;
-            inputs.hardwareESDReset[i] = faults.HardwareESDReset;
-            inputs.remoteLossOfSignal[i] = faults.RemoteLossOfSignal;
-            inputs.APIError[i] = faults.APIError;
-            inputs.supplyOverV[i] = faults.SupplyOverV;
-            inputs.supplyUnstable[i] = faults.SupplyUnstable;
-        }
+//        for (int i = 0; i < motors.size(); i++) {
+//            inputs.supplyCurrentAmps[i] = motors.get(i).getSupplyCurrent();
+//            inputs.statorCurrentAmps[i] = motors.get(i).getStatorCurrent();
+//            inputs.tempCelcius[i] = motors.get(i).getTemperature();
+//            Faults faults = new Faults();
+//            motors.get(i).getFaults(faults);
+//            inputs.underVoltage[i] = faults.UnderVoltage;
+//            inputs.forwardLimitSwitch[i] = faults.ForwardLimitSwitch;
+//            inputs.reverseLimitSwitch[i] = faults.ReverseLimitSwitch;
+//            inputs.forwardSoftLimit[i] = faults.ForwardSoftLimit;
+//            inputs.reverseSoftLimit[i] = faults.ReverseSoftLimit;
+//            inputs.hardwareFailure[i] = faults.HardwareFailure;
+//            inputs.resetDuringEn[i] = faults.ResetDuringEn;
+//            inputs.sensorOverflow[i] = faults.SensorOverflow;
+//            inputs.sensorOutOfPhase[i] = faults.SensorOutOfPhase;
+//            inputs.hardwareESDReset[i] = faults.HardwareESDReset;
+//            inputs.remoteLossOfSignal[i] = faults.RemoteLossOfSignal;
+//            inputs.APIError[i] = faults.APIError;
+//            inputs.supplyOverV[i] = faults.SupplyOverV;
+//            inputs.supplyUnstable[i] = faults.SupplyUnstable;
+//        }
 
         System.out.println("KP SMD VALUE:"+kP.get());
         feedback.setP(kP.get());
