@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.FakeFMSLoggedRobot;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,7 +24,7 @@ import org.littletonrobotics.junction.io.LogSocketServer;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends LoggedRobot {
+public class Robot extends FakeFMSLoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
