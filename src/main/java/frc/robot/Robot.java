@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
 import org.littletonrobotics.junction.LoggedRobot;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -14,6 +15,7 @@ import frc.robot.subsystems.Climber.ClimberIO;
 
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
+import org.littletonrobotics.junction.inputs.LoggedSystemStats;
 import org.littletonrobotics.junction.io.ByteLogReceiver;
 import org.littletonrobotics.junction.io.ByteLogReplay;
 import org.littletonrobotics.junction.io.LogSocketServer;
@@ -54,6 +56,7 @@ public class Robot extends LoggedRobot {
         Logger.getInstance().recordMetadata("GitDirty", "Unknown");
         break;
     }
+    LoggedSystemStats.getInstance().setPowerDistributionConfig(0, PowerDistribution.ModuleType.kRev);
 
     if (isReal()) {
       Logger.getInstance().addDataReceiver(new ByteLogReceiver("/home/lvuser/"));
