@@ -21,6 +21,7 @@ public class LimelightSubsystem extends SubsystemBase {
   NetworkTableEntry tv;
   NetworkTableEntry ty;
   NetworkTableEntry tx;
+  NetworkTableEntry ledMode;
   double horizontalAngle = 0;
   double verticalAngle = 0;
   double isTargetVisible = 0;
@@ -35,7 +36,7 @@ public class LimelightSubsystem extends SubsystemBase {
     tx = table.getEntry("tx");
     ty = table.getEntry("ty");
     tv = table.getEntry("tv");
-    
+    ledMode = table.getEntry("ledMode");
   }
 
   @Override
@@ -75,6 +76,14 @@ public class LimelightSubsystem extends SubsystemBase {
     if (Math.abs(ty.getDouble(verticalAngle))>0) {
       verticalAngle = ty.getDouble(verticalAngle);
     }
-    return verticalAngle;
+    return verticalAngle + 31;
+  }
+
+  public void ledsOff() {
+    ledMode.setNumber(1);
+  }
+
+  public void ledsOn() {
+    ledMode.setNumber(3);
   }
 }

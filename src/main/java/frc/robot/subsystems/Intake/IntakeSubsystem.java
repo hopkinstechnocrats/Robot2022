@@ -45,13 +45,13 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void StartIntakeOut() {
-        speed = -.8;
+        speed = -1;
         spinIntake();
         m_led.intakeOn();
     }
 
     public void StartIntakeIn() {
-        speed = .8;
+        speed = 1;
         spinIntake();
     }
 

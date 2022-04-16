@@ -46,8 +46,8 @@ public class SwerveModule {
     // double elapsed = Logger.getInstance().getRealTimestamp() - startTime;
     // Logger.getInstance().recordOutput("DriveIOInputUpdateSec", elapsed);
 
-    // Logger.getInstance().processInputs("DriveSubsystem/" + corners + " Steer", steerInputs);
-    // Logger.getInstance().processInputs("DriveSubsystem/" + corners + " Drive", driveInputs);
+    Logger.getInstance().processInputs("DriveSubsystem/" + corners + " Steer", steerInputs);
+    Logger.getInstance().processInputs("DriveSubsystem/" + corners + " Drive", driveInputs);
 
     // startTime = Logger.getInstance().getRealTimestamp();
     desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
@@ -77,6 +77,10 @@ public class SwerveModule {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
-    this.desiredState = desiredState;
+    if (desiredState.speedMetersPerSecond == 0) {
+      this.desiredState = new SwerveModuleState(0, this.desiredState.angle);
+    } else {
+      this.desiredState = desiredState;
+    }
   }
 }

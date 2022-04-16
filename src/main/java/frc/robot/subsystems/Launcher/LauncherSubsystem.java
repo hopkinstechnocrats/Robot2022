@@ -5,6 +5,8 @@ import com.ctre.phoenix.led.CANdle;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -35,16 +37,21 @@ public class LauncherSubsystem extends SubsystemBase {
             );
     private final ClosedLoopIO.ClosedLoopIOInputs inputs = new ClosedLoopIO.ClosedLoopIOInputs(2);
     private final LinearInterpolator interpolationTable;
+    XboxController m_driverController;
+    XboxController m_operator;
     private final LEDSubsystem m_led;
     TunableNumber spoid = new TunableNumber("Launcher/speed", 4000);
 
-    public LauncherSubsystem(LEDSubsystem led) {
+    public LauncherSubsystem(LEDSubsystem led, XboxController m_driverController, XboxController m_operator) {
         interpolationTable = new LinearInterpolator();
 
         // interpolationTable.put(0, 0);
-        interpolationTable.put(3.8, 6000);
-        interpolationTable.put(5.2, 6450);
+        interpolationTable.put(3.08, 6000);
+        interpolationTable.put(5.69, 6904);
+        interpolationTable.put(7.80187249, 7565);
         m_led = led;
+        this.m_driverController = m_driverController;
+        this.m_operator = m_operator;
         //interpolationTable.put()
         
     }
@@ -58,12 +65,18 @@ public class LauncherSubsystem extends SubsystemBase {
         } else {
             m_led.onTargetOff();
         }
+
+        if (Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<20) {
+            m_operator.setRumble(RumbleType.kLeftRumble, 1);
+        } else {
+            m_operator.setRumble(RumbleType.kLeftRumble, 0);
+        }
     }
 
 
     public void spinLauncherTuning() {
         io.setVelocity(Units.rotationsPerMinuteToRadiansPerSecond(spoid.get()));
-        SmartDashboard.putNumber("Launcher RPM", Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec));
+       
     }
 
     public void stopLauncher() {
@@ -77,6 +90,9 @@ public class LauncherSubsystem extends SubsystemBase {
        double startTime = Logger.getInstance().getRealTimestamp();
        io.updateInputs(inputs);
        Logger.getInstance().processInputs("launcher", inputs);
+       SmartDashboard.putNumber("Launcher RPM", Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec));
+        SmartDashboard.putBoolean("At Speed", Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<10);
+        SmartDashboard.putNumber("Speed Error Rad Per Sec", Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec));
        double endTime = Logger.getInstance().getRealTimestamp();
        Logger.getInstance().recordOutput("LauncherCodeSec", endTime-startTime);
     }

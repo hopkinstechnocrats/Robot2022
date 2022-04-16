@@ -94,8 +94,8 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearLeft.periodic();
     m_rearRight.periodic();
     double endTime = Logger.getInstance().getRealTimestamp();
-    Logger.getInstance().recordOutput("Roll", (double) getRoll());
-    SmartDashboard.putNumber("Heading", getHeading().getDegrees());
+    // Logger.getInstance().recordOutput("Roll", (double) getRoll());
+    // SmartDashboard.putNumber("Heading", getHeading().getDegrees());
     // SmartDashboard.putNumber("KPTurningController", 4);
     // SmartDashboard.putNumber("KITurningController", 64);
     // SmartDashboard.putNumber("KDTurningController", 0.01);
@@ -142,7 +142,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void drive(double xSpeed, double ySpeed, double rot) {
     Logger.getInstance().recordOutput("DriveSubsystem/Raw Rotation Command", rot);
     
-    rot =  negate*MathUtil.applyDeadband(rot, 0.4);
+    rot =  -1*MathUtil.applyDeadband(rot, 0.4);
     ySpeed = negate*MathUtil.applyDeadband(ySpeed, 0.2);
     xSpeed =  negate*MathUtil.applyDeadband(xSpeed, 0.2);
     rot = rotFilter.calculate(rot);

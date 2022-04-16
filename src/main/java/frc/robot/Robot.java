@@ -56,7 +56,7 @@ public class Robot extends LoggedRobot {
         Logger.getInstance().recordMetadata("GitDirty", "Unknown");
         break;
     }
-    LoggedSystemStats.getInstance().setPowerDistributionConfig(0, PowerDistribution.ModuleType.kRev);
+    LoggedSystemStats.getInstance().setPowerDistributionConfig(1, PowerDistribution.ModuleType.kRev);
 
     if (isReal()) {
       Logger.getInstance().addDataReceiver(new ByteLogReceiver("/home/lvuser/"));
@@ -100,7 +100,9 @@ public class Robot extends LoggedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    m_robotContainer.m_limelight.ledsOff();
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -135,6 +137,8 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    m_robotContainer.m_limelight.ledsOn();
+    RobotContainer.m_robotDrive.makeBackwards(true);
   }
 
   /** This function is called periodically during operator control. */
@@ -143,7 +147,7 @@ public class Robot extends LoggedRobot {
     // m_robotContainer.log.upda
     // teTopics();
     // m_robotContainer.log.log();
-    m_robotContainer.drive();
+    // m_robotContainer.drive();
   }
 
   @Override
