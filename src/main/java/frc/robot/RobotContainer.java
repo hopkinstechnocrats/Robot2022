@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -37,6 +38,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -66,13 +68,13 @@ public class RobotContainer {
   // The robot's subsystems
 //  String trajectoryJSON = "paths/output/GoGoGadgets.wpilib.json";
 //  Trajectory trajectory = new Trajectory();
-  private final DriveSubsystem m_robotDrive;
+  static DriveSubsystem m_robotDrive;
   private final LEDSubsystem m_led;
   private final IntakeSubsystem m_intake;
   final ClimberSubsystem m_climber;
   private final FeedSubsystem m_feed;
   private final LauncherSubsystem m_launcher;
-  private final LimelightSubsystem m_limelight;
+  final LimelightSubsystem m_limelight;
   private final AutoRoutines myAutoRoutines;
   public final Compressor phCompressor = new Compressor(PneumaticsModuleType.REVPH);
   public Pose2d zeroPose = new Pose2d(new Translation2d(0, 0), new Rotation2d());
@@ -101,10 +103,10 @@ public class RobotContainer {
     m_intake = new IntakeSubsystem(m_led);
     m_climber = new ClimberSubsystem();
     m_feed = new FeedSubsystem();
-    m_launcher = new LauncherSubsystem(m_led);
+    m_launcher = new LauncherSubsystem(m_led, m_driverController, m_operatorController);
     m_limelight = new LimelightSubsystem();
     myAutoRoutines = new AutoRoutines(m_robotDrive, m_feed, m_intake, m_limelight, m_launcher); 
-
+    SmartDashboard.putData(myAutoRoutines.getAutoChooser());
       Solenoid obj = new Solenoid(PneumaticsModuleType.REVPH, 0);
       obj.set(true);
     phCompressor.enableAnalog(100, 120);
@@ -121,8 +123,8 @@ public class RobotContainer {
     CommandBase driveDefaultCommand = new RunCommand(
       () ->
           m_robotDrive.drive(
-              -2*m_driverController.getLeftY(),
-              -2*m_driverController.getLeftX(),
+              -3*m_driverController.getLeftY(),
+              -3*m_driverController.getLeftX(),
                3*m_driverController.getRightX()
                ), m_robotDrive);
     driveDefaultCommand.setName("DriveDefaultCommand");
@@ -145,12 +147,20 @@ public class RobotContainer {
     );
 
     TunableNumber launcherSpeed = new TunableNumber("launcher/launcherSpeedRPM", 0);
+    CommandBase launcherDefaultCommand = new RunCommand(
+      () ->  {
+        // SmartDashboard.putNumber("Distance From Target", Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
+        // m_limelight.ledsOff();
+        m_operatorController.setRumble(RumbleType.kLeftRumble, 0);
+        m_driverController.setRumble(RumbleType.kLeftRumble, 0);
+        m_launcher.stopLauncher();
+      }, //m_launcher.spinLauncher(launcherSpeed.get()); System.out.println("RUNNING LAUNCHER DEFAULT COMMAND");},
+      m_launcher);
+    
+    launcherDefaultCommand.setName("LauncherDefaultCommand");
 
-    m_launcher.setDefaultCommand(
-      new RunCommand(
-        () ->  m_launcher.stopLauncher(), //m_launcher.spinLauncher(launcherSpeed.get()); System.out.println("RUNNING LAUNCHER DEFAULT COMMAND");},
-        m_launcher)
-    );
+    m_launcher.setDefaultCommand(launcherDefaultCommand);
+    
     // singleModuleTestFixture.setDefaultCommand(
     //         new RunCommand(
     //             () -> 
@@ -174,6 +184,7 @@ public class RobotContainer {
       JoystickButton LBumper = new JoystickButton(m_driverController, 5);
       JoystickButton RBumper = new JoystickButton(m_driverController, 6);
       JoystickButton Back = new JoystickButton(m_driverController, 7);
+      JoystickButton Start = new JoystickButton(m_driverController, 8);
 
       JoystickButton OAButton = new JoystickButton(m_operatorController, 1);
       JoystickButton OBButton = new JoystickButton(m_operatorController, 2);
@@ -198,7 +209,7 @@ public class RobotContainer {
               .beforeStarting(new InstantCommand(m_led::climbingOn))
               .andThen(new InstantCommand(m_led::climbingOff));
       DPadRight.whenPressed(autoClimb);
-      Back.whenPressed(new InstantCommand(m_led::climbingOff, m_climber));
+      BButton.whenPressed(new InstantCommand(m_led::climbingOff, m_climber));
       // DPadRight.whenPressed(myAutoRoutines.drivePositiveX());
       POVButton DPadBottom = new POVButton(m_driverController, 180);
       DPadTop.whenHeld(new RunCommand(() -> m_climber.spinClimber(8), m_climber));
@@ -214,7 +225,11 @@ public class RobotContainer {
       POVButton ODPadBottom = new POVButton(m_operatorController, 180);
       POVButton ODPadLeft = new POVButton(m_operatorController, 270);
 
-      AButton.whenHeld(new RunCommand(() -> m_robotDrive.drive(0, 0, -1*m_limelight.getRotationSpeed()), m_robotDrive));
+      Back.whenPressed(() -> m_robotDrive.makeBackwards(true));
+      Start.whenPressed(() -> m_robotDrive.makeBackwards(false));
+
+      AButton.whenHeld(new RunCommand(() -> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
+      m_limelight.ledsOn();}, m_robotDrive));
       BButton.whenPressed(new InstantCommand(() -> m_robotDrive.resetOdometry(new Pose2d(-1.06+0.444, -2.76+0.444, new Rotation2d(0,-1)))));
       YButton.whenPressed(new InstantCommand(m_robotDrive::fieldON));
       XButton.whenPressed(new InstantCommand(m_robotDrive::fieldOFF));
@@ -238,7 +253,10 @@ public class RobotContainer {
 
       //ORIn.whenHeld(new RunCommand(() -> m_launcher.spinFromDistance(2.64/(Math.tan(m_limelight.getVerticalAngle()))), m_launcher));
       //ORBumper.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
-      ORBumper.whenHeld(new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(m_limelight.getVerticalAngle()))), m_launcher));
+      ORBumper.whileHeld(new RunCommand(() -> {
+        m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
+        // m_limelight.ledsOn();
+      }, m_launcher));
 
       ODPadTop.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(6000), m_launcher));
       ODPadLeft.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(3000), m_launcher));
@@ -246,11 +264,19 @@ public class RobotContainer {
       ODPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(4000), m_launcher));
 
       // Pull intake in on right trigger press
-      Trigger RTrigger = new Trigger(() -> m_driverController.getRawAxis(3) >= .7);
+      Trigger LTrigger = new Trigger(() -> m_driverController.getRawAxis(2) >= .7);
 
-      RTrigger.whenActive(new InstantCommand(m_intake::intakeOut));
+      LTrigger.whenActive(new InstantCommand(m_intake::intakeOut));
       // DPadTop.whenPressed(new InstantCommand(() -> .(90)));
 
+  }
+
+  public void drive() {
+     m_robotDrive.drive(
+    -3*m_driverController.getLeftY(),
+    -3*m_driverController.getLeftX(),
+     3*m_driverController.getRightX()
+     );
   }
 
   /**
@@ -260,8 +286,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // return (new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(270)));
-    m_robotDrive.fieldOFF();
-    Pose2d zeroPose = FieldPositions.R3startingPosition;
-    return myAutoRoutines.FiveBallAutoRoutine(zeroPose);
+    return myAutoRoutines.getAutoCommand();
   }
 }

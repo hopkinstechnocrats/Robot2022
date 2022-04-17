@@ -1,5 +1,6 @@
 package lib.iotemplates;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -13,20 +14,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class VelocityClosedLoopIOBase implements ClosedLoopIO{
+public class VelocityClosedLoopIOTalon implements ClosedLoopIO{
     private String name;
     private TunableNumber kP;
     private TunableNumber kI;
     private TunableNumber kD;
     private TunableNumber kF;
-    private PIDController feedback;
-    private SimpleMotorFeedforward feedforward;
     private List<WPI_TalonSRX> motors;
     private final double kEncoderTicksPerRevolution;
     private double currentVelocity;
     private double setpoint;
+    private WPI_TalonSRX master;
 
-    public VelocityClosedLoopIOBase(String name, int[] motorPort, double kP, double kI, double kD, double kF, double kEncoderTicksPerRevolution) {
+    public VelocityClosedLoopIOTalon(String name, int[] motorPort, double kP, double kI, double kD, double kF, double kEncoderTicksPerRevolution) {
         this.name = name;
         this.kEncoderTicksPerRevolution = kEncoderTicksPerRevolution;
         this.currentVelocity = 0;
@@ -34,13 +34,16 @@ public class VelocityClosedLoopIOBase implements ClosedLoopIO{
         this.kI = new TunableNumber(name+"/kI", kI);
         this.kD = new TunableNumber(name+"/kD", kD);
         this.kF = new TunableNumber(name+"/kF", kF);
-        feedback = new PIDController(kP, kI, kD);
-        feedforward = new SimpleMotorFeedforward(0, kF);
         motors = Arrays.stream(motorPort).mapToObj((int canID) -> {
             WPI_TalonSRX motor = new WPI_TalonSRX(canID);
             motor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20);
             return motor;
         }).collect(Collectors.toList());
+        master = motors.get(0);
+        for (int i = 1; i < motors.size(); i++) {
+            motors.get(i).set(ControlMode.Follower, motorPort[0]);
+        }
+        master.setSensorPhase(false);
 
     }
 
@@ -68,11 +71,10 @@ public class VelocityClosedLoopIOBase implements ClosedLoopIO{
 //            inputs.supplyUnstable[i] = faults.SupplyUnstable;
 //        }
 
-        System.out.println("KP SMD VALUE:"+kP.get());
-        feedback.setP(kP.get());
-        feedback.setI(kI.get());
-        feedback.setD(kD.get());
-        feedforward = new SimpleMotorFeedforward(0, kF.get());
+        master.config_kP(0, kP.get());
+        master.config_kI(0, kI.get());
+        master.config_kD(0, kD.get());
+        master.config_kF(0, kF.get());
 
         // Convert from raw sensor units to radians
         inputs.positionRad = Units.rotationsToRadians(motors.get(0).getSelectedSensorPosition() / kEncoderTicksPerRevolution);
@@ -87,18 +89,13 @@ public class VelocityClosedLoopIOBase implements ClosedLoopIO{
         setpoint = velocityRadPerSec;
         Logger.getInstance().recordOutput("CURRENT VELOCITY", currentVelocity);
         Logger.getInstance().recordOutput("SETPOINT", velocityRadPerSec);
-        double outputVoltage = feedforward.calculate(velocityRadPerSec) + feedback.calculate(currentVelocity, velocityRadPerSec);
-        Logger.getInstance().recordOutput("FEEDBACK", feedback.calculate(currentVelocity, velocityRadPerSec));
-        Logger.getInstance().recordOutput("FEEDFORWARD", feedforward.calculate(velocityRadPerSec));
-        Logger.getInstance().recordOutput("OUTPUT", outputVoltage);
-        for (WPI_TalonSRX motor : motors) {
-            motor.setVoltage(-1*outputVoltage);
-        }
+        master.set(ControlMode.Velocity, Units.radiansToRotations(velocityRadPerSec) * kEncoderTicksPerRevolution / 10);
     }
 
     public void setVoltage(double volts) {
-        for (WPI_TalonSRX motor : motors) {
-            motor.setVoltage(-1*volts);
-        }
+        master.set(ControlMode.PercentOutput, 0);
+        // for (WPI_TalonSRX motor : motors) {
+        //     motor.setVoltage(-1*volts);
+        // }
     }
 }

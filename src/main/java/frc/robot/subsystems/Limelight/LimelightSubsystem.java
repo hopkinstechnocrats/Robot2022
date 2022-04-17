@@ -21,10 +21,11 @@ public class LimelightSubsystem extends SubsystemBase {
   NetworkTableEntry tv;
   NetworkTableEntry ty;
   NetworkTableEntry tx;
+  NetworkTableEntry ledMode;
   double horizontalAngle = 0;
   double verticalAngle = 0;
   double isTargetVisible = 0;
-  double P = 0.15;
+  double P = 0.1;
   double I = 0;
   double D = 0;
   double period = 0.1;
@@ -35,25 +36,20 @@ public class LimelightSubsystem extends SubsystemBase {
     tx = table.getEntry("tx");
     ty = table.getEntry("ty");
     tv = table.getEntry("tv");
-    
+    ledMode = table.getEntry("ledMode");
   }
 
   @Override
   public void periodic() {
-    double startTime = Logger.getInstance().getRealTimestamp();
-    horizontalAngle = tx.getDouble(horizontalAngle);
-    if (Math.abs(ty.getDouble(verticalAngle))>0) {
-      verticalAngle = ty.getDouble(verticalAngle);
-      double endTime = Logger.getInstance().getRealTimestamp();
-      Logger.getInstance().recordOutput("LimelighteCodeSec", endTime-startTime);
-    }
     
-    SmartDashboard.putNumber("LimelightX", horizontalAngle);
-    SmartDashboard.putNumber("LimelightY", verticalAngle);
-    System.out.println("Running Limelight Periodic");
-    SmartDashboard.putNumber("Distanceawayfromtarget", (Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(getVerticalAngle()+30)))));
-    System.out.println("Distance away from target: "+(2.64/(Math.tan(Units.degreesToRadians(getVerticalAngle()+30)))));
-    // This method will be called once per scheduler run
+    
+    
+    // SmartDashboard.putNumber("LimelightX", horizontalAngle);
+    // SmartDashboard.putNumber("LimelightY", verticalAngle);
+    // System.out.println("Running Limelight Periodic");
+    // SmartDashboard.putNumber("Distanceawayfromtarget", (Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(getVerticalAngle()+30)))));
+    // System.out.println("Distance away from target: "+(2.64/(Math.tan(Units.degreesToRadians(getVerticalAngle()+30)))));
+    // // This method will be called once per scheduler run
   }
 
   public boolean isTargetVisible(){
@@ -68,12 +64,26 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   public double getRotationSpeed(){
-    System.out.println(tx.getDouble(0));
-    System.out.println("Aiming speed: "+aiming.calculate(tx.getDouble(0), 0));
-    return aiming.calculate(tx.getDouble(0), 0);
+    if (Math.abs(tx.getDouble(horizontalAngle))>0.5) {
+      horizontalAngle = tx.getDouble(horizontalAngle);
+    }
+    Logger.getInstance().recordOutput("Limelight/horizontalAngle", horizontalAngle);
+    Logger.getInstance().recordOutput("Limelight/RotationSpeed",aiming.calculate(horizontalAngle, 0));
+    return aiming.calculate(horizontalAngle, 0);
   }
 
   public double getVerticalAngle() {
-    return verticalAngle;
+    if (Math.abs(ty.getDouble(verticalAngle))>0) {
+      verticalAngle = ty.getDouble(verticalAngle);
+    }
+    return verticalAngle + 31;
+  }
+
+  public void ledsOff() {
+    ledMode.setNumber(1);
+  }
+
+  public void ledsOn() {
+    ledMode.setNumber(3);
   }
 }
