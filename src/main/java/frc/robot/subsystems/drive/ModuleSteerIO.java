@@ -43,18 +43,18 @@ public class ModuleSteerIO implements ClosedLoopIO {
     }
 
     public void updateInputs(ClosedLoopIOInputs inputs) {
-        double startTime = Logger.getInstance().getRealTimestamp();
-        steerMotor.getMotorOutputVoltage();
+        // double startTime = Logger.getInstance().getRealTimestamp();
+        // steerMotor.getMotorOutputVoltage();
     
-        double elapsedTime = Logger.getInstance().getRealTimestamp() - startTime;
-        Logger.getInstance().recordOutput("GetMotorOutputVoltageSec", elapsedTime);
+        // double elapsedTime = Logger.getInstance().getRealTimestamp() - startTime;
+        // Logger.getInstance().recordOutput("GetMotorOutputVoltageSec", elapsedTime);
         inputs.positionRad = getPosition().getRadians();
-        inputs.velocityRadPerSec = Units.degreesToRadians(encoder.getVelocity());
-        inputs.appliedVolts = steerMotor.getMotorOutputVoltage();
-        inputs.statorCurrentAmps = new double[] { steerMotor.getStatorCurrent() };
-        inputs.supplyCurrentAmps = new double[] { steerMotor.getSupplyCurrent() };
-        inputs.tempCelcius = new double[] { steerMotor.getTemperature() };
-        inputs.positionSetpointRad = positionSetPointRad;
+        // inputs.velocityRadPerSec = Units.degreesToRadians(encoder.getVelocity());
+        // inputs.appliedVolts = steerMotor.getMotorOutputVoltage();
+        // inputs.statorCurrentAmps = new double[] { steerMotor.getStatorCurrent() };
+        // inputs.supplyCurrentAmps = new double[] { steerMotor.getSupplyCurrent() };
+        // // inputs.tempCelcius = new double[] { steerMotor.getTemperature() };
+        // inputs.positionSetpointRad = positionSetPointRad;
 
         m_steeringPIDController.setP(Constants.ModuleConstants.kPModuleTurningController);
         m_steeringPIDController.setI(Constants.ModuleConstants.kIModuleTurningController);

@@ -104,14 +104,13 @@ public final class Constants {
     public static final double ksVolts = 1;
     public static final double kvVoltSecondsPerMeter = 2;
     public static final double kaVoltSecondsSquaredPerMeter = 0.15;
-    public static final double kWheelHeight = .1;//meters
-
+    public static final double kWheelHeight = .1;
     public static final double kMaxSpeedMetersPerSecond = 4;
 
-    public static final double kFrontRightOffset = 0.16413594430376363 + Math.PI;
-    public static final double kFrontLeftOffset = 0.796136928912 - Math.PI + 0.034;
-    public static final double kRearRightOffset = -1.0507768370 - 0.00920388742897792;
-    public static final double kRearLeftOffset = (-0.069029 + Math.PI) % Math.PI + 0.013805691636116895;
+    public static final double kFrontRightOffset = 0.15339807878856412; //Actually BackLeft
+    public static final double kFrontLeftOffset = 0.796136928912 + 0.034; //Actually BackRight
+    public static final double kRearRightOffset = 1.6520973085528357 + 0.4678641403051204; //Actually FrontLeft
+    public static final double kRearLeftOffset = -0.07516505860639658	; //Actually FrontRight
   }
 
   public static final class ModuleConstants {

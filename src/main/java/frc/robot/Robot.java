@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
 import org.littletonrobotics.junction.LoggedRobot;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -14,6 +15,7 @@ import frc.robot.subsystems.Climber.ClimberIO;
 
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
+import org.littletonrobotics.junction.inputs.LoggedSystemStats;
 import org.littletonrobotics.junction.io.ByteLogReceiver;
 import org.littletonrobotics.junction.io.ByteLogReplay;
 import org.littletonrobotics.junction.io.LogSocketServer;
@@ -54,6 +56,7 @@ public class Robot extends LoggedRobot {
         Logger.getInstance().recordMetadata("GitDirty", "Unknown");
         break;
     }
+    LoggedSystemStats.getInstance().setPowerDistributionConfig(1, PowerDistribution.ModuleType.kRev);
 
     if (isReal()) {
       Logger.getInstance().addDataReceiver(new ByteLogReceiver("/home/lvuser/"));
@@ -97,7 +100,9 @@ public class Robot extends LoggedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    m_robotContainer.m_limelight.ledsOff();
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -132,13 +137,17 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    m_robotContainer.m_limelight.ledsOn();
+    RobotContainer.m_robotDrive.makeBackwards(true);
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    // m_robotContainer.log.updateTopics();
+    // m_robotContainer.log.upda
+    // teTopics();
     // m_robotContainer.log.log();
+    // m_robotContainer.drive();
   }
 
   @Override

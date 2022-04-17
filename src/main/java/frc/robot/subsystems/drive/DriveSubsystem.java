@@ -27,6 +27,7 @@ import edu.wpi.first.math.MathUtil;
 
 public class DriveSubsystem extends SubsystemBase {
   boolean fieldOriented = false;
+  private int negate = 1;
   // Robot swerve modules
   private final SwerveModule m_frontLeft =
       new SwerveModule(
@@ -93,8 +94,8 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearLeft.periodic();
     m_rearRight.periodic();
     double endTime = Logger.getInstance().getRealTimestamp();
-    Logger.getInstance().recordOutput("Roll", (double) getRoll());
-    SmartDashboard.putNumber("Heading", getHeading().getDegrees());
+    // Logger.getInstance().recordOutput("Roll", (double) getRoll());
+    // SmartDashboard.putNumber("Heading", getHeading().getDegrees());
     // SmartDashboard.putNumber("KPTurningController", 4);
     // SmartDashboard.putNumber("KITurningController", 64);
     // SmartDashboard.putNumber("KDTurningController", 0.01);
@@ -141,9 +142,9 @@ public class DriveSubsystem extends SubsystemBase {
   public void drive(double xSpeed, double ySpeed, double rot) {
     Logger.getInstance().recordOutput("DriveSubsystem/Raw Rotation Command", rot);
     
-    rot =  MathUtil.applyDeadband(rot, 0.4);
-    ySpeed = MathUtil.applyDeadband(ySpeed, 0.2);
-    xSpeed =  MathUtil.applyDeadband(xSpeed, 0.2);
+    rot =  -1*MathUtil.applyDeadband(rot, 0.4);
+    ySpeed = negate*MathUtil.applyDeadband(ySpeed, 0.2);
+    xSpeed =  negate*MathUtil.applyDeadband(xSpeed, 0.2);
     rot = rotFilter.calculate(rot);
     ySpeed = ySpeedFilter.calculate(ySpeed);
     xSpeed = xSpeedFilter.calculate(xSpeed);
@@ -231,5 +232,12 @@ public class DriveSubsystem extends SubsystemBase {
 
 public float getRoll() {
     return -1* m_gyro.getRoll();
+}
+public void makeBackwards(boolean GOGOGOGOGOGOGO) {
+  if (GOGOGOGOGOGOGO){
+    negate = -1;
+  } else{
+    negate = 1;
+  }
 }
 }
