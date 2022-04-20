@@ -29,41 +29,20 @@ public class DriveSubsystem extends SubsystemBase {
   boolean fieldOriented = false;
   private int negate = 1;
   // Robot swerve modules
-  private final SwerveModule m_frontLeft =
-      new SwerveModule(
-          DriveConstants.kFrontLeftDriveMotorPort,
-          DriveConstants.kFrontLeftTurningMotorPort,
-              DriveConstants.kFrontLeftTurningEncoderPort,
-              "FrontLeft", DriveConstants.kFrontLeftOffset);
+  private final SwerveModule m_frontLeft;
 
+  private final SwerveModule m_rearLeft;
 
-  private final SwerveModule m_rearLeft =
-      new SwerveModule(
-          DriveConstants.kRearLeftDriveMotorPort,
-          DriveConstants.kRearLeftTurningMotorPort,
-              DriveConstants.kRearLeftTurningEncoderPort,
-              "RearLeft", DriveConstants.kRearLeftOffset);
+  private final SwerveModule m_frontRight;
 
-  private final SwerveModule m_frontRight =
-      new SwerveModule(
-          DriveConstants.kFrontRightDriveMotorPort,
-          DriveConstants.kFrontRightTurningMotorPort,
-              DriveConstants.kFrontRightTurningEncoderPort,
-              "FrontRight", DriveConstants.kFrontRightOffset);
+  private final SwerveModule m_rearRight;
 
-  private final SwerveModule m_rearRight =
-      new SwerveModule(
-          DriveConstants.kRearRightDriveMotorPort,
-          DriveConstants.kRearRightTurningMotorPort,
-              DriveConstants.kRearRightTurningEncoderPort,
-              "RearRight", DriveConstants.kRearRightOffset);
-  
-              Rotation2d targetAngle;
+  Rotation2d targetAngle;
 
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(SerialPort.Port.kMXP);
 
-  //field
+  // field
   private final Field2d m_field = new Field2d();
 
   private final SlewRateLimiter xSpeedFilter = new SlewRateLimiter(5);
@@ -71,23 +50,63 @@ public class DriveSubsystem extends SubsystemBase {
   private final SlewRateLimiter rotFilter = new SlewRateLimiter(25);
 
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry =
-     new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
+  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
 
   /** Creates a new DriveSubsystem. */
+  public DriveSubsystem(DriveIOContainer driveIO) {
+    m_frontLeft = new SwerveModule(
+        DriveConstants.kFrontLeftDriveMotorPort,
+        DriveConstants.kFrontLeftTurningMotorPort,
+        DriveConstants.kFrontLeftTurningEncoderPort,
+        "FrontLeft", DriveConstants.kFrontLeftOffset, driveIO.frontLeft);
+    m_rearLeft = new SwerveModule(
+        DriveConstants.kRearLeftDriveMotorPort,
+        DriveConstants.kRearLeftTurningMotorPort,
+        DriveConstants.kRearLeftTurningEncoderPort,
+        "RearLeft", DriveConstants.kRearLeftOffset, driveIO.rearLeft);
+    m_frontRight = new SwerveModule(
+      DriveConstants.kFrontRightDriveMotorPort,
+      DriveConstants.kFrontRightTurningMotorPort,
+      DriveConstants.kFrontRightTurningEncoderPort,
+      "FrontRight", DriveConstants.kFrontRightOffset, driveIO.frontRight);
+    m_rearRight = new SwerveModule(
+      DriveConstants.kRearRightDriveMotorPort,
+      DriveConstants.kRearRightTurningMotorPort,
+      DriveConstants.kRearRightTurningEncoderPort,
+      "RearRight", DriveConstants.kRearRightOffset, driveIO.rearRight);
+  }
+
   public DriveSubsystem() {
-    SmartDashboard.putNumber("PID P Gain Input", 0);
-    SmartDashboard.putData("field", m_field);
+    m_frontLeft = new SwerveModule(
+        DriveConstants.kFrontLeftDriveMotorPort,
+        DriveConstants.kFrontLeftTurningMotorPort,
+        DriveConstants.kFrontLeftTurningEncoderPort,
+        "FrontLeft", DriveConstants.kFrontLeftOffset);
+    m_rearLeft = new SwerveModule(
+        DriveConstants.kRearLeftDriveMotorPort,
+        DriveConstants.kRearLeftTurningMotorPort,
+        DriveConstants.kRearLeftTurningEncoderPort,
+        "RearLeft", DriveConstants.kRearLeftOffset);
+    m_frontRight = new SwerveModule(
+      DriveConstants.kFrontRightDriveMotorPort,
+      DriveConstants.kFrontRightTurningMotorPort,
+      DriveConstants.kFrontRightTurningEncoderPort,
+      "FrontRight", DriveConstants.kFrontRightOffset);
+    m_rearRight = new SwerveModule(
+      DriveConstants.kRearRightDriveMotorPort,
+      DriveConstants.kRearRightTurningMotorPort,
+      DriveConstants.kRearRightTurningEncoderPort,
+      "RearRight", DriveConstants.kRearRightOffset);
   }
 
   public void periodic() {
     // Update the odometry in the periodic block
     m_odometry.update(
-      getHeading(),
-      m_frontLeft.getState(),
-      m_rearLeft.getState(),
-      m_frontRight.getState(),
-      m_rearRight.getState());
+        getHeading(),
+        m_frontLeft.getState(),
+        m_rearLeft.getState(),
+        m_frontRight.getState(),
+        m_rearRight.getState());
     double startTime = Logger.getInstance().getRealTimestamp();
     m_frontLeft.periodic();
     m_frontRight.periodic();
@@ -100,10 +119,11 @@ public class DriveSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("KITurningController", 64);
     // SmartDashboard.putNumber("KDTurningController", 0.01);
     m_field.setRobotPose(getPose());
-    Pose2d transformedPose = getPose().transformBy(new Transform2d(new Translation2d(Units.feetToMeters(27),0), new Rotation2d(0))); 
+    Pose2d transformedPose = getPose()
+        .transformBy(new Transform2d(new Translation2d(Units.feetToMeters(27), 0), new Rotation2d(0)));
     Logger.getInstance().recordOutput("Odometry/RobotPose",
-            new double[] {getPose().getX(), getPose().getY(), getPose().getRotation().getRadians()});
-    Logger.getInstance().recordOutput("PeriodicCodeSec", endTime-startTime);
+        new double[] { getPose().getX(), getPose().getY(), getPose().getRotation().getRadians() });
+    Logger.getInstance().recordOutput("PeriodicCodeSec", endTime - startTime);
   }
 
   /**
@@ -111,68 +131,67 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @return The pose.
    */
-   public Pose2d getPose() {
-     return m_odometry.getPoseMeters();
-   }
-   public void setTargetAngle(Rotation2d targetAngle){
-    this.targetAngle = targetAngle;
-   }
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
+  }
 
-   public Rotation2d getTargetAngle(){
+  public void setTargetAngle(Rotation2d targetAngle) {
+    this.targetAngle = targetAngle;
+  }
+
+  public Rotation2d getTargetAngle() {
     return targetAngle;
-}
+  }
 
   /**
    * Resets the odometry to the specified pose.
    *
    * @param pose The pose to which to set the odometry.
    */
-   public void resetOdometry(Pose2d pose) {
-     m_odometry.resetPosition(pose, getHeading());
-   }
+  public void resetOdometry(Pose2d pose) {
+    m_odometry.resetPosition(pose, getHeading());
+  }
 
   /**
    * Method to drive the robot using joystick info.
    *
-   * @param xSpeed Speed of the robot in the x direction (forward).
-   * @param ySpeed Speed of the robot in the y direction (sideways).
-   * @param rot Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the field.
+   * @param xSpeed        Speed of the robot in the x direction (forward).
+   * @param ySpeed        Speed of the robot in the y direction (sideways).
+   * @param rot           Angular rate of the robot.
+   * @param fieldRelative Whether the provided x and y speeds are relative to the
+   *                      field.
    */
   public void drive(double xSpeed, double ySpeed, double rot) {
     Logger.getInstance().recordOutput("DriveSubsystem/Raw Rotation Command", rot);
-    
-    rot =  -1*MathUtil.applyDeadband(rot, 0.4);
-    ySpeed = negate*MathUtil.applyDeadband(ySpeed, 0.2);
-    xSpeed =  negate*MathUtil.applyDeadband(xSpeed, 0.2);
+
+    rot = -1 * MathUtil.applyDeadband(rot, 0.4);
+    ySpeed = negate * MathUtil.applyDeadband(ySpeed, 0.2);
+    xSpeed = negate * MathUtil.applyDeadband(xSpeed, 0.2);
     rot = rotFilter.calculate(rot);
     ySpeed = ySpeedFilter.calculate(ySpeed);
     xSpeed = xSpeedFilter.calculate(xSpeed);
-    
+
     driveNoDeadband(xSpeed, ySpeed, rot);
   }
 
   public void driveNoDeadband(double xSpeed, double ySpeed, double rot) {
-  
-    
+
     Logger.getInstance().recordOutput("DriveSubsystem/Rotation Command", rot);
     Logger.getInstance().recordOutput("DriveSubsystem/xSpeed Command", xSpeed);
     Logger.getInstance().recordOutput("DriveSubsystem/ySpeed Command", ySpeed);
 
     SwerveModuleState[] swerveModuleStates;
     if (fieldOriented) {
-      swerveModuleStates =
-        DriveConstants.kDriveKinematics.toSwerveModuleStates(
+      swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
           // fieldRelative
           ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d()));
-    } else{
-      swerveModuleStates =
-        DriveConstants.kDriveKinematics.toSwerveModuleStates(
+    } else {
+      swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
           new ChassisSpeeds(xSpeed, ySpeed, rot));
     }
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
-            swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_rearLeft.setDesiredState(swerveModuleStates[1]);
     m_frontRight.setDesiredState(swerveModuleStates[2]);
@@ -204,11 +223,11 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public Rotation2d getHeading() {
-    return Rotation2d.fromDegrees(-1*m_gyro.getFusedHeading());
+    return Rotation2d.fromDegrees(-1 * m_gyro.getFusedHeading());
   }
 
   public Rotation2d setRotation() {
-    return new Rotation2d(Math.PI/2);
+    return new Rotation2d(Math.PI / 2);
   }
 
   public void fieldON() {
@@ -230,14 +249,15 @@ public class DriveSubsystem extends SubsystemBase {
     return m_gyro.getRate();
   }
 
-public float getRoll() {
-    return -1* m_gyro.getRoll();
-}
-public void makeBackwards(boolean GOGOGOGOGOGOGO) {
-  if (GOGOGOGOGOGOGO){
-    negate = -1;
-  } else{
-    negate = 1;
+  public float getRoll() {
+    return -1 * m_gyro.getRoll();
   }
-}
+
+  public void makeBackwards(boolean GOGOGOGOGOGOGO) {
+    if (GOGOGOGOGOGOGO) {
+      negate = -1;
+    } else {
+      negate = 1;
+    }
+  }
 }

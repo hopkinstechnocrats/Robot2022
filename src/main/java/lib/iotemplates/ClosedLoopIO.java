@@ -7,10 +7,18 @@ package lib.iotemplates;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 
 /** Template hardware interface for a closed loop subsystem. */
 public interface ClosedLoopIO {
-    void setVelocityRadPerSec(double v);
+    public default void setVelocityRadPerSec(double v) {
+
+    }
+
+    public default void setPosition(Rotation2d position) {
+        
+    }
 
     /** Contains all of the input data received from hardware. */
     public static class ClosedLoopIOInputs implements LoggableInputs {
