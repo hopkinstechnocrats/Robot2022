@@ -123,8 +123,8 @@ public class RobotContainer {
     CommandBase driveDefaultCommand = new RunCommand(
       () ->
           m_robotDrive.drive(
-              -3*m_driverController.getLeftY(),
-              -3*m_driverController.getLeftX(),
+              2*m_driverController.getLeftY(),
+              2*m_driverController.getLeftX(),
                3*m_driverController.getRightX()
                ), m_robotDrive);
     driveDefaultCommand.setName("DriveDefaultCommand");

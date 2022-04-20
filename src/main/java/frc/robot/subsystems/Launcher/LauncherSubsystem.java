@@ -41,6 +41,7 @@ public class LauncherSubsystem extends SubsystemBase {
     XboxController m_operator;
     private final LEDSubsystem m_led;
     TunableNumber spoid = new TunableNumber("Launcher/speed", 4000);
+    TunableNumber scalingFactor = new TunableNumber("Launcher/ScalingFactor", 1);
 
     public LauncherSubsystem(LEDSubsystem led, XboxController m_driverController, XboxController m_operator) {
         interpolationTable = new LinearInterpolator();
@@ -57,8 +58,8 @@ public class LauncherSubsystem extends SubsystemBase {
     }
 
     public void spinLauncher(double speedRPM) {
-        io.setVelocity(Units.rotationsPerMinuteToRadiansPerSecond(speedRPM));
-        SmartDashboard.putNumber("Launcher RPM", speedRPM);
+        io.setVelocity(scalingFactor.get() * Units.rotationsPerMinuteToRadiansPerSecond(speedRPM));
+        SmartDashboard.putNumber("Launcher RPM", speedRPM * scalingFactor.get());
         m_led.launchingOn();
         if (Units.radiansPerSecondToRotationsPerMinute(Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)) < 300) {
             m_led.onTargetOn();
