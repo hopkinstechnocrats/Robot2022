@@ -19,8 +19,8 @@ public class SwerveModule {
   private double offset;
   private boolean inverted;
 
-  private final ModuleSteerIO steerIO;
-  private final ModuleDriveIO driveIO;
+  private final ClosedLoopIO steerIO;
+  private final ClosedLoopIO driveIO;
   private SwerveModuleState desiredState;
   private final ClosedLoopIO.ClosedLoopIOInputs steerInputs;
   private final ClosedLoopIO.ClosedLoopIOInputs driveInputs;

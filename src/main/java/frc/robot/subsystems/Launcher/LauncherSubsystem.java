@@ -26,15 +26,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class LauncherSubsystem extends SubsystemBase {
 
-    private final VelocityClosedLoopIOTalon io = new VelocityClosedLoopIOTalon(
-            "launcher",
-            new int[] {Constants.LauncherConstants.kCANPort1, Constants.LauncherConstants.kCANPort2},
-            Constants.LauncherConstants.kP,
-            Constants.LauncherConstants.kI,
-            Constants.LauncherConstants.kD,
-            Constants.LauncherConstants.kF,
-            Constants.LauncherConstants.kEncoderTicksPerRevolution
-            );
+    private final ClosedLoopIO io;
     private final ClosedLoopIO.ClosedLoopIOInputs inputs = new ClosedLoopIO.ClosedLoopIOInputs(2);
     private final LinearInterpolator interpolationTable;
     XboxController m_driverController;
@@ -43,6 +35,15 @@ public class LauncherSubsystem extends SubsystemBase {
     TunableNumber spoid = new TunableNumber("Launcher/speed", 4000);
 
     public LauncherSubsystem(LEDSubsystem led, XboxController m_driverController, XboxController m_operator) {
+        io = new VelocityClosedLoopIOTalon(
+                "launcher",
+                new int[] {Constants.LauncherConstants.kCANPort1, Constants.LauncherConstants.kCANPort2},
+                Constants.LauncherConstants.kP,
+                Constants.LauncherConstants.kI,
+                Constants.LauncherConstants.kD,
+                Constants.LauncherConstants.kF,
+                Constants.LauncherConstants.kEncoderTicksPerRevolution
+        );
         interpolationTable = new LinearInterpolator();
 
         // interpolationTable.put(0, 0);
@@ -54,6 +55,21 @@ public class LauncherSubsystem extends SubsystemBase {
         this.m_operator = m_operator;
         //interpolationTable.put()
         
+    }
+
+    public LauncherSubsystem(LEDSubsystem led, XboxController m_driverController, XboxController m_operator, ClosedLoopIO io) {
+        this.io = io;
+        interpolationTable = new LinearInterpolator();
+
+        // interpolationTable.put(0, 0);
+        interpolationTable.put(3.08, 6000);
+        interpolationTable.put(5.69, 6904);
+        interpolationTable.put(7.80187249, 7565);
+        m_led = led;
+        this.m_driverController = m_driverController;
+        this.m_operator = m_operator;
+        //interpolationTable.put()
+
     }
 
     public void spinLauncher(double speedRPM) {

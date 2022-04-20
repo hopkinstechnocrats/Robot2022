@@ -10,6 +10,8 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 /** Template hardware interface for a closed loop subsystem. */
 public interface ClosedLoopIO {
+    void setVelocityRadPerSec(double v);
+
     /** Contains all of the input data received from hardware. */
     public static class ClosedLoopIOInputs implements LoggableInputs {
         public double positionRad = 0.0;

@@ -16,10 +16,16 @@ import org.littletonrobotics.junction.Logger;
 
 public class FeedSubsystem extends SubsystemBase {
 
-    private final OpenLoopIOTalonSRXBase io = new OpenLoopIOTalonSRXBase(Constants.FeedConstants.kCANPort);
+    private final OpenLoopIO io;
     private final OpenLoopIO.OpenLoopIOInputs inputs;
 
     public FeedSubsystem() {
+        io = new OpenLoopIOTalonSRXBase(Constants.FeedConstants.kCANPort);
+        inputs = new OpenLoopIO.OpenLoopIOInputs(1);
+    }
+
+    public FeedSubsystem(OpenLoopIO io) {
+        this.io = io;
         inputs = new OpenLoopIO.OpenLoopIOInputs(1);
     }
 
