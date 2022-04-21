@@ -240,7 +240,7 @@ public class RobotContainer {
       //OAButton.whenPressed(new InstantCommand(m_intake::intakeIn));
       OAButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
       //OXButton.whenPressed(new InstantCommand(m_intake::intakeOut));
-      OXButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(1), m_feed));
+      OXButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(0.3), m_feed));
       //OLBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
       OYButton.whenHeld(new RunCommand(m_launcher::spinLauncherTuning, m_launcher));
       
