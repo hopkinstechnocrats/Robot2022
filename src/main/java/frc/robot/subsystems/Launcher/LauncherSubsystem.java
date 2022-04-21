@@ -92,7 +92,7 @@ public class LauncherSubsystem extends SubsystemBase {
        io.updateInputs(inputs);
        Logger.getInstance().processInputs("launcher", inputs);
        SmartDashboard.putNumber("Launcher RPM", Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec));
-        SmartDashboard.putBoolean("At Speed", Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<10);
+        SmartDashboard.putBoolean("At Speed", Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<20);
         SmartDashboard.putNumber("Speed Error Rad Per Sec", Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec));
        double endTime = Logger.getInstance().getRealTimestamp();
        Logger.getInstance().recordOutput("LauncherCodeSec", endTime-startTime);

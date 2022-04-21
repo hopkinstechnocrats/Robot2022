@@ -286,13 +286,13 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
         
                                 new InstantCommand(m_intake::intakeIn), 
                                 new ParallelCommandGroup(
-                                        new RunCommand(() -> m_robotDrive.drive(1, 0, 0), m_robotDrive).withTimeout(1.5),
+                                        new RunCommand(() -> m_robotDrive.drive(-1, 0, 0), m_robotDrive).withTimeout(1.5),
                                         new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(1.5)
                                 ),
                                 new ParallelCommandGroup(
                                         new RunCommand(() -> m_robotDrive.drive(0, 0, 0), m_robotDrive).withTimeout(10),
                                         new StartEndCommand(() -> m_intake.StartIntakeOut(), () -> m_intake.EndIntake(), m_intake).withTimeout(10),
-                                        new RunCommand(() -> m_launcher.spinLauncher(6500), m_launcher).withTimeout(10),
+                                        new RunCommand(() -> m_launcher.spinLauncher(6300), m_launcher).withTimeout(10),
                                         // new RunCommand(() -> m_launcher
                                         //                 .spinFromDistance(m_robotDrive.getPose().getTranslation().getNorm()),
                                         //                 m_launcher).withTimeout(4), 
