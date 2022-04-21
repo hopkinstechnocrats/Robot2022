@@ -234,8 +234,9 @@ public class RobotContainer {
       YButton.whenPressed(new InstantCommand(m_robotDrive::fieldON));
       XButton.whenPressed(new InstantCommand(m_robotDrive::fieldOFF));
 
-      LBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
-      RBumper.whenPressed(new InstantCommand(m_intake::intakeIn));
+      // LBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
+      // RBumper.whenPressed(new InstantCommand(m_intake::intakeIn));
+      LBumper.whileHeld(new StartEndCommand(m_intake::StartIntakeOut,m_intake::EndIntake, m_intake));
 
       //OAButton.whenPressed(new InstantCommand(m_intake::intakeIn));
       OAButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
