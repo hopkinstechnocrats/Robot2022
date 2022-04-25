@@ -74,6 +74,15 @@ public class LauncherSubsystem extends SubsystemBase {
         }
     }
 
+    public Boolean deadzone() {
+        if(Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<20) {
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
+
 
     public void spinLauncherTuning() {
         io.setVelocity(Units.rotationsPerMinuteToRadiansPerSecond(spoid.get()));
