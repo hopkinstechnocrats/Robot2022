@@ -239,7 +239,8 @@ public class RobotContainer {
         new ParallelCommandGroup(new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher), 
         new RunCommand(() -> m_feed.spinFeed(-1), m_feed)).withInterrupt(() -> m_launcher.deadzone())));
 
-      BButton.whenHeld(new RunCommand(() -> m_climber.setPosition(Units.inchesToMeters(62)), m_climber));
+      RBumper.whenHeld(new RunCommand(() -> m_climber.setPosition(Units.inchesToMeters(62)), m_climber));
+
       YButton.whenPressed(new InstantCommand(m_robotDrive::fieldON));
       XButton.whenPressed(new InstantCommand(m_robotDrive::fieldOFF));
 
@@ -274,9 +275,9 @@ public class RobotContainer {
       ODPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(4000), m_launcher));
 
       // Pull intake in on right trigger press
-      Trigger LTrigger = new Trigger(() -> m_driverController.getRawAxis(2) >= .7);
+      // Trigger LTrigger = new Trigger(() -> m_driverController.getRawAxis(2) >= .7);
 
-      LTrigger.whenActive(new InstantCommand(m_intake::intakeOut));
+      // LTrigger.whenActive(new InstantCommand(m_intake::intakeOut));
       // DPadTop.whenPressed(new InstantCommand(() -> .(90)));
 
   }

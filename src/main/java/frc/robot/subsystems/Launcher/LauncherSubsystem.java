@@ -75,7 +75,7 @@ public class LauncherSubsystem extends SubsystemBase {
     }
 
     public Boolean deadzone() {
-        if(Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<20) {
+        if(Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<50) {
             return true;
         } else {
             return false;
