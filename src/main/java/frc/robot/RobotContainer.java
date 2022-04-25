@@ -231,7 +231,7 @@ public class RobotContainer {
       // AButton.whenHeld(new RunCommand(() -> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
       // m_limelight.ledsOn();}, m_robotDrive));
       AButton.whenHeld(new SequentialCommandGroup(new RunCommand(()-> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
-        m_limelight.ledsOn();}, m_robotDrive).withTimeout(1), 
+        m_limelight.ledsOn();}, m_robotDrive).withInterrupt(() -> m_limelight.rotdeadzone()), 
         new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher).withInterrupt(() -> m_launcher.deadzone()),
         new ParallelCommandGroup(new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher), 
         new RunCommand(() -> m_feed.spinFeed(-1), m_feed)).withInterrupt(() -> m_launcher.deadzone()), 

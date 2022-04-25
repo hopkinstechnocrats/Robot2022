@@ -86,4 +86,12 @@ public class LimelightSubsystem extends SubsystemBase {
   public void ledsOn() {
     ledMode.setNumber(3);
   }
+
+  public Boolean rotdeadzone() {
+    if (Math.abs(tx.getDouble(horizontalAngle))<0.5) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
