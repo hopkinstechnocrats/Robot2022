@@ -26,7 +26,10 @@ public class FieldPositions {
     public static final Translation2d R5 = new Translation2d(3.790, 0.858);
     public static final Translation2d R6 = new Translation2d(2.243, -3.174);
     public static final Translation2d R7 = new Translation2d(-6.584088144525776, -2.8041347960689952);
-    public static final Pose2d R3startingPosition = new Pose2d(-1.06+0.444, -2.76+0.444, new Rotation2d(0,-1)); //measure for real dimensions before testing
+    public static final Pose2d R1startingPosition = new Pose2d(-1.080+0.444, -2.814, new Rotation2d(0,-1)); //In-line with R1; measure for real dimensions before testing
+    public static final Pose2d R2startingPosition = new Pose2d(0,0, new Rotation2d(-0.6883, -0.7254)); //In-line with R2
+    public static final Pose2d R3startingPosition = new Pose2d(0,0, new Rotation2d(-0.6883, 0.7254)); //In-line with R3
+
     public static final Translation2d R8 = new Translation2d(-7.165+0.75, -2.990+0.75);  //In human player's hand. No definite coordinates.
     public static final Translation2d redFarHangarCorner = new Translation2d(-8.220, 4.121); 
     public static final Translation2d redDisposalLocation = new Translation2d(-8.220 + 0.5, 4.121 - 0.5); //variable location for disposal of opponent's balls

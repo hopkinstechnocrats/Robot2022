@@ -49,8 +49,8 @@ public class AutoRoutines {
                 this.m_limelight = m_limelight;
                 this.m_launcher = m_launcher;
                 chooser = new SendableChooser<>();
-                chooser.setDefaultOption("3BallAutoFarSide", FiveBallAutoRoutine(FieldPositions.R3startingPosition));
-                chooser.addOption("2BallAuto", twoBallAutoRoutine(FieldPositions.R3startingPosition));
+                chooser.setDefaultOption("3BallAutoFarSide", FiveBallAutoRoutine(FieldPositions.R1startingPosition));
+                chooser.addOption("2BallAuto", twoBallAutoRoutine(FieldPositions.R1startingPosition));
         }
 
         public SendableChooser<Command> getAutoChooser() {
