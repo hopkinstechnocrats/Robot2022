@@ -41,6 +41,7 @@ public class LauncherSubsystem extends SubsystemBase {
     XboxController m_operator;
     private final LEDSubsystem m_led;
     TunableNumber spoid = new TunableNumber("Launcher/speed", 4000);
+    TunableNumber scalingFactor = new TunableNumber("Launcher/ScalingFactor", 1);
 
     public LauncherSubsystem(LEDSubsystem led, XboxController m_driverController, XboxController m_operator) {
         interpolationTable = new LinearInterpolator();
@@ -57,8 +58,8 @@ public class LauncherSubsystem extends SubsystemBase {
     }
 
     public void spinLauncher(double speedRPM) {
-        io.setVelocity(Units.rotationsPerMinuteToRadiansPerSecond(speedRPM));
-        SmartDashboard.putNumber("Launcher RPM", speedRPM);
+        io.setVelocity(scalingFactor.get() * Units.rotationsPerMinuteToRadiansPerSecond(speedRPM));
+        SmartDashboard.putNumber("Launcher RPM", speedRPM * scalingFactor.get());
         m_led.launchingOn();
         if (Units.radiansPerSecondToRotationsPerMinute(Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)) < 300) {
             m_led.onTargetOn();
@@ -73,6 +74,21 @@ public class LauncherSubsystem extends SubsystemBase {
         }
     }
 
+    public Boolean deadzoneIn() {
+        if(Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<50) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Boolean deadzoneOut() {
+        if(Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)>50) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public void spinLauncherTuning() {
         io.setVelocity(Units.rotationsPerMinuteToRadiansPerSecond(spoid.get()));
@@ -91,7 +107,7 @@ public class LauncherSubsystem extends SubsystemBase {
        io.updateInputs(inputs);
        Logger.getInstance().processInputs("launcher", inputs);
        SmartDashboard.putNumber("Launcher RPM", Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec));
-        SmartDashboard.putBoolean("At Speed", Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<10);
+        SmartDashboard.putBoolean("At Speed", Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<20);
         SmartDashboard.putNumber("Speed Error Rad Per Sec", Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec));
        double endTime = Logger.getInstance().getRealTimestamp();
        Logger.getInstance().recordOutput("LauncherCodeSec", endTime-startTime);

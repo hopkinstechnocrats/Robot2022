@@ -123,8 +123,8 @@ public class RobotContainer {
     CommandBase driveDefaultCommand = new RunCommand(
       () ->
           m_robotDrive.drive(
-              -3*m_driverController.getLeftY(),
-              -3*m_driverController.getLeftX(),
+              -2*m_driverController.getLeftY(),
+              -2*m_driverController.getLeftX(),
                3*m_driverController.getRightX()
                ), m_robotDrive);
     driveDefaultCommand.setName("DriveDefaultCommand");
@@ -198,8 +198,8 @@ public class RobotContainer {
       JoystickButton ORIn = new JoystickButton(m_operatorController, 10);
       JoystickButton OXbox = new JoystickButton(m_operatorController, 13);
 
-      OLIn.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(0)));
-      ORIn.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(180)));
+      // OLIn.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(0)));
+      // ORIn.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(180)));
       // 
       POVButton DPadTop = new POVButton(m_driverController, 0);
       DPadTop.whenHeld(new RunCommand(() -> m_climber.spinClimber(8), m_climber));
@@ -228,19 +228,32 @@ public class RobotContainer {
       Back.whenPressed(() -> m_robotDrive.makeBackwards(true));
       Start.whenPressed(() -> m_robotDrive.makeBackwards(false));
 
-      AButton.whenHeld(new RunCommand(() -> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
-      m_limelight.ledsOn();}, m_robotDrive));
-      BButton.whenPressed(new InstantCommand(() -> m_robotDrive.resetOdometry(new Pose2d(-1.06+0.444, -2.76+0.444, new Rotation2d(0,-1)))));
+      // AButton.whenHeld(new RunCommand(() -> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
+      // m_limelight.ledsOn();}, m_robotDrive));
+      AButton.whenHeld(new SequentialCommandGroup(new RunCommand(()-> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
+        m_limelight.ledsOn();
+        m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
+      }, m_robotDrive).withInterrupt(() -> m_limelight.rotdeadzone()), 
+        new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher).withInterrupt(() -> m_launcher.deadzoneIn()),
+        new ParallelCommandGroup(new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher), 
+        new RunCommand(() -> m_feed.spinFeed(-1), m_feed)).withInterrupt(() -> m_launcher.deadzoneOut()), 
+        new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher).withInterrupt(() -> m_launcher.deadzoneIn()),
+        new ParallelCommandGroup(new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher), 
+        new RunCommand(() -> m_feed.spinFeed(-1), m_feed)).withInterrupt(() -> m_launcher.deadzoneOut())));
+
+      RBumper.whenHeld(new RunCommand(() -> m_climber.setPosition(Units.inchesToMeters(62)), m_climber));
+
       YButton.whenPressed(new InstantCommand(m_robotDrive::fieldON));
       XButton.whenPressed(new InstantCommand(m_robotDrive::fieldOFF));
 
-      LBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
-      RBumper.whenPressed(new InstantCommand(m_intake::intakeIn));
+      // LBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
+      // RBumper.whenPressed(new InstantCommand(m_intake::intakeIn));
+      LBumper.whileHeld(new StartEndCommand(m_intake::StartIntakeOut,m_intake::EndIntake, m_intake));
 
       //OAButton.whenPressed(new InstantCommand(m_intake::intakeIn));
       OAButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
       //OXButton.whenPressed(new InstantCommand(m_intake::intakeOut));
-      OXButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(1), m_feed));
+      OXButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(0.3), m_feed));
       //OLBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
       OYButton.whenHeld(new RunCommand(m_launcher::spinLauncherTuning, m_launcher));
       
@@ -264,9 +277,9 @@ public class RobotContainer {
       ODPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(4000), m_launcher));
 
       // Pull intake in on right trigger press
-      Trigger LTrigger = new Trigger(() -> m_driverController.getRawAxis(2) >= .7);
+      // Trigger LTrigger = new Trigger(() -> m_driverController.getRawAxis(2) >= .7);
 
-      LTrigger.whenActive(new InstantCommand(m_intake::intakeOut));
+      // LTrigger.whenActive(new InstantCommand(m_intake::intakeOut));
       // DPadTop.whenPressed(new InstantCommand(() -> .(90)));
 
   }
