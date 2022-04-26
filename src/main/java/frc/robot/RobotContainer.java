@@ -186,6 +186,7 @@ public class RobotContainer {
       JoystickButton L4Button = new JoystickButton(m_leftJoystick, 4);
       JoystickButton R6Button = new JoystickButton(m_rightJoystick, 6);
       JoystickButton R4Button = new JoystickButton(m_rightJoystick, 4);
+      JoystickButton R3Button = new JoystickButton(m_rightJoystick, 3);
       JoystickButton R2Button = new JoystickButton(m_rightJoystick, 2);
  
       POVButton LDPadTop = new POVButton(m_leftJoystick, 0);
@@ -198,6 +199,12 @@ public class RobotContainer {
               .andThen(new InstantCommand(m_led::climbingOff));
       
       LDPadRight.whenPressed(autoClimb);
+
+      R2Button.whileHeld(new RunCommand(() -> m_robotDrive.drive(
+        -4*m_leftJoystick.getRawAxis(2),
+        -4*m_leftJoystick.getRawAxis(1),
+         3*m_rightJoystick.getRawAxis(1)
+         ), m_robotDrive));
 
       POVButton LDPadBottom = new POVButton(m_leftJoystick, 180);
       LDPadBottom.whenHeld(new RunCommand(() -> m_climber.spinClimber(-8), m_climber));
@@ -234,7 +241,7 @@ public class RobotContainer {
       R4Button.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
       R6Button.whenHeld(new RunCommand(() -> m_feed.spinFeed(0.3), m_feed));
       
-      R2Button.whileHeld(new RunCommand(() -> {
+      R3Button.whileHeld(new RunCommand(() -> {
         m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
       }, m_launcher));
 
