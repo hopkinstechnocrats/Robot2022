@@ -67,11 +67,11 @@ public class LauncherSubsystem extends SubsystemBase {
             m_led.onTargetOff();
         }
 
-        if (Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<20) {
-            m_operator.setRumble(RumbleType.kLeftRumble, 1);
-        } else {
-            m_operator.setRumble(RumbleType.kLeftRumble, 0);
-        }
+        // if (Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<20) {
+        //     m_operator.setRumble(RumbleType.kLeftRumble, 1);
+        // } else {
+        //     m_operator.setRumble(RumbleType.kLeftRumble, 0);
+        // }
     }
 
     public Boolean deadzoneIn() {
