@@ -83,8 +83,8 @@ public class RobotContainer {
   // private final SingleModuleTestFixture singleModuleTestFixture = new SingleModuleTestFixture();
 
   // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-  XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
+  XboxController m_leftJoystick = new XboxController(OIConstants.kDriverControllerPort);
+  XboxController m_rightJoystick = new XboxController(OIConstants.kOperatorControllerPort);
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -103,7 +103,7 @@ public class RobotContainer {
     m_intake = new IntakeSubsystem(m_led);
     m_climber = new ClimberSubsystem();
     m_feed = new FeedSubsystem();
-    m_launcher = new LauncherSubsystem(m_led, m_driverController, m_operatorController);
+    m_launcher = new LauncherSubsystem(m_led, m_leftJoystick, m_rightJoystick);
     m_limelight = new LimelightSubsystem();
     myAutoRoutines = new AutoRoutines(m_robotDrive, m_feed, m_intake, m_limelight, m_launcher); 
     SmartDashboard.putData(myAutoRoutines.getAutoChooser());
@@ -123,9 +123,9 @@ public class RobotContainer {
     CommandBase driveDefaultCommand = new RunCommand(
       () ->
           m_robotDrive.drive(
-              -2*m_driverController.getLeftY(),
-              -2*m_driverController.getLeftX(),
-               3*m_driverController.getRightX()
+              -2*m_leftJoystick.getRawAxis(2),
+              -2*m_leftJoystick.getRawAxis(1),
+               3*m_rightJoystick.getRawAxis(1)
                ), m_robotDrive);
     driveDefaultCommand.setName("DriveDefaultCommand");
     m_robotDrive.setDefaultCommand(driveDefaultCommand); // use this to change from field oriented to non-field oriented
@@ -151,8 +151,8 @@ public class RobotContainer {
       () ->  {
         // SmartDashboard.putNumber("Distance From Target", Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
         // m_limelight.ledsOff();
-        m_operatorController.setRumble(RumbleType.kLeftRumble, 0);
-        m_driverController.setRumble(RumbleType.kLeftRumble, 0);
+        // m_operatorController.setRumble(RumbleType.kLeftRumble, 0);
+        // m_driverController.setRumble(RumbleType.kLeftRumble, 0);
         m_launcher.stopLauncher();
       }, //m_launcher.spinLauncher(launcherSpeed.get()); System.out.println("RUNNING LAUNCHER DEFAULT COMMAND");},
       m_launcher);
@@ -177,60 +177,43 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-      JoystickButton AButton = new JoystickButton(m_driverController, 1);
-      JoystickButton BButton = new JoystickButton(m_driverController, 2);
-      JoystickButton XButton = new JoystickButton(m_driverController, 3);
-      JoystickButton YButton = new JoystickButton(m_driverController, 4);
-      JoystickButton LBumper = new JoystickButton(m_driverController, 5);
-      JoystickButton RBumper = new JoystickButton(m_driverController, 6);
-      JoystickButton Back = new JoystickButton(m_driverController, 7);
-      JoystickButton Start = new JoystickButton(m_driverController, 8);
-
-      JoystickButton OAButton = new JoystickButton(m_operatorController, 1);
-      JoystickButton OBButton = new JoystickButton(m_operatorController, 2);
-      JoystickButton OXButton = new JoystickButton(m_operatorController, 3);
-      JoystickButton OYButton = new JoystickButton(m_operatorController, 4);
-      JoystickButton ORBumper = new JoystickButton(m_operatorController, 6);
-      JoystickButton OLBumper = new JoystickButton(m_operatorController, 5);
-      JoystickButton OBack = new JoystickButton(m_operatorController, 7);
-      JoystickButton OStart = new JoystickButton(m_operatorController, 8);
-      JoystickButton OLIn = new JoystickButton(m_operatorController, 9);
-      JoystickButton ORIn = new JoystickButton(m_operatorController, 10);
-      JoystickButton OXbox = new JoystickButton(m_operatorController, 13);
-
-      // OLIn.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(0)));
-      // ORIn.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(180)));
-      // 
-      POVButton DPadTop = new POVButton(m_driverController, 0);
-      DPadTop.whenHeld(new RunCommand(() -> m_climber.spinClimber(8), m_climber));
-      // DPadTop.whenPressed(myAutoRoutines.drivePositiveY());
-      POVButton DPadRight = new POVButton(m_driverController, 90);
+      JoystickButton RTrigger = new JoystickButton(m_rightJoystick, 1);
+      JoystickButton R5Button = new JoystickButton(m_rightJoystick, 5);
+      JoystickButton L5Button = new JoystickButton(m_leftJoystick, 5);
+      JoystickButton L3Button = new JoystickButton(m_leftJoystick, 3);
+      JoystickButton LTrigger = new JoystickButton(m_leftJoystick, 1);
+      JoystickButton L6Button = new JoystickButton(m_leftJoystick, 6);
+      JoystickButton L4Button = new JoystickButton(m_leftJoystick, 4);
+      JoystickButton R6Button = new JoystickButton(m_rightJoystick, 6);
+      JoystickButton R4Button = new JoystickButton(m_rightJoystick, 4);
+      JoystickButton R2Button = new JoystickButton(m_rightJoystick, 2);
+ 
+      POVButton LDPadTop = new POVButton(m_leftJoystick, 0);
+      LDPadTop.whenHeld(new RunCommand(() -> m_climber.spinClimber(8), m_climber));
+      
+      POVButton LDPadRight = new POVButton(m_leftJoystick, 90);
+      
       Command autoClimb = new AutoClimb(m_climber, m_robotDrive)
               .beforeStarting(new InstantCommand(m_led::climbingOn))
               .andThen(new InstantCommand(m_led::climbingOff));
-      DPadRight.whenPressed(autoClimb);
-      BButton.whenPressed(new InstantCommand(m_led::climbingOff, m_climber));
-      // DPadRight.whenPressed(myAutoRoutines.drivePositiveX());
-      POVButton DPadBottom = new POVButton(m_driverController, 180);
-      DPadTop.whenHeld(new RunCommand(() -> m_climber.spinClimber(8), m_climber));
-      //DPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(5500), m_launcher));
-      //DPadBottom.whenPressed(new FixHeadingCommand(m_robo]\[][\]\tDrive, Rotation2d.fromDegrees(270)));
-      DPadBottom.whenHeld(new RunCommand(() -> m_climber.spinClimber(-8), m_climber));
-      POVButton DPadLeft = new POVButton(m_driverController, 270); 
-      DPadLeft.toggleWhenPressed(new StartEndCommand(m_climber::clawsOut, m_climber::clawsIn, m_climber));
-      // DPadLeft.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(0), m_driverController));
+      
+      LDPadRight.whenPressed(autoClimb);
 
-      POVButton ODPadTop = new POVButton(m_operatorController, 0);
-      POVButton ODPadRight = new POVButton(m_operatorController, 90);
-      POVButton ODPadBottom = new POVButton(m_operatorController, 180);
-      POVButton ODPadLeft = new POVButton(m_operatorController, 270);
+      POVButton LDPadBottom = new POVButton(m_leftJoystick, 180);
+      LDPadBottom.whenHeld(new RunCommand(() -> m_climber.spinClimber(-8), m_climber));
+  
+      POVButton LDPadLeft = new POVButton(m_leftJoystick, 270); 
+      LDPadLeft.toggleWhenPressed(new StartEndCommand(m_climber::clawsOut, m_climber::clawsIn, m_climber));
+      
+      POVButton RDPadTop = new POVButton(m_rightJoystick, 0);
+      POVButton RDPadRight = new POVButton(m_rightJoystick, 90);
+      POVButton RDPadBottom = new POVButton(m_rightJoystick, 180);
+      POVButton RDPadLeft = new POVButton(m_rightJoystick, 270);
 
-      Back.whenPressed(() -> m_robotDrive.makeBackwards(true));
-      Start.whenPressed(() -> m_robotDrive.makeBackwards(false));
+      L6Button.whenPressed(() -> m_robotDrive.makeBackwards(true));
+      L4Button.whenPressed(() -> m_robotDrive.makeBackwards(false));
 
-      // AButton.whenHeld(new RunCommand(() -> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
-      // m_limelight.ledsOn();}, m_robotDrive));
-      AButton.whenHeld(new SequentialCommandGroup(new RunCommand(()-> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
+      RTrigger.whenHeld(new SequentialCommandGroup(new RunCommand(()-> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
         m_limelight.ledsOn();
         m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
       }, m_robotDrive).withInterrupt(() -> m_limelight.rotdeadzone()), 
@@ -241,54 +224,31 @@ public class RobotContainer {
         new ParallelCommandGroup(new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher), 
         new RunCommand(() -> m_feed.spinFeed(-1), m_feed)).withInterrupt(() -> m_launcher.deadzoneOut())));
 
-      RBumper.whenHeld(new RunCommand(() -> m_climber.setPosition(Units.inchesToMeters(62)), m_climber));
+      R5Button.whenHeld(new RunCommand(() -> m_climber.setPosition(Units.inchesToMeters(62)), m_climber));
 
-      YButton.whenPressed(new InstantCommand(m_robotDrive::fieldON));
-      XButton.whenPressed(new InstantCommand(m_robotDrive::fieldOFF));
+      L5Button.whenPressed(new InstantCommand(m_robotDrive::fieldON));
+      L3Button.whenPressed(new InstantCommand(m_robotDrive::fieldOFF));
 
-      // LBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
-      // RBumper.whenPressed(new InstantCommand(m_intake::intakeIn));
-      LBumper.whileHeld(new StartEndCommand(m_intake::StartIntakeOut,m_intake::EndIntake, m_intake));
+      LTrigger.whileHeld(new StartEndCommand(m_intake::StartIntakeOut,m_intake::EndIntake, m_intake));
 
-      //OAButton.whenPressed(new InstantCommand(m_intake::intakeIn));
-      OAButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
-      //OXButton.whenPressed(new InstantCommand(m_intake::intakeOut));
-      OXButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(0.3), m_feed));
-      //OLBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
-      OYButton.whenHeld(new RunCommand(m_launcher::spinLauncherTuning, m_launcher));
+      R4Button.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
+      R6Button.whenHeld(new RunCommand(() -> m_feed.spinFeed(0.3), m_feed));
       
-      //OBButton.whenPressed(new InstantCommand(m_climber::clawsOut));
-      //OYButton.whenPressed(new InstantCommand(m_climber::clawsIn));
-      OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
-      OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(-5), m_climber));
-      //OLIn.whenHeld(new RunCommand(() -> m_climber.spinClimber(12), m_climber));
-
-
-      //ORIn.whenHeld(new RunCommand(() -> m_launcher.spinFromDistance(2.64/(Math.tan(m_limelight.getVerticalAngle()))), m_launcher));
-      //ORBumper.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
-      ORBumper.whileHeld(new RunCommand(() -> {
+      R2Button.whileHeld(new RunCommand(() -> {
         m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
-        // m_limelight.ledsOn();
       }, m_launcher));
 
-      ODPadTop.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(6000), m_launcher));
-      ODPadLeft.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(3000), m_launcher));
-      ODPadRight.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(5000), m_launcher));
-      ODPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(4000), m_launcher));
-
-      // Pull intake in on right trigger press
-      // Trigger LTrigger = new Trigger(() -> m_driverController.getRawAxis(2) >= .7);
-
-      // LTrigger.whenActive(new InstantCommand(m_intake::intakeOut));
-      // DPadTop.whenPressed(new InstantCommand(() -> .(90)));
-
+      RDPadTop.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(6000), m_launcher));
+      RDPadLeft.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(3000), m_launcher));
+      RDPadRight.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(5000), m_launcher));
+      RDPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(4000), m_launcher));
   }
 
   public void drive() {
      m_robotDrive.drive(
-    -3*m_driverController.getLeftY(),
-    -3*m_driverController.getLeftX(),
-     3*m_driverController.getRightX()
+    -3*m_leftJoystick.getRawAxis(2),
+    -3*m_leftJoystick.getRawAxis(1),
+     3*m_rightJoystick.getRawAxis(1)
      );
   }
 
