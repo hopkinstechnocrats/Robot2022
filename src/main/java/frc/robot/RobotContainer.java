@@ -116,7 +116,7 @@ public class RobotContainer {
     );
 
     m_feed.setDefaultCommand(
-      new AutomaticFeedCommand(m_feed, () -> m_launcher.atSpeed() && m_limelight.isAimed())
+      new AutomaticFeedCommand(m_feed, () -> m_launcher.atSpeed())
     );
 
     TunableNumber launcherSpeed = new TunableNumber("launcher/launcherSpeedRPM", 0);
@@ -203,7 +203,7 @@ public class RobotContainer {
 
       // AButton.whenHeld(new RunCommand(() -> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
       // m_limelight.ledsOn();}, m_robotDrive));
-      AButton.whenHeld(new SequentialCommandGroup(new RunCommand(()-> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
+      LBumper.whenHeld(new SequentialCommandGroup(new RunCommand(()-> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
         m_limelight.ledsOn();
         m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
       }, m_robotDrive).withInterrupt(m_limelight::isAimed),
@@ -221,7 +221,7 @@ public class RobotContainer {
 
       // LBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
       // RBumper.whenPressed(new InstantCommand(m_intake::intakeIn));
-      LBumper.whileHeld(new StartEndCommand(m_intake::StartIntakeOut,m_intake::EndIntake, m_intake));
+      AButton.whileHeld(new StartEndCommand(m_intake::StartIntakeOut,m_intake::EndIntake, m_intake));
 
       //OAButton.whenPressed(new InstantCommand(m_intake::intakeIn));
       OAButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
