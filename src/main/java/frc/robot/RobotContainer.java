@@ -5,25 +5,17 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.*;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.auto.AutoRoutines;
-import frc.robot.auto.FieldPositions;
 import frc.robot.commands.AutoClimb;
-import frc.robot.commands.AutoExtendTelescope;
-import frc.robot.commands.FixHeadingCommand;
+import frc.robot.commands.AutomaticFeedCommand;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Climber.ClimberSubsystem;
@@ -34,28 +26,11 @@ import frc.robot.subsystems.Limelight.LimelightSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj.Filesystem;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.text.SimpleDateFormat;
-import lib.Loggable;
 import lib.util.TunableNumber;
-import org.littletonrobotics.junction.Logger;
-
 
 
 /*
@@ -141,9 +116,7 @@ public class RobotContainer {
     );
 
     m_feed.setDefaultCommand(
-      new RunCommand(
-        () -> m_feed.spinFeed(0),
-        m_feed)
+      new AutomaticFeedCommand(m_feed, () -> m_launcher.atSpeed() && m_limelight.isAimed())
     );
 
     TunableNumber launcherSpeed = new TunableNumber("launcher/launcherSpeedRPM", 0);
@@ -233,13 +206,13 @@ public class RobotContainer {
       AButton.whenHeld(new SequentialCommandGroup(new RunCommand(()-> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
         m_limelight.ledsOn();
         m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
-      }, m_robotDrive).withInterrupt(() -> m_limelight.rotdeadzone()), 
-        new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher).withInterrupt(() -> m_launcher.deadzoneIn()),
+      }, m_robotDrive).withInterrupt(m_limelight::isAimed),
+        new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher).withInterrupt(m_launcher::atSpeed),
         new ParallelCommandGroup(new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher), 
-        new RunCommand(() -> m_feed.spinFeed(-1), m_feed)).withInterrupt(() -> m_launcher.deadzoneOut()), 
-        new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher).withInterrupt(() -> m_launcher.deadzoneIn()),
+        new RunCommand(() -> m_feed.spinFeed(-1), m_feed)).withInterrupt(() -> !m_launcher.atSpeed()),
+        new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher).withInterrupt(m_launcher::atSpeed),
         new ParallelCommandGroup(new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher), 
-        new RunCommand(() -> m_feed.spinFeed(-1), m_feed)).withInterrupt(() -> m_launcher.deadzoneOut())));
+        new RunCommand(() -> m_feed.spinFeed(-1), m_feed)).withInterrupt(() -> !m_launcher.atSpeed())));
 
       RBumper.whenHeld(new RunCommand(() -> m_climber.setPosition(Units.inchesToMeters(62)), m_climber));
 

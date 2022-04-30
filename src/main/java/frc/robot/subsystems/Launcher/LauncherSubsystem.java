@@ -1,10 +1,7 @@
 package frc.robot.subsystems.Launcher;
 
 
-import com.ctre.phoenix.led.CANdle;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,11 +10,6 @@ import frc.robot.Constants;
 import frc.robot.subsystems.LEDSubsystem;
 import lib.LinearInterpolator;
 import lib.iotemplates.ClosedLoopIO;
-import lib.iotemplates.OpenLoopIO;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import lib.iotemplates.VelocityClosedLoopIOTalon;
 import lib.util.TunableNumber;
@@ -90,21 +82,10 @@ public class LauncherSubsystem extends SubsystemBase {
         }
     }
 
-    public Boolean deadzoneIn() {
-        if(Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<50) {
-            return true;
-        } else {
-            return false;
-        }
+    public Boolean atSpeed() {
+        return Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec) < 50;
     }
 
-    public Boolean deadzoneOut() {
-        if(Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)>50) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     public void spinLauncherTuning() {
         io.setVelocity(Units.rotationsPerMinuteToRadiansPerSecond(spoid.get()));

@@ -5,13 +5,10 @@
 package frc.robot.subsystems.Limelight;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -54,13 +51,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
   public boolean isTargetVisible(){
     isTargetVisible = tv.getDouble(isTargetVisible);
-    if (isTargetVisible == 1){
-      return true;
-    }
-    else {
-      return false;
-    }
-    
+    return isTargetVisible == 1;
   }
 
   public double getRotationSpeed(){
@@ -87,11 +78,7 @@ public class LimelightSubsystem extends SubsystemBase {
     ledMode.setNumber(3);
   }
 
-  public Boolean rotdeadzone() {
-    if (Math.abs(tx.getDouble(horizontalAngle))<0.5) {
-      return true;
-    } else {
-      return false;
-    }
+  public Boolean isAimed() {
+    return Math.abs(tx.getDouble(horizontalAngle)) < 0.5;
   }
 }
