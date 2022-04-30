@@ -34,6 +34,11 @@ public class AutomaticFeedCommand extends CommandBase {
     public void initialize() {
     }
 
+    public void resetEmpty() {
+        state = State.Empty;
+    }
+
+
     @Override
     public void execute() {
         if (state == State.Empty) {
@@ -109,6 +114,15 @@ public class AutomaticFeedCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+    
+    }
 
+    public State getStateOfBall(){
+        return state;
+    }
+
+    public void moveToTop(){
+        feedSubsystem.spinFeed(-1);
+        state = State.TwoBallsTraveling;
     }
 }
