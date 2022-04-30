@@ -135,6 +135,16 @@ public class DriveSubsystem extends SubsystemBase {
     return m_odometry.getPoseMeters();
   }
 
+  public Pose2d getPoseIntake() {
+    Transform2d centerToIntakeTransform = new Transform2d(new Pose2d(0,0,new Rotation2d()), new Pose2d(Units.inchesToMeters(17.5), 0, new Rotation2d()));
+    return getPose().transformBy(centerToIntakeTransform);
+  }
+
+  public Pose2d getPoseFieldRelative() {
+    Transform2d fieldRelativeTransform = new Transform2d(new Pose2d(0,0,new Rotation2d()), new Pose2d(-1*Units.inchesToMeters(324), 0, new Rotation2d()));
+    return getPose().transformBy(fieldRelativeTransform);
+  }
+
   public void setTargetAngle(Rotation2d targetAngle) {
     this.targetAngle = targetAngle;
   }
