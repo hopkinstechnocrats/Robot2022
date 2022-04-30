@@ -45,9 +45,9 @@ public class DriveSubsystem extends SubsystemBase {
   // field
   private final Field2d m_field = new Field2d();
 
-  private final SlewRateLimiter xSpeedFilter = new SlewRateLimiter(5);
-  private final SlewRateLimiter ySpeedFilter = new SlewRateLimiter(5);
-  private final SlewRateLimiter rotFilter = new SlewRateLimiter(25);
+  private final SlewRateLimiter xSpeedFilter = new SlewRateLimiter(10);
+  private final SlewRateLimiter ySpeedFilter = new SlewRateLimiter(10);
+  private final SlewRateLimiter rotFilter = new SlewRateLimiter(50);
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
