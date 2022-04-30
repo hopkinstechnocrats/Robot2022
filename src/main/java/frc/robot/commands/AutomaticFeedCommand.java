@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Feed.FeedSubsystem;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.function.BooleanSupplier;
 
@@ -88,6 +89,10 @@ public class AutomaticFeedCommand extends CommandBase {
                 state = State.Empty;
             }
         }
+
+        Logger.getInstance().recordOutput("Feed/state", state.name());
+        Logger.getInstance().recordOutput("Feed/readyToLaunch", readyToLaunch.getAsBoolean());
+
     }
 
     @Override
