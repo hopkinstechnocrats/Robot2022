@@ -21,13 +21,13 @@ public class LauncherSubsystem extends SubsystemBase {
     private final ClosedLoopIO io;
     private final ClosedLoopIO.ClosedLoopIOInputs inputs = new ClosedLoopIO.ClosedLoopIOInputs(2);
     private final LinearInterpolator interpolationTable;
-    XboxController m_driverController;
-    XboxController m_operator;
+    XboxController m_leftController;
+    XboxController m_rightController;
     private final LEDSubsystem m_led;
     TunableNumber spoid = new TunableNumber("Launcher/speed", 4000);
     TunableNumber scalingFactor = new TunableNumber("Launcher/ScalingFactor", 1);
 
-    public LauncherSubsystem(LEDSubsystem led, XboxController m_driverController, XboxController m_operator) {
+    public LauncherSubsystem(LEDSubsystem led, XboxController m_lefController, XboxController m_rightController) {
         io = new VelocityClosedLoopIOTalon(
                 "launcher",
                 new int[] {Constants.LauncherConstants.kCANPort1, Constants.LauncherConstants.kCANPort2},
@@ -44,13 +44,13 @@ public class LauncherSubsystem extends SubsystemBase {
         interpolationTable.put(5.69, 6904);
         interpolationTable.put(7.80187249, 7565);
         m_led = led;
-        this.m_driverController = m_driverController;
-        this.m_operator = m_operator;
+        this.m_leftController = m_lefController;
+        this.m_rightController = m_rightController;
         //interpolationTable.put()
         
     }
 
-    public LauncherSubsystem(LEDSubsystem led, XboxController m_driverController, XboxController m_operator, ClosedLoopIO io) {
+    public LauncherSubsystem(LEDSubsystem led, XboxController m_leftController, XboxController m_rightController, ClosedLoopIO io) {
         this.io = io;
         interpolationTable = new LinearInterpolator();
 
@@ -59,8 +59,8 @@ public class LauncherSubsystem extends SubsystemBase {
         interpolationTable.put(5.69, 6904);
         interpolationTable.put(7.80187249, 7565);
         m_led = led;
-        this.m_driverController = m_driverController;
-        this.m_operator = m_operator;
+        this.m_leftController = m_leftController;
+        this.m_rightController = m_rightController;
         //interpolationTable.put()
 
     }
@@ -75,11 +75,11 @@ public class LauncherSubsystem extends SubsystemBase {
             m_led.onTargetOff();
         }
 
-        if (Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<20) {
-            m_operator.setRumble(RumbleType.kLeftRumble, 1);
-        } else {
-            m_operator.setRumble(RumbleType.kLeftRumble, 0);
-        }
+        // if (Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<20) {
+        //     m_operator.setRumble(RumbleType.kLeftRumble, 1);
+        // } else {
+        //     m_operator.setRumble(RumbleType.kLeftRumble, 0);
+        // }
     }
 
     public Boolean atSpeed() {

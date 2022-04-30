@@ -58,8 +58,8 @@ public class RobotContainer {
   // private final SingleModuleTestFixture singleModuleTestFixture = new SingleModuleTestFixture();
 
   // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-  XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
+  XboxController m_leftController = new XboxController(OIConstants.kDriverControllerPort);
+  XboxController m_rightController = new XboxController(OIConstants.kOperatorControllerPort);
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -78,7 +78,7 @@ public class RobotContainer {
     m_intake = new IntakeSubsystem(m_led);
     m_climber = new ClimberSubsystem();
     m_feed = new FeedSubsystem();
-    m_launcher = new LauncherSubsystem(m_led, m_driverController, m_operatorController);
+    m_launcher = new LauncherSubsystem(m_led, m_leftController, m_rightController);
     m_limelight = new LimelightSubsystem();
     myAutoRoutines = new AutoRoutines(m_robotDrive, m_feed, m_intake, m_limelight, m_launcher); 
     SmartDashboard.putData(myAutoRoutines.getAutoChooser());
@@ -98,9 +98,9 @@ public class RobotContainer {
     CommandBase driveDefaultCommand = new RunCommand(
       () ->
           m_robotDrive.drive(
-              -2*m_driverController.getLeftY(),
-              -2*m_driverController.getLeftX(),
-               3*m_driverController.getRightX()
+              -2*m_leftController.getRawAxis(1),
+              -2*m_leftController.getRawAxis(0),
+               3*m_rightController.getRawAxis(0)
                ), m_robotDrive);
     driveDefaultCommand.setName("DriveDefaultCommand");
     m_robotDrive.setDefaultCommand(driveDefaultCommand); // use this to change from field oriented to non-field oriented
@@ -124,8 +124,8 @@ public class RobotContainer {
       () ->  {
         // SmartDashboard.putNumber("Distance From Target", Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
         // m_limelight.ledsOff();
-        m_operatorController.setRumble(RumbleType.kLeftRumble, 0);
-        m_driverController.setRumble(RumbleType.kLeftRumble, 0);
+        // m_operatorController.setRumble(RumbleType.kLeftRumble, 0);
+        // m_driverController.setRumble(RumbleType.kLeftRumble, 0);
         m_launcher.stopLauncher();
       }, //m_launcher.spinLauncher(launcherSpeed.get()); System.out.println("RUNNING LAUNCHER DEFAULT COMMAND");},
       m_launcher);
@@ -150,6 +150,8 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+    JoystickButton LTrigger = new JoystickButton(m_leftController, 1);
+    JoystickButton RTrigger = new JoystickButton(m_rightController, 1); /*
       JoystickButton AButton = new JoystickButton(m_driverController, 1);
       JoystickButton BButton = new JoystickButton(m_driverController, 2);
       JoystickButton XButton = new JoystickButton(m_driverController, 3);
@@ -200,10 +202,10 @@ public class RobotContainer {
 
       Back.whenPressed(() -> m_robotDrive.makeBackwards(true));
       Start.whenPressed(() -> m_robotDrive.makeBackwards(false));
-
+    */
       // AButton.whenHeld(new RunCommand(() -> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
       // m_limelight.ledsOn();}, m_robotDrive));
-      AButton.whenHeld(new SequentialCommandGroup(new RunCommand(()-> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
+      RTrigger.whenHeld(new SequentialCommandGroup(new RunCommand(()-> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
         m_limelight.ledsOn();
         m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
       }, m_robotDrive).withInterrupt(m_limelight::isAimed),
@@ -213,6 +215,9 @@ public class RobotContainer {
         new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher).withInterrupt(m_launcher::atSpeed),
         new ParallelCommandGroup(new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher), 
         new RunCommand(() -> m_feed.spinFeed(-1), m_feed)).withInterrupt(() -> !m_launcher.atSpeed())));
+        
+      LTrigger.whileHeld(new StartEndCommand(m_intake::StartIntakeOut,m_intake::EndIntake, m_intake));
+      /*
 
       RBumper.whenHeld(new RunCommand(() -> m_climber.setPosition(Units.inchesToMeters(62)), m_climber));
 
@@ -221,7 +226,6 @@ public class RobotContainer {
 
       // LBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
       // RBumper.whenPressed(new InstantCommand(m_intake::intakeIn));
-      LBumper.whileHeld(new StartEndCommand(m_intake::StartIntakeOut,m_intake::EndIntake, m_intake));
 
       //OAButton.whenPressed(new InstantCommand(m_intake::intakeIn));
       OAButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
@@ -253,15 +257,15 @@ public class RobotContainer {
       // Trigger LTrigger = new Trigger(() -> m_driverController.getRawAxis(2) >= .7);
 
       // LTrigger.whenActive(new InstantCommand(m_intake::intakeOut));
-      // DPadTop.whenPressed(new InstantCommand(() -> .(90)));
+      // DPadTop.whenPressed(new InstantCommand(() -> .(90))); */ 
 
   }
 
   public void drive() {
      m_robotDrive.drive(
-    -3*m_driverController.getLeftY(),
-    -3*m_driverController.getLeftX(),
-     3*m_driverController.getRightX()
+      -3*m_leftController.getRawAxis(1),
+      -3*m_leftController.getRawAxis(0),
+       3*m_rightController.getRawAxis(0)
      );
   }
 
