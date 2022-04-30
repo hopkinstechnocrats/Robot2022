@@ -53,13 +53,14 @@ public class RobotContainer {
   private final AutoRoutines myAutoRoutines;
   public final Compressor phCompressor = new Compressor(PneumaticsModuleType.REVPH);
   public Pose2d zeroPose = new Pose2d(new Translation2d(0, 0), new Rotation2d());
+  public AutomaticFeedCommand autoFeedCommand;
 
 
   // private final SingleModuleTestFixture singleModuleTestFixture = new SingleModuleTestFixture();
 
   // The driver's controller
-  XboxController m_leftController = new XboxController(OIConstants.kDriverControllerPort);
-  XboxController m_rightController = new XboxController(OIConstants.kOperatorControllerPort);
+  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -78,16 +79,18 @@ public class RobotContainer {
     m_intake = new IntakeSubsystem(m_led);
     m_climber = new ClimberSubsystem();
     m_feed = new FeedSubsystem();
-    m_launcher = new LauncherSubsystem(m_led, m_leftController, m_rightController);
+    m_launcher = new LauncherSubsystem(m_led, m_driverController, m_operatorController);
     m_limelight = new LimelightSubsystem();
     myAutoRoutines = new AutoRoutines(m_robotDrive, m_feed, m_intake, m_limelight, m_launcher); 
     SmartDashboard.putData(myAutoRoutines.getAutoChooser());
       Solenoid obj = new Solenoid(PneumaticsModuleType.REVPH, 0);
       obj.set(true);
     phCompressor.enableAnalog(100, 120);
+    autoFeedCommand = new AutomaticFeedCommand(m_feed, () -> m_launcher.atSpeed() && m_limelight.isAimed() && m_driverController.getRightBumper());
+
      // Configure the button bindings
-    configureButtonBindings();
-    // m_intake.setDefaultCommand(
+     configureButtonBindings();
+     // m_intake.setDefaultCommand(
     //     new RunCommand( () -> 
     //         SmartDashboard.putNumber("Compressor Pressure", phCompressor.getPressure())
     //     , m_intake)
@@ -98,9 +101,9 @@ public class RobotContainer {
     CommandBase driveDefaultCommand = new RunCommand(
       () ->
           m_robotDrive.drive(
-              -2*m_leftController.getRawAxis(1),
-              -2*m_leftController.getRawAxis(0),
-               3*m_rightController.getRawAxis(0)
+              -3*m_driverController.getLeftY(),
+              -3*m_driverController.getLeftX(),
+               3*m_driverController.getRightX()
                ), m_robotDrive);
     driveDefaultCommand.setName("DriveDefaultCommand");
     m_robotDrive.setDefaultCommand(driveDefaultCommand); // use this to change from field oriented to non-field oriented
@@ -115,9 +118,7 @@ public class RobotContainer {
         , m_climber)
     );
 
-    m_feed.setDefaultCommand(
-      new AutomaticFeedCommand(m_feed, () -> m_launcher.atSpeed() && m_limelight.isAimed())
-    );
+    m_feed.setDefaultCommand(autoFeedCommand);
 
     TunableNumber launcherSpeed = new TunableNumber("launcher/launcherSpeedRPM", 0);
     CommandBase launcherDefaultCommand = new RunCommand(
@@ -127,6 +128,7 @@ public class RobotContainer {
         // m_operatorController.setRumble(RumbleType.kLeftRumble, 0);
         // m_driverController.setRumble(RumbleType.kLeftRumble, 0);
         m_launcher.stopLauncher();
+        SmartDashboard.putBoolean("LauncherSpinning", false);
       }, //m_launcher.spinLauncher(launcherSpeed.get()); System.out.println("RUNNING LAUNCHER DEFAULT COMMAND");},
       m_launcher);
     
@@ -150,8 +152,6 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    JoystickButton LTrigger = new JoystickButton(m_leftController, 1);
-    JoystickButton RTrigger = new JoystickButton(m_rightController, 1); /*
       JoystickButton AButton = new JoystickButton(m_driverController, 1);
       JoystickButton BButton = new JoystickButton(m_driverController, 2);
       JoystickButton XButton = new JoystickButton(m_driverController, 3);
@@ -202,21 +202,25 @@ public class RobotContainer {
 
       Back.whenPressed(() -> m_robotDrive.makeBackwards(true));
       Start.whenPressed(() -> m_robotDrive.makeBackwards(false));
-    */
       // AButton.whenHeld(new RunCommand(() -> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
       // m_limelight.ledsOn();}, m_robotDrive));
-      RTrigger.whenHeld(new SequentialCommandGroup(new RunCommand(()-> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
+      RBumper.whenHeld(new RunCommand(()-> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());}));
+
+      ORBumper.toggleWhenActive(new RunCommand(() -> {
         m_limelight.ledsOn();
+        SmartDashboard.putBoolean("LauncherSpinning", true);
         m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
-      }, m_robotDrive).withInterrupt(m_limelight::isAimed),
-        new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher).withInterrupt(m_launcher::atSpeed),
-        new ParallelCommandGroup(new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher), 
-        new RunCommand(() -> m_feed.spinFeed(-1), m_feed)).withInterrupt(() -> !m_launcher.atSpeed()),
-        new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher).withInterrupt(m_launcher::atSpeed),
-        new ParallelCommandGroup(new RunCommand(() -> m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle())))), m_launcher), 
-        new RunCommand(() -> m_feed.spinFeed(-1), m_feed)).withInterrupt(() -> !m_launcher.atSpeed())));
+      }).beforeStarting(() -> {
+        if (autoFeedCommand.getStateOfBall() == AutomaticFeedCommand.State.OneBallBottom) {
+          autoFeedCommand.moveToTop();
+        }
+      }).andThen(new InstantCommand(autoFeedCommand::resetEmpty)));
         
-      LTrigger.whileHeld(new StartEndCommand(m_intake::StartIntakeOut,m_intake::EndIntake, m_intake));
+      LBumper.whileHeld(new StartEndCommand(m_intake::StartIntakeOut,m_intake::EndIntake, m_intake));
+      XButton.whenPressed(new InstantCommand(autoFeedCommand::resetEmpty));
+      
+      OXButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(0.3), m_feed));
+      OAButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
       /*
 
       RBumper.whenHeld(new RunCommand(() -> m_climber.setPosition(Units.inchesToMeters(62)), m_climber));
@@ -228,10 +232,8 @@ public class RobotContainer {
       // RBumper.whenPressed(new InstantCommand(m_intake::intakeIn));
 
       //OAButton.whenPressed(new InstantCommand(m_intake::intakeIn));
-      OAButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
       //OXButton.whenPressed(new InstantCommand(m_intake::intakeOut));
-      OXButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(0.3), m_feed));
-      //OLBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
+     //OLBumper.toggleWhenActive(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake));
       OYButton.whenHeld(new RunCommand(m_launcher::spinLauncherTuning, m_launcher));
       
       //OBButton.whenPressed(new InstantCommand(m_climber::clawsOut));
@@ -263,9 +265,9 @@ public class RobotContainer {
 
   public void drive() {
      m_robotDrive.drive(
-      -3*m_leftController.getRawAxis(1),
-      -3*m_leftController.getRawAxis(0),
-       3*m_rightController.getRawAxis(0)
+      -3*m_driverController.getLeftY(),
+      -3*m_driverController.getLeftX(),
+       3*m_driverController.getRightX()
      );
   }
 

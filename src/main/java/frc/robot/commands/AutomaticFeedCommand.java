@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Feed.FeedSubsystem;
 import org.littletonrobotics.junction.Logger;
@@ -17,11 +18,13 @@ public class AutomaticFeedCommand extends CommandBase {
     private final FeedSubsystem feedSubsystem;
     private final BooleanSupplier readyToLaunch;
     private State state;
+    private double timeTillOneBallBottom;
 
     public AutomaticFeedCommand(FeedSubsystem feedSubsystem, BooleanSupplier readyToLaunch) {
         this.feedSubsystem = feedSubsystem;
         this.readyToLaunch = readyToLaunch;
         this.state = State.Empty;
+    
         // each subsystem used by the command must be passed into the
         // addRequirements() method (which takes a vararg of Subsystem)
         addRequirements(this.feedSubsystem);
@@ -30,6 +33,11 @@ public class AutomaticFeedCommand extends CommandBase {
     @Override
     public void initialize() {
     }
+
+    public void resetEmpty() {
+        state = State.Empty;
+    }
+
 
     @Override
     public void execute() {
@@ -46,12 +54,15 @@ public class AutomaticFeedCommand extends CommandBase {
             } else {
                 feedSubsystem.spinFeed(0);
                 state = State.OneBallBottom;
+                timeTillOneBallBottom = Timer.getFPGATimestamp();
             }
         } else if (state == State.OneBallBottom) {
             if (feedSubsystem.getBottomSensor()) {
                 feedSubsystem.spinFeed(-1);
                 state = State.TwoBallsTraveling;
-            } else {
+            } else if (Timer.getFPGATimestamp()- timeTillOneBallBottom < 0.1){
+                feedSubsystem.spinFeed(-1);
+            } else{
                 feedSubsystem.spinFeed(0);
             }
         } else if (state == State.TwoBallsTraveling) {
@@ -103,6 +114,15 @@ public class AutomaticFeedCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+    
+    }
 
+    public State getStateOfBall(){
+        return state;
+    }
+
+    public void moveToTop(){
+        feedSubsystem.spinFeed(-1);
+        state = State.TwoBallsTraveling;
     }
 }

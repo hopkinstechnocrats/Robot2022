@@ -21,17 +21,17 @@ public class LEDSubsystem extends SubsystemBase {
   
   /** Creates a new LEDSubsystem. */
   public LEDSubsystem() {
-    output = new DigitalOutput(0);
+    // output = new DigitalOutput(0);
     proportionOn = 0;
     
     // Initial duty cycle is 0 so it's the same as when it's off
-    output.enablePWM(0);
+    // output.enablePWM(0);
   }
 
   @Override
   public void periodic() {
     proportionOn = convertToDutyCycle(determineOutput());
-    output.updateDutyCycle(proportionOn);
+    // output.updateDutyCycle(proportionOn);
     Logger.getInstance().recordOutput("LEDSubsystem/intaking", intaking);
     Logger.getInstance().recordOutput("LEDSubsystem/climbing", climbing);
     Logger.getInstance().recordOutput("LEDSubsystem/warning", warning);

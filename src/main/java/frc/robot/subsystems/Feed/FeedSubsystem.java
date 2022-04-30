@@ -29,13 +29,6 @@ public class FeedSubsystem extends SubsystemBase {
         topSensor = new DigitalInput(1);
     }
 
-    public FeedSubsystem(OpenLoopIO io) {
-        this.io = io;
-        inputs = new OpenLoopIO.OpenLoopIOInputs(1);
-        bottomSensor = new DigitalInput(0);
-        topSensor = new DigitalInput(1);
-    }
-
     public void spinFeed(double speed) {
         io.setVoltage(12 * speed);
     }

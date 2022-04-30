@@ -79,6 +79,6 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   public Boolean isAimed() {
-    return Math.abs(tx.getDouble(horizontalAngle)) < 0.5;
+    return Math.abs(tx.getDouble(horizontalAngle)) < 4;
   }
 }
