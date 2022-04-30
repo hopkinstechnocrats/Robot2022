@@ -5,12 +5,8 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import lib.iotemplates.ClosedLoopIO;
 import lib.talonconfiguration.BaseTalonFXConfiguration;
@@ -26,7 +22,7 @@ public class ModuleSteerIO implements ClosedLoopIO {
     TunableNumber kI = new TunableNumber("KITuningController", 0);
     TunableNumber kD = new TunableNumber("KDTuningController", 0);
 
-    private PIDController m_steeringPIDController = new PIDController(
+    private final PIDController m_steeringPIDController = new PIDController(
             kP.get(), 
             kI.get(),
             kD.get());

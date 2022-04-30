@@ -13,10 +13,10 @@ import static frc.robot.Constants.DriveConstants.kWheelHeight;
 
 public class SwerveModule {
 
-  private String corners;
+  private final String corners;
 
   private Rotation2d swerveAngle;
-  private double offset;
+  private final double offset;
   private boolean inverted;
 
   private final ClosedLoopIO steerIO;
@@ -27,8 +27,8 @@ public class SwerveModule {
 
   public SwerveModule(int driveMotorPort, int turningMotorPort, int turningEncoderPort, String corners, double turningEncoderOffset) {
     ModuleIOContainer moduleIO = new ModuleIOContainer();
-    moduleIO.steer = new ModuleSteerIOReal(turningMotorPort, turningEncoderPort, turningEncoderOffset);
-    moduleIO.drive = new ModuleDriveIOReal(driveMotorPort, true, corners);
+    moduleIO.steer = new ModuleSteerIO(turningMotorPort, turningEncoderPort, turningEncoderOffset);
+    moduleIO.drive = new ModuleDriveIO(driveMotorPort, true, corners);
     steerIO = moduleIO.steer;
     driveIO = moduleIO.drive;
     steerInputs = new ClosedLoopIO.ClosedLoopIOInputs(1);
