@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.OIConstants;
 import frc.robot.auto.AutoRoutines;
 import frc.robot.commands.AutoClimb;
+import frc.robot.commands.AutoExtendTelescope;
 import frc.robot.commands.AutomaticFeedCommand;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -222,8 +223,8 @@ public class RobotContainer {
       OXButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(0.3), m_feed));
       OAButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
 
-      OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
-      OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(-5), m_climber));
+      // OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
+      // OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(-5), m_climber));
      
       OLBumper.whileHeld(new RunCommand(() -> {
         m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
@@ -278,6 +279,11 @@ public class RobotContainer {
                  3*m_driverController.getRightX()
                  ), m_robotDrive)
                  );
+      // 1.2 and 0.9 are made up values
+      // Extending the clibmer to right below the mid rung and right above the mid rung
+      YButton.whenPressed(new AutoExtendTelescope(1.2, m_climber, 1.25, 15));
+      OStart.whenPressed(new AutoExtendTelescope(0.9, m_climber, 1.25, 15));
+
       
       
   }
