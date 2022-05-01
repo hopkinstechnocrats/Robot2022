@@ -29,7 +29,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import lib.util.TunableNumber;
 
 
@@ -221,6 +221,14 @@ public class RobotContainer {
       
       OXButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(0.3), m_feed));
       OAButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
+
+      OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
+      OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(-5), m_climber));
+     
+      OLBumper.whileHeld(new RunCommand(() -> {
+        m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
+        // m_limelight.ledsOn();
+      }, m_launcher));
       /*
 
       RBumper.whenHeld(new RunCommand(() -> m_climber.setPosition(Units.inchesToMeters(62)), m_climber));
@@ -238,17 +246,12 @@ public class RobotContainer {
       
       //OBButton.whenPressed(new InstantCommand(m_climber::clawsOut));
       //OYButton.whenPressed(new InstantCommand(m_climber::clawsIn));
-      OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
-      OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(-5), m_climber));
       //OLIn.whenHeld(new RunCommand(() -> m_climber.spinClimber(12), m_climber));
 
 
       //ORIn.whenHeld(new RunCommand(() -> m_launcher.spinFromDistance(2.64/(Math.tan(m_limelight.getVerticalAngle()))), m_launcher));
       //ORBumper.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
-      ORBumper.whileHeld(new RunCommand(() -> {
-        m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors/(Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
-        // m_limelight.ledsOn();
-      }, m_launcher));
+      
 
       ODPadTop.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(6000), m_launcher));
       ODPadLeft.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(3000), m_launcher));
@@ -261,6 +264,22 @@ public class RobotContainer {
       // LTrigger.whenActive(new InstantCommand(m_intake::intakeOut));
       // DPadTop.whenPressed(new InstantCommand(() -> .(90))); */ 
 
+
+
+      // Right trigger used to slow down the robot to 1.5 m/s
+
+      Trigger RTrigger = new Trigger(() -> m_driverController.getRawAxis(3) >= .5);
+
+      RTrigger.whenActive(new RunCommand(
+        () ->
+            m_robotDrive.drive(
+                -1.5*m_driverController.getLeftY(),
+                -1.5*m_driverController.getLeftX(),
+                 3*m_driverController.getRightX()
+                 ), m_robotDrive)
+                 );
+      
+      
   }
 
   public void drive() {
