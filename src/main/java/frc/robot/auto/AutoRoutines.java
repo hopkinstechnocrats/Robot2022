@@ -63,8 +63,7 @@ public class AutoRoutines {
         
 
         public Command DriveBetweenPoints(Translation2d startingPosition,
-                        Translation2d endingPosition, Rotation2d targetAngle, DriveSubsystem m_robotDrive) {
-                                m_robotDrive.setTargetAngle(targetAngle);
+                        Translation2d endingPosition, DriveSubsystem m_robotDrive) {
                  TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
                          AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                                 // Add kinematics to ensure max speed is actually obeyed
@@ -308,13 +307,13 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
                 
                         }
 
-        public CommandGroup defensiveAutoRoutine() {
-                return new CommandGroup(
-                        new InstantCommand(() -> m_RobotDrive.resetOdometry(3StartingPosition)),
+        public Command defensiveAutoRoutine() {
+                return new SequentialCommandGroup(
+                        new InstantCommand(() -> m_RobotDrive.resetOdometry(FieldPositions.3StartingPosition)),
                         new InstantCommand(m_intake::intakeIn),
                         new ParallelCommandGroup(
                                 this.DriveBetweenPoints(
-                                        3StartingPosition,
+                                        FieldPositions.3StartingPosition,
                                         FieldPositions.B3,
                                         m_robotDrive).withTimeout(2)),
                         new ParallelCommandGroup(
@@ -327,7 +326,7 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
                                         FieldPositions.R6,
                                         FieldPositions.R5,
                                         m_robotDrive).withTimeout(2)),
-                                )
+                                );
 
         }
 }
