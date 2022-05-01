@@ -1,17 +1,13 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.XboxController;
-
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import lib.util.TunableNumber;
+import org.littletonrobotics.junction.Logger;
 
 
 public class FixHeadingCommand extends CommandBase {
@@ -30,8 +26,8 @@ public class FixHeadingCommand extends CommandBase {
         kI = new TunableNumber("FixHeadingkI", AutoConstants.kIThetaController);
         kD = new TunableNumber("FixHeadingkD", AutoConstants.kDThetaController);
         this.controller = new ProfiledPIDController(AutoConstants.kPThetaController, AutoConstants.kIThetaController, AutoConstants.kDThetaController, AutoConstants.kThetaControllerConstraints);
-        controller.enableContinuousInput(-1*Math.PI, Math.PI);
-            
+        controller.enableContinuousInput(-1 * Math.PI, Math.PI);
+
         // each subsystem used by the command must be passed into the addRequirements() method (which takes a vararg of Subsystem)
         addRequirements(this.driveSubsystem);
     }
@@ -56,7 +52,6 @@ public class FixHeadingCommand extends CommandBase {
         Logger.getInstance().recordOutput("DriveSubsystem/FixHeadingSetpoint", controller.getSetpoint().position);
         Logger.getInstance().recordOutput("DriveSubsystem/FixHeadingOutput", output);
         Logger.getInstance().recordOutput("DriveSubsystem/FixHeadingError", controller.getPositionError());
-        
 
 
     }

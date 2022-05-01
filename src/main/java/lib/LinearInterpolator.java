@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class LinearInterpolator {
 
-    private HashMap<Double, Double> table;
+    private final HashMap<Double, Double> table;
 
 
     public LinearInterpolator() {
@@ -47,7 +47,7 @@ public class LinearInterpolator {
                 valueAbove = i;
             }
         }
-        
+
         Double x1 = valueBelow;
         Double x2 = valueAbove;
         Double y1 = table.get(valueBelow);

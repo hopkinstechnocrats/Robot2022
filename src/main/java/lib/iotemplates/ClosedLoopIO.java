@@ -4,46 +4,91 @@
 
 package lib.iotemplates;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 
-
-/** Template hardware interface for a closed loop subsystem. */
+/**
+ * Template hardware interface for a closed loop subsystem.
+ */
 public interface ClosedLoopIO {
-    public default void setVelocityRadPerSec(double v) {
+    default void setVelocityRadPerSec(double v) {
 
     }
 
-    public default void setPosition(Rotation2d position) {
-        
+    default void setPosition(Rotation2d position) {
+
     }
 
-    /** Contains all of the input data received from hardware. */
-    public static class ClosedLoopIOInputs implements LoggableInputs {
+    /**
+     * Updates the set of loggable inputs.
+     */
+    default void updateInputs(ClosedLoopIOInputs inputs) {
+    }
+
+    /**
+     * Run open loop at the specified voltage.
+     */
+    default void setVoltage(double volts) {
+    }
+
+    /**
+     * Run closed loop at the specified velocity.
+     *
+     * @param velocityRadPerSec Velocity setpoint.
+     */
+    default void setVelocity(double velocityRadPerSec) {
+    }
+
+    default void setPosition(double positionRad) {
+
+    }
+
+    /**
+     * Enable or disable brake mode.
+     */
+    default void setBrakeMode(boolean enable) {
+    }
+
+    /**
+     * Set velocity PID constants.
+     */
+    default void configurePID(double kp, double ki, double kd) {
+    }
+
+    /**
+     * Reset the encoder(s) to a known position.
+     */
+    default void resetPosition(double positionRad) {
+    }
+
+    /**
+     * Contains all of the input data received from hardware.
+     */
+    class ClosedLoopIOInputs implements LoggableInputs {
         public double positionRad = 0.0;
         public double velocityRadPerSec = 0.0;
         public double velocitySetpointRadPerSec = 0;
         public double positionSetpointRad = 0;
         public double appliedVolts = 0.0;
-        public double[] supplyCurrentAmps = new double[] {};
-        public double[] statorCurrentAmps = new double[] {};
-        public double[] tempCelcius = new double[] {};
-        public boolean[] underVoltage = new boolean[] {};
-        public boolean[] forwardLimitSwitch = new boolean[] {};
-        public boolean[] reverseLimitSwitch = new boolean[] {};
-        public boolean[] forwardSoftLimit = new boolean[] {};
-        public boolean[] reverseSoftLimit = new boolean[] {};
-        public boolean[] hardwareFailure = new boolean[] {};
-        public boolean[] resetDuringEn = new boolean[] {};
-        public boolean[] sensorOverflow = new boolean[] {};
-        public boolean[] sensorOutOfPhase = new boolean[] {};
-        public boolean[] hardwareESDReset = new boolean[] {};
-        public boolean[] remoteLossOfSignal = new boolean[] {};
-        public boolean[] APIError = new boolean[] {};
-        public boolean[] supplyOverV = new boolean[] {};
-        public boolean[] supplyUnstable = new boolean[] {};
+        public double[] supplyCurrentAmps = new double[]{};
+        public double[] statorCurrentAmps = new double[]{};
+        public double[] tempCelcius = new double[]{};
+        public boolean[] underVoltage = new boolean[]{};
+        public boolean[] forwardLimitSwitch = new boolean[]{};
+        public boolean[] reverseLimitSwitch = new boolean[]{};
+        public boolean[] forwardSoftLimit = new boolean[]{};
+        public boolean[] reverseSoftLimit = new boolean[]{};
+        public boolean[] hardwareFailure = new boolean[]{};
+        public boolean[] resetDuringEn = new boolean[]{};
+        public boolean[] sensorOverflow = new boolean[]{};
+        public boolean[] sensorOutOfPhase = new boolean[]{};
+        public boolean[] hardwareESDReset = new boolean[]{};
+        public boolean[] remoteLossOfSignal = new boolean[]{};
+        public boolean[] APIError = new boolean[]{};
+        public boolean[] supplyOverV = new boolean[]{};
+        public boolean[] supplyUnstable = new boolean[]{};
 
         public ClosedLoopIOInputs(int numMotors) {
             supplyCurrentAmps = new double[numMotors];
@@ -114,37 +159,5 @@ public interface ClosedLoopIO {
             velocitySetpointRadPerSec = table.getDouble("SetpointRadPerSec", velocitySetpointRadPerSec);
             positionSetpointRad = table.getDouble("PositionSetpointRad", positionSetpointRad);
         }
-    }
-
-    /** Updates the set of loggable inputs. */
-    public default void updateInputs(ClosedLoopIOInputs inputs) {
-    }
-
-    /** Run open loop at the specified voltage. */
-    public default void setVoltage(double volts) {
-    }
-
-    /**
-     * Run closed loop at the specified velocity.
-     *
-     * @param velocityRadPerSec Velocity setpoint.
-     */
-    public default void setVelocity(double velocityRadPerSec) {
-    }
-
-    public default void setPosition(double positionRad) {
-
-    }
-
-    /** Enable or disable brake mode. */
-    public default void setBrakeMode(boolean enable) {
-    }
-
-    /** Set velocity PID constants. */
-    public default void configurePID(double kp, double ki, double kd) {
-    }
-
-    /** Reset the encoder(s) to a known position. */
-    public default void resetPosition(double positionRad) {
     }
 }

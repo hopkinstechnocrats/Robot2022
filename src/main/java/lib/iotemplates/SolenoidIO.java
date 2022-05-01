@@ -5,26 +5,6 @@ import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface SolenoidIO {
-    class SolenoidIOInputs implements LoggableInputs {
-        public boolean fwdSolenoidDisabled = false;
-        public boolean revSolenoidDisabled = false;
-        public DoubleSolenoid.Value state = DoubleSolenoid.Value.kOff;
-
-        public void toLog(LogTable table) {
-            table.put("FwdSolenoidDisabled", fwdSolenoidDisabled);
-            table.put("RevSolenoidDisabled", revSolenoidDisabled);
-            table.put("State", convStateToString(state));
-
-        }
-
-        public void fromLog(LogTable table) {
-            fwdSolenoidDisabled = table.getBoolean("FwdSolenoidDisabled", fwdSolenoidDisabled);
-            revSolenoidDisabled = table.getBoolean("RevSolenoidDisabled", revSolenoidDisabled);
-            state = convStringToState(table.getString("State", convStateToString(state)));
-        }
-
-    }
-
     private static String convStateToString(DoubleSolenoid.Value state) {
         switch (state) {
             case kOff:
@@ -52,5 +32,25 @@ public interface SolenoidIO {
     void updateInputs(SolenoidIOInputs inputs);
 
     void set(DoubleSolenoid.Value state);
+
+    class SolenoidIOInputs implements LoggableInputs {
+        public boolean fwdSolenoidDisabled = false;
+        public boolean revSolenoidDisabled = false;
+        public DoubleSolenoid.Value state = DoubleSolenoid.Value.kOff;
+
+        public void toLog(LogTable table) {
+            table.put("FwdSolenoidDisabled", fwdSolenoidDisabled);
+            table.put("RevSolenoidDisabled", revSolenoidDisabled);
+            table.put("State", convStateToString(state));
+
+        }
+
+        public void fromLog(LogTable table) {
+            fwdSolenoidDisabled = table.getBoolean("FwdSolenoidDisabled", fwdSolenoidDisabled);
+            revSolenoidDisabled = table.getBoolean("RevSolenoidDisabled", revSolenoidDisabled);
+            state = convStringToState(table.getString("State", convStateToString(state)));
+        }
+
+    }
 
 }

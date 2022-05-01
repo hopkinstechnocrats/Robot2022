@@ -10,7 +10,7 @@ public class TunableNumber {
     private final double defaultValue;
 
     public TunableNumber(String dashboardKey, double defaultValue) {
-        System.out.println("CREATE TUNABLE NUMBER"+dashboardKey);
+        System.out.println("CREATE TUNABLE NUMBER" + dashboardKey);
         this.key = tableKey + "/" + dashboardKey;
         this.defaultValue = defaultValue;
         if (tuningMode) {
@@ -20,12 +20,12 @@ public class TunableNumber {
         }
     }
 
-    public double get() {
-        return tuningMode ? SmartDashboard.getNumber(key, defaultValue) : defaultValue;
-    }
-
     public static void setTuningMode(boolean isTunable) {
         tuningMode = isTunable;
+    }
+
+    public double get() {
+        return tuningMode ? SmartDashboard.getNumber(key, defaultValue) : defaultValue;
     }
 
 }

@@ -4,7 +4,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants;
@@ -23,7 +22,7 @@ public class ModuleSteerIO implements ClosedLoopIO {
     TunableNumber kD = new TunableNumber("KDTuningController", 0);
 
     private final PIDController m_steeringPIDController = new PIDController(
-            kP.get(), 
+            kP.get(),
             kI.get(),
             kD.get());
 
@@ -41,7 +40,7 @@ public class ModuleSteerIO implements ClosedLoopIO {
     public void updateInputs(ClosedLoopIOInputs inputs) {
         // double startTime = Logger.getInstance().getRealTimestamp();
         // steerMotor.getMotorOutputVoltage();
-    
+
         // double elapsedTime = Logger.getInstance().getRealTimestamp() - startTime;
         // Logger.getInstance().recordOutput("GetMotorOutputVoltageSec", elapsedTime);
         inputs.positionRad = getPosition().getRadians();

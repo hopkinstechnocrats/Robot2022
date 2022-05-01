@@ -2,10 +2,8 @@ package lib.iotemplates;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Constants;
 
 public class CANCoderClosedLoopIO implements ClosedLoopIO {
 
@@ -23,8 +21,8 @@ public class CANCoderClosedLoopIO implements ClosedLoopIO {
         inputs.positionRad = Rotation2d.fromDegrees(encoder.getAbsolutePosition()).minus(offset).getRadians();
         inputs.velocityRadPerSec = Units.degreesToRadians(encoder.getVelocity());
         inputs.appliedVolts = steerMotor.getMotorOutputVoltage();
-        inputs.statorCurrentAmps = new double[] {steerMotor.getStatorCurrent()};
-        inputs.supplyCurrentAmps = new double[] {steerMotor.getSupplyCurrent()};
-        inputs.tempCelcius = new double[] {steerMotor.getTemperature()};
+        inputs.statorCurrentAmps = new double[]{steerMotor.getStatorCurrent()};
+        inputs.supplyCurrentAmps = new double[]{steerMotor.getSupplyCurrent()};
+        inputs.tempCelcius = new double[]{steerMotor.getTemperature()};
     }
 }

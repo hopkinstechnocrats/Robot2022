@@ -7,28 +7,50 @@ package lib.iotemplates;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-/** Template hardware interface for an open loop subsystem. */
+/**
+ * Template hardware interface for an open loop subsystem.
+ */
 public interface OpenLoopIO {
-    /** Contains all of the input data received from hardware. */
-    public static class OpenLoopIOInputs implements LoggableInputs {
+    /**
+     * Updates the set of loggable inputs.
+     */
+    default void updateInputs(OpenLoopIOInputs inputs) {
+    }
+
+    /**
+     * Run open loop at the specified voltage.
+     */
+    default void setVoltage(double volts) {
+    }
+
+    /**
+     * Enable or disable brake mode.
+     */
+    default void setBrakeMode(boolean enable) {
+    }
+
+    /**
+     * Contains all of the input data received from hardware.
+     */
+    class OpenLoopIOInputs implements LoggableInputs {
         public double appliedVolts = 0.0;
-        public double[] supplyCurrentAmps = new double[] {};
-        public double[] statorCurrentAmps = new double[] {};
-        public double[] tempCelcius = new double[] {};
-        public boolean[] underVoltage = new boolean[] {};
-        public boolean[] forwardLimitSwitch = new boolean[] {};
-        public boolean[] reverseLimitSwitch = new boolean[] {};
-        public boolean[] forwardSoftLimit = new boolean[] {};
-        public boolean[] reverseSoftLimit = new boolean[] {};
-        public boolean[] hardwareFailure = new boolean[] {};
-        public boolean[] resetDuringEn = new boolean[] {};
-        public boolean[] sensorOverflow = new boolean[] {};
-        public boolean[] sensorOutOfPhase = new boolean[] {};
-        public boolean[] hardwareESDReset = new boolean[] {};
-        public boolean[] remoteLossOfSignal = new boolean[] {};
-        public boolean[] APIError = new boolean[] {};
-        public boolean[] supplyOverV = new boolean[] {};
-        public boolean[] supplyUnstable = new boolean[] {};
+        public double[] supplyCurrentAmps = new double[]{};
+        public double[] statorCurrentAmps = new double[]{};
+        public double[] tempCelcius = new double[]{};
+        public boolean[] underVoltage = new boolean[]{};
+        public boolean[] forwardLimitSwitch = new boolean[]{};
+        public boolean[] reverseLimitSwitch = new boolean[]{};
+        public boolean[] forwardSoftLimit = new boolean[]{};
+        public boolean[] reverseSoftLimit = new boolean[]{};
+        public boolean[] hardwareFailure = new boolean[]{};
+        public boolean[] resetDuringEn = new boolean[]{};
+        public boolean[] sensorOverflow = new boolean[]{};
+        public boolean[] sensorOutOfPhase = new boolean[]{};
+        public boolean[] hardwareESDReset = new boolean[]{};
+        public boolean[] remoteLossOfSignal = new boolean[]{};
+        public boolean[] APIError = new boolean[]{};
+        public boolean[] supplyOverV = new boolean[]{};
+        public boolean[] supplyUnstable = new boolean[]{};
 
         public OpenLoopIOInputs(int numMotors) {
             supplyCurrentAmps = new double[numMotors];
@@ -92,17 +114,5 @@ public interface OpenLoopIO {
             supplyUnstable = table.getBooleanArray("SupplyUnstable", supplyUnstable);
 
         }
-    }
-
-    /** Updates the set of loggable inputs. */
-    public default void updateInputs(OpenLoopIOInputs inputs) {
-    }
-
-    /** Run open loop at the specified voltage. */
-    public default void setVoltage(double volts) {
-    }
-
-    /** Enable or disable brake mode. */
-    public default void setBrakeMode(boolean enable) {
     }
 }
