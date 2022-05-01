@@ -24,9 +24,8 @@ public class SwerveModule {
     private SwerveModuleState desiredState;
 
     public SwerveModule(int driveMotorPort, int turningMotorPort, int turningEncoderPort, String corners, double turningEncoderOffset) {
-        ModuleIOContainer moduleIO = new ModuleIOContainer();
-        moduleIO.steer = new ModuleSteerIO(turningMotorPort, turningEncoderPort, turningEncoderOffset);
-        moduleIO.drive = new ModuleDriveIO(driveMotorPort, true, corners);
+        ModuleIOContainer moduleIO = new ModuleIOContainer(new ModuleSteerIO(turningMotorPort, turningEncoderPort, turningEncoderOffset)
+        , new ModuleDriveIO(driveMotorPort, true, corners));
         steerIO = moduleIO.steer;
         driveIO = moduleIO.drive;
         steerInputs = new ClosedLoopIO.ClosedLoopIOInputs(1);

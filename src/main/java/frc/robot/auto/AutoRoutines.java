@@ -361,26 +361,26 @@ public class AutoRoutines {
         return new ParallelCommandGroup(swerveControllerCommand, autonomousLogCommand);
     }
 
-    public Command defensiveAutoRoutine() {
-        return new SequentialCommandGroup(
-                new InstantCommand(() -> m_RobotDrive.resetOdometry(FieldPositions .3 StartingPosition)),
-        new InstantCommand(m_intake::intakeIn),
-                new ParallelCommandGroup(
-                        this.DriveBetweenPoints(
-                                FieldPositions .3 StartingPosition,
-                FieldPositions.B3,
-                m_robotDrive).withTimeout(2)),
-        new ParallelCommandGroup(
-                this.DriveBetweenPoints(
-                        FieldPositions.B3,
-                        FieldPositions.R6,
-                        m_robotDrive).withTimeout(2)),
-                new ParallelCommandGroup(
-                        this.DriveBetweenPoints(
-                                FieldPositions.R6,
-                                FieldPositions.R5,
-                                m_robotDrive).withTimeout(2)),
-                                )
+//    public Command defensiveAutoRoutine() {
+//        return new SequentialCommandGroup(
+//                new InstantCommand(() -> m_RobotDrive.resetOdometry(FieldPositions .3 StartingPosition)),
+//        new InstantCommand(m_intake::intakeIn),
+//                new ParallelCommandGroup(
+//                        this.DriveBetweenPoints(
+//                                FieldPositions .3 StartingPosition,
+//                FieldPositions.B3,
+//                m_robotDrive).withTimeout(2)),
+//        new ParallelCommandGroup(
+//                this.DriveBetweenPoints(
+//                        FieldPositions.B3,
+//                        FieldPositions.R6,
+//                        m_robotDrive).withTimeout(2)),
+//                new ParallelCommandGroup(
+//                        this.DriveBetweenPoints(
+//                                FieldPositions.R6,
+//                                FieldPositions.R5,
+//                                m_robotDrive).withTimeout(2)),
+//                                )
 
-    }
+//    }
 }
