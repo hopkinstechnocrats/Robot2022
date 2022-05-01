@@ -307,4 +307,27 @@ public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
                                         
                 
                         }
+
+        public CommandGroup defensiveAutoRoutine() {
+                return new CommandGroup(
+                        new InstantCommand(() -> m_RobotDrive.resetOdometry(3StartingPosition)),
+                        new InstantCommand(m_intake::intakeIn),
+                        new ParallelCommandGroup(
+                                this.DriveBetweenPoints(
+                                        3StartingPosition,
+                                        FieldPositions.B3,
+                                        m_robotDrive).withTimeout(2)),
+                        new ParallelCommandGroup(
+                                this.DriveBetweenPoints(
+                                        FieldPositions.B3,
+                                        FieldPositions.R6,
+                                        m_robotDrive).withTimeout(2)),
+                        new ParallelCommandGroup(
+                                this.DriveBetweenPoints(
+                                        FieldPositions.R6,
+                                        FieldPositions.R5,
+                                        m_robotDrive).withTimeout(2)),
+                                )
+
+        }
 }
