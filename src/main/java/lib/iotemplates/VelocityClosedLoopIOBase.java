@@ -1,6 +1,5 @@
 package lib.iotemplates;
 
-import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.math.controller.PIDController;
@@ -13,16 +12,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class VelocityClosedLoopIOBase implements ClosedLoopIO{
-    private String name;
-    private TunableNumber kP;
-    private TunableNumber kI;
-    private TunableNumber kD;
-    private TunableNumber kF;
-    private PIDController feedback;
-    private SimpleMotorFeedforward feedforward;
-    private List<WPI_TalonSRX> motors;
+public class VelocityClosedLoopIOBase implements ClosedLoopIO {
     private final double kEncoderTicksPerRevolution;
+    private final String name;
+    private final TunableNumber kP;
+    private final TunableNumber kI;
+    private final TunableNumber kD;
+    private final TunableNumber kF;
+    private final PIDController feedback;
+    private SimpleMotorFeedforward feedforward;
+    private final List<WPI_TalonSRX> motors;
     private double currentVelocity;
     private double setpoint;
 
@@ -30,10 +29,10 @@ public class VelocityClosedLoopIOBase implements ClosedLoopIO{
         this.name = name;
         this.kEncoderTicksPerRevolution = kEncoderTicksPerRevolution;
         this.currentVelocity = 0;
-        this.kP = new TunableNumber(name+"/kP", kP);
-        this.kI = new TunableNumber(name+"/kI", kI);
-        this.kD = new TunableNumber(name+"/kD", kD);
-        this.kF = new TunableNumber(name+"/kF", kF);
+        this.kP = new TunableNumber(name + "/kP", kP);
+        this.kI = new TunableNumber(name + "/kI", kI);
+        this.kD = new TunableNumber(name + "/kD", kD);
+        this.kF = new TunableNumber(name + "/kF", kF);
         feedback = new PIDController(kP, kI, kD);
         feedforward = new SimpleMotorFeedforward(0, kF);
         motors = Arrays.stream(motorPort).mapToObj((int canID) -> {
@@ -68,7 +67,7 @@ public class VelocityClosedLoopIOBase implements ClosedLoopIO{
 //            inputs.supplyUnstable[i] = faults.SupplyUnstable;
 //        }
 
-        System.out.println("KP SMD VALUE:"+kP.get());
+        System.out.println("KP SMD VALUE:" + kP.get());
         feedback.setP(kP.get());
         feedback.setI(kI.get());
         feedback.setD(kD.get());
@@ -92,13 +91,13 @@ public class VelocityClosedLoopIOBase implements ClosedLoopIO{
         Logger.getInstance().recordOutput("FEEDFORWARD", feedforward.calculate(velocityRadPerSec));
         Logger.getInstance().recordOutput("OUTPUT", outputVoltage);
         for (WPI_TalonSRX motor : motors) {
-            motor.setVoltage(-1*outputVoltage);
+            motor.setVoltage(-1 * outputVoltage);
         }
     }
 
     public void setVoltage(double volts) {
         for (WPI_TalonSRX motor : motors) {
-            motor.setVoltage(-1*volts);
+            motor.setVoltage(-1 * volts);
         }
     }
 }

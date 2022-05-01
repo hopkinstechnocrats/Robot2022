@@ -3,17 +3,14 @@ package frc.robot.subsystems.Launcher;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.LEDSubsystem;
 import lib.LinearInterpolator;
 import lib.iotemplates.ClosedLoopIO;
-
 import lib.iotemplates.VelocityClosedLoopIOTalon;
 import lib.util.TunableNumber;
-
 import org.littletonrobotics.junction.Logger;
 
 public class LauncherSubsystem extends SubsystemBase {
@@ -21,16 +18,16 @@ public class LauncherSubsystem extends SubsystemBase {
     private final ClosedLoopIO io;
     private final ClosedLoopIO.ClosedLoopIOInputs inputs = new ClosedLoopIO.ClosedLoopIOInputs(2);
     private final LinearInterpolator interpolationTable;
+    private final LEDSubsystem m_led;
     XboxController m_leftController;
     XboxController m_rightController;
-    private final LEDSubsystem m_led;
     TunableNumber spoid = new TunableNumber("Launcher/speed", 4000);
     TunableNumber scalingFactor = new TunableNumber("Launcher/ScalingFactor", 1);
 
     public LauncherSubsystem(LEDSubsystem led, XboxController m_lefController, XboxController m_rightController) {
         io = new VelocityClosedLoopIOTalon(
                 "launcher",
-                new int[] {Constants.LauncherConstants.kCANPort1, Constants.LauncherConstants.kCANPort2},
+                new int[]{Constants.LauncherConstants.kCANPort1, Constants.LauncherConstants.kCANPort2},
                 Constants.LauncherConstants.kP,
                 Constants.LauncherConstants.kI,
                 Constants.LauncherConstants.kD,
@@ -47,7 +44,7 @@ public class LauncherSubsystem extends SubsystemBase {
         this.m_leftController = m_lefController;
         this.m_rightController = m_rightController;
         //interpolationTable.put()
-        
+
     }
 
     public LauncherSubsystem(LEDSubsystem led, XboxController m_leftController, XboxController m_rightController, ClosedLoopIO io) {
@@ -89,7 +86,7 @@ public class LauncherSubsystem extends SubsystemBase {
 
     public void spinLauncherTuning() {
         io.setVelocity(Units.rotationsPerMinuteToRadiansPerSecond(spoid.get()));
-       
+
     }
 
     public void stopLauncher() {
@@ -100,14 +97,14 @@ public class LauncherSubsystem extends SubsystemBase {
 
 
     public void periodic() {
-       double startTime = Logger.getInstance().getRealTimestamp();
-       io.updateInputs(inputs);
-       Logger.getInstance().processInputs("launcher", inputs);
-       SmartDashboard.putNumber("Launcher RPM", Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec));
-        SmartDashboard.putBoolean("At Speed", Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<20);
+        double startTime = Logger.getInstance().getRealTimestamp();
+        io.updateInputs(inputs);
+        Logger.getInstance().processInputs("launcher", inputs);
+        SmartDashboard.putNumber("Launcher RPM", Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec));
+        SmartDashboard.putBoolean("At Speed", Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec) < 20);
         SmartDashboard.putNumber("Speed Error Rad Per Sec", Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec));
-       double endTime = Logger.getInstance().getRealTimestamp();
-       Logger.getInstance().recordOutput("LauncherCodeSec", endTime-startTime);
+        double endTime = Logger.getInstance().getRealTimestamp();
+        Logger.getInstance().recordOutput("LauncherCodeSec", endTime - startTime);
     }
 
     public void spinFromDistance(double distance) {

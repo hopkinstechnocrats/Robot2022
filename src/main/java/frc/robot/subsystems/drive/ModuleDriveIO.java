@@ -13,17 +13,14 @@ import lib.talonconfiguration.BaseTalonFXConfiguration;
 public class ModuleDriveIO implements ClosedLoopIO {
 
     private final WPI_TalonFX driveMotor;
-    private boolean inverted;
-    double driveOutput;
-    double velocitySetpointRadPerSec;
-
     private final PIDController m_drivePIDController = new PIDController(
             Constants.ModuleConstants.kPModuleDriveController, Constants.ModuleConstants.kIModuleDriveController,
             Constants.ModuleConstants.kDModuleDriveController);
-
     private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(0, 8.634, 0);
-
+    double driveOutput;
+    double velocitySetpointRadPerSec;
     String corners;
+    private boolean inverted;
 
     public ModuleDriveIO(int motorPort, boolean inverted, String corners) {
         this.inverted = inverted;
@@ -64,8 +61,8 @@ public class ModuleDriveIO implements ClosedLoopIO {
         driveOutput = desiredSpeedRadPerSecond / 8.6
                 + (
                 inverted ?
-                m_drivePIDController.calculate(getVelocityRadPerSecond(), desiredSpeedRadPerSecond)
-                : -1*m_drivePIDController.calculate(getVelocityRadPerSecond(), desiredSpeedRadPerSecond));
+                        m_drivePIDController.calculate(getVelocityRadPerSecond(), desiredSpeedRadPerSecond)
+                        : -1 * m_drivePIDController.calculate(getVelocityRadPerSecond(), desiredSpeedRadPerSecond));
         // Logger.getInstance().recordOutput(corners+" Error", getVelocityRadPerSecond()-desiredSpeedRadPerSecond);
         // Logger.getInstance().recordOutput(corners+" Setpoint", desiredSpeedRadPerSecond);
         // Logger.getInstance().recordOutput(corners+" Measurement", getVelocityRadPerSecond());

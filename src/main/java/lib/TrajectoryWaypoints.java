@@ -15,6 +15,7 @@ public class TrajectoryWaypoints {
         double x;
         double y;
         double theta;
+
         public PoseInfo() {
             x = 0;
             y = 0;

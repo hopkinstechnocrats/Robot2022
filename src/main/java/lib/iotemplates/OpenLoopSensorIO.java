@@ -7,15 +7,37 @@ package lib.iotemplates;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-/** Template hardware interface for an open loop subsystem. */
+/**
+ * Template hardware interface for an open loop subsystem.
+ */
 public interface OpenLoopSensorIO {
-    /** Contains all of the input data received from hardware. */
-    public static class OpenLoopSensorIOInputs implements LoggableInputs {
+    /**
+     * Updates the set of loggable inputs.
+     */
+    default void updateInputs(OpenLoopSensorIOInputs inputs) {
+    }
+
+    /**
+     * Run open loop at the specified voltage.
+     */
+    default void setVoltage(double volts) {
+    }
+
+    /**
+     * Enable or disable brake mode.
+     */
+    default void setBrakeMode(boolean enable) {
+    }
+
+    /**
+     * Contains all of the input data received from hardware.
+     */
+    class OpenLoopSensorIOInputs implements LoggableInputs {
         public double positionRad = 0.0;
         public double velocityRadPerSec = 0.0;
         public double appliedVolts = 0.0;
-        public double[] currentAmps = new double[] {};
-        public double[] tempCelcius = new double[] {};
+        public double[] currentAmps = new double[]{};
+        public double[] tempCelcius = new double[]{};
 
         public void toLog(LogTable table) {
             table.put("PositionRad", positionRad);
@@ -32,17 +54,5 @@ public interface OpenLoopSensorIO {
             currentAmps = table.getDoubleArray("CurrentAmps", currentAmps);
             tempCelcius = table.getDoubleArray("TempCelcius", tempCelcius);
         }
-    }
-
-    /** Updates the set of loggable inputs. */
-    public default void updateInputs(OpenLoopSensorIOInputs inputs) {
-    }
-
-    /** Run open loop at the specified voltage. */
-    public default void setVoltage(double volts) {
-    }
-
-    /** Enable or disable brake mode. */
-    public default void setBrakeMode(boolean enable) {
     }
 }

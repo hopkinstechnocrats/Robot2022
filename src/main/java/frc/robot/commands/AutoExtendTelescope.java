@@ -5,44 +5,46 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Climber.ClimberIO;
 import frc.robot.subsystems.Climber.ClimberSubsystem;
 
 public class AutoExtendTelescope extends CommandBase {
-  ClimberSubsystem m_climb;
-  double Pos;
-  double tolerance;
-  /** Creates a new autoClimb. */
-  public AutoExtendTelescope(double Pos, ClimberSubsystem climb, double MaxSpeed, double MaxAccel) {
-    addRequirements(climb);
-    m_climb = climb;
-    this.Pos = Pos;
-    m_climb.m_climberIO.setMaxSpeedAndAccel(MaxSpeed, MaxAccel);
-    // Use addRequirements() here to declare subsystem dependencies.
-  }
+    ClimberSubsystem m_climb;
+    double Pos;
+    double tolerance;
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    tolerance = .025;
-    m_climb.resetController();
-  }
+    /**
+     * Creates a new autoClimb.
+     */
+    public AutoExtendTelescope(double Pos, ClimberSubsystem climb, double MaxSpeed, double MaxAccel) {
+        addRequirements(climb);
+        m_climb = climb;
+        this.Pos = Pos;
+        m_climb.m_climberIO.setMaxSpeedAndAccel(MaxSpeed, MaxAccel);
+        // Use addRequirements() here to declare subsystem dependencies.
+    }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    m_climb.goTo(Pos);
-  }
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {
+        tolerance = .025;
+        m_climb.resetController();
+    }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    m_climb.spinClimber(0);
-  }
+    // Called every time the scheduler runs while the command is scheduled.
+    @Override
+    public void execute() {
+        m_climb.goTo(Pos);
+    }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return(Math.abs(m_climb.getPosition()-Pos)) <= (tolerance);
-  }
+    // Called once the command ends or is interrupted.
+    @Override
+    public void end(boolean interrupted) {
+        m_climb.spinClimber(0);
+    }
+
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+        return (Math.abs(m_climb.getPosition() - Pos)) <= (tolerance);
+    }
 }
