@@ -361,26 +361,58 @@ public class AutoRoutines {
         return new ParallelCommandGroup(swerveControllerCommand, autonomousLogCommand);
     }
 
-//    public Command defensiveAutoRoutine() {
-//        return new SequentialCommandGroup(
-//                new InstantCommand(() -> m_RobotDrive.resetOdometry(FieldPositions .3 StartingPosition)),
-//        new InstantCommand(m_intake::intakeIn),
-//                new ParallelCommandGroup(
-//                        this.DriveBetweenPoints(
-//                                FieldPositions .3 StartingPosition,
-//                FieldPositions.B3,
-//                m_robotDrive).withTimeout(2)),
-//        new ParallelCommandGroup(
-//                this.DriveBetweenPoints(
-//                        FieldPositions.B3,
-//                        FieldPositions.R6,
-//                        m_robotDrive).withTimeout(2)),
-//                new ParallelCommandGroup(
-//                        this.DriveBetweenPoints(
-//                                FieldPositions.R6,
-//                                FieldPositions.R5,
-//                                m_robotDrive).withTimeout(2)),
-//                                )
+    public SequentialCommandGroup defensiveAutoRoutine(Translation2d startingPosition, Translation2d endingPosition, DriveSubsystem m_robotDrive) {
 
-//    }
+        return new SequentialCommandGroup(
+
+        // This auto routine is still in progress and might not function properly, do not use. 
+                new InstantCommand(() -> m_robotDrive.resetOdometry(FieldPositions.B3startingPosition)), 
+                new InstantCommand(m_intake::intakeIn),  // retract intake out
+                new ParallelCommandGroup(
+
+                new InstantCommand(m_intake::StartIntakeOut).withTimeout(2), // spin intake
+
+                        this.DriveBetweenPoints( 
+                                FieldPositions.B3startingPosition.getTranslation(), // drive to B3 from B3StartingPosition to intake B3
+                                FieldPositions.B3,
+                                FieldPositions.B3startingPosition.getRotation(),
+                                m_robotDrive).withTimeout(2)), //may need to change withtimeout times in the future
+
+                new ParallelCommandGroup(
+
+                new InstantCommand(m_intake::StartIntakeIn), // stop spinning intake
+                new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(2), // spin feed
+                new RunCommand(() -> m_launcher
+                        .spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors
+                                / (Math.tan(m_limelight.getVerticalAngle()))),
+                        m_launcher).withTimeout(4)), //spin launcher
+                
+                new ParallelCommandGroup(
+                        this.DriveBetweenPoints(
+                                FieldPositions.B3, //drive to R6 from B3
+                                FieldPositions.R6,
+                                new Rotation2d(78.75),
+                                m_robotDrive).withTimeout(2),
+                        new InstantCommand(m_intake::StartIntakeOut).withTimeout(2)), // start spinning intake
+
+                        this.DriveBetweenPoints(
+                                FieldPositions.R6,
+                                FieldPositions.R5,
+                                new Rotation2d(0),
+                                m_robotDrive).withTimeout(2), // replace 0 with proper rotation needed to point robot to R5
+                        new Rotation2d(30), //needs to be replaced with correct angle to rotate the robot to the hangar
+                        new ParallelCommandGroup(
+                                new RunCommand(() -> m_feed.spinFeed(-1), m_feed).withTimeout(4), // spin feed
+                                new RunCommand(() -> m_launcher.spinLauncher(3000), m_launcher).withTimeout(4)), // needs to be replaced with correct RPM to shoot opponents ball to the hangar
+                new ParallelCommandGroup(
+                        this.DriveBetweenPoints(
+                                FieldPositions.R6,
+                                FieldPositions.R5,
+                                new Rotation2d(157.5),
+                                m_robotDrive).withTimeout(4))
+
+                           );
+
+
+        }
 }
