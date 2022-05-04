@@ -92,10 +92,17 @@ public class AutomaticFeedCommand extends CommandBase {
             if (!feedSubsystem.getTopSensor()) {
                 state = State.Empty;
             }
+        } else if (state == State.OneBallTraveling) {
+            if (feedSubsystem.getTopSensor()) {
+                feedSubsystem.spinFeed(0);
+                state = State.OneBallTop;
+            } else {
+                feedSubsystem.spinFeed(-1);
+            }
         }
 
         Logger.getInstance().recordOutput("Feed/state", state.name());
-        Logger.getInstance().recordOutput("Feed/readyToLaunch", readyToLaunch.getAsBoolean());
+        Logger.getInstance().recordOutput("Feed/readyToLaunch", readyToLaunch.getAsBoolean()); 
 
     }
 
@@ -107,6 +114,8 @@ public class AutomaticFeedCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+        
+    
 
     }
 
@@ -116,10 +125,10 @@ public class AutomaticFeedCommand extends CommandBase {
 
     public void moveToTop() {
         feedSubsystem.spinFeed(-1);
-        state = State.TwoBallsTraveling;
+        state = State.OneBallTraveling;
     }
 
     public enum State {
-        Empty, IntakingOneBall, OneBallBottom, TwoBallsTraveling, TwoBallsTop, OneBallTop, LaunchingFinalBall
+        Empty, IntakingOneBall, OneBallBottom, TwoBallsTraveling, OneBallTraveling, TwoBallsTop, OneBallTop, LaunchingFinalBall
     }
 }
