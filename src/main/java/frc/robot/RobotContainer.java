@@ -65,7 +65,7 @@ public class RobotContainer {
     final LimelightSubsystem m_limelight;
     private final LEDSubsystem m_led;
     private final IntakeSubsystem m_intake;
-    private final FeedSubsystem m_feed;
+    final FeedSubsystem m_feed;
     private final LauncherSubsystem m_launcher;
     private final AutoRoutines myAutoRoutines;
     public Pose2d zeroPose = new Pose2d(new Translation2d(0, 0), new Rotation2d());
@@ -126,7 +126,7 @@ public class RobotContainer {
         obj.set(true);
         phCompressor.enableAnalog(100, 120);
         autoFeedCommand = new AutomaticFeedCommand(m_feed, () -> m_launcher.atSpeed() && m_limelight.isAimed() && m_driverController.getRightBumper());
-
+        
       // OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
       // OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(-5), m_climber));
      
@@ -258,8 +258,8 @@ public class RobotContainer {
         }).beforeStarting(() -> {
             if (autoFeedCommand.getStateOfBall() == AutomaticFeedCommand.State.OneBallBottom) {
                 autoFeedCommand.moveToTop();
-            }
-        }).andThen(new InstantCommand(autoFeedCommand::resetEmpty)));
+            }}
+        ));
 
         LBumper.whileHeld(new StartEndCommand(m_intake::StartIntakeOut, m_intake::EndIntake, m_intake));
         XButton.whenPressed(new InstantCommand(autoFeedCommand::resetEmpty));

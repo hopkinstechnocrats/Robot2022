@@ -8,6 +8,9 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.commands.AutomaticFeedCommand;
+
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggedSystemStats;
@@ -107,6 +110,7 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void autonomousInit() {
+        m_robotContainer.m_feed.setDefaultCommand(new RunCommand(() -> m_robotContainer.m_feed.spinFeed(0), m_robotContainer.m_feed));
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         /*
@@ -141,6 +145,7 @@ public class Robot extends LoggedRobot {
             m_autonomousCommand.cancel();
         }
         m_robotContainer.m_limelight.ledsOn();
+        m_robotContainer.m_feed.setDefaultCommand(m_robotContainer.autoFeedCommand);
         RobotContainer.m_robotDrive.makeBackwards(true);
     }
 

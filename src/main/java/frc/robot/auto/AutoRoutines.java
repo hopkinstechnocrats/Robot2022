@@ -64,6 +64,7 @@ public class AutoRoutines {
 
     public Command DriveBetweenPoints(Translation2d startingPosition,
                                       Translation2d endingPosition, Rotation2d targetPosition, DriveSubsystem m_robotDrive) {
+        
         TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
                 AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                 // Add kinematics to ensure max speed is actually obeyed
@@ -118,16 +119,19 @@ public class AutoRoutines {
     }
 
     public Command drivePositiveX() {
+        
         return new SequentialCommandGroup(new InstantCommand(() -> m_robotDrive.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
                 this.DriveBetweenPoints(new Translation2d(0, 0), new Translation2d(1, 0), new Rotation2d(0), m_robotDrive));
     }
 
     public Command drivePositiveY() {
+        
         return new SequentialCommandGroup(new InstantCommand(() -> m_robotDrive.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
                 this.DriveBetweenPoints(new Translation2d(0, 0), new Translation2d(0, 1), new Rotation2d(0), m_robotDrive));
     }
 
     public SequentialCommandGroup TwoBallAutoRoutine(Pose2d zeroPose) {
+        
         return new SequentialCommandGroup(new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
                 new InstantCommand(m_intake::intakeIn), // actually out lol
                 new InstantCommand(m_intake::StartIntakeOut),
@@ -163,6 +167,7 @@ public class AutoRoutines {
 
     // red three ball auto routine
     public SequentialCommandGroup ThreeBallAutoRoutine(Pose2d zeroPose) {
+       
 
         return new SequentialCommandGroup(
                 new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
@@ -209,10 +214,10 @@ public class AutoRoutines {
 
                         )));
 
-
     }
 
     public SequentialCommandGroup FiveBallAutoRoutine(Pose2d zeroPose) {
+        
 
         return new SequentialCommandGroup(
                 new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
@@ -279,6 +284,7 @@ public class AutoRoutines {
     }
 
     public SequentialCommandGroup twoBallAutoRoutine(Pose2d zeroPose) {
+        
 
         return new SequentialCommandGroup(
                 new InstantCommand(() -> m_robotDrive.resetOdometry(zeroPose)),
@@ -308,6 +314,7 @@ public class AutoRoutines {
     }
 
     public Command driveStraightBetweenPoints(Translation2d startingPosition, Translation2d endingPosition, DriveSubsystem m_robotDrive) {
+        
         TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
                 AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                 // Add kinematics to ensure max speed is actually obeyed
