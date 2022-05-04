@@ -14,6 +14,9 @@ public class AutomaticFeedCommand extends CommandBase {
     private final BooleanSupplier readyToLaunch;
     private State state;
     private double timeTillOneBallBottom;
+    private double timeSinceLastBall;
+    public double timeLastTrue;
+    public double timeLastFalse;
     public AutomaticFeedCommand(FeedSubsystem feedSubsystem, BooleanSupplier readyToLaunch) {
         this.feedSubsystem = feedSubsystem;
         this.readyToLaunch = readyToLaunch;
@@ -34,6 +37,8 @@ public class AutomaticFeedCommand extends CommandBase {
 
     @Override
     public void execute() {
+        // To constantly update the debouncedSensor function
+        debouncedSensor(feedSubsystem);
         if (state == State.Empty) {
             if (feedSubsystem.getBottomSensor()) {
                 feedSubsystem.spinFeed(-1);
@@ -113,6 +118,45 @@ public class AutomaticFeedCommand extends CommandBase {
     public State getStateOfBall() {
         return state;
     }
+
+    // public void debouncer() {
+       //  currentTime = Timer.get();
+
+        // if (timeSinceLastBall <= .4) {
+            
+       // }
+    //}
+
+
+    public boolean debouncedSensor(FeedSubsystem table) {
+        boolean bottomSensorValue = table.getBottomSensor();
+        double debounceThreshold = 0.4;
+        double currentTime = Timer.getFPGATimestamp();
+        
+        
+        if (bottomSensorValue == true) {
+            timeLastTrue = Timer.getFPGATimestamp();
+           if (currentTime - timeLastFalse >= debounceThreshold) {
+               return true;
+           }
+
+           return false;
+            
+        }
+
+        // Same as if (bottomSensorValue == false)
+        else {
+            timeLastFalse = Timer.getFPGATimestamp();
+            if (currentTime - timeLastTrue >= debounceThreshold) {
+               return false; 
+            }
+            
+            return true;
+        }
+
+        //once .4 seconds have passed, change your state to the opposite
+    }
+    
 
     public void moveToTop() {
         feedSubsystem.spinFeed(-1);
