@@ -44,28 +44,6 @@ public class DriveSubsystem extends SubsystemBase {
     /**
      * Creates a new DriveSubsystem.
      */
-    public DriveSubsystem(DriveIOContainer driveIO) {
-        m_frontLeft = new SwerveModule(
-                DriveConstants.kFrontLeftDriveMotorPort,
-                DriveConstants.kFrontLeftTurningMotorPort,
-                DriveConstants.kFrontLeftTurningEncoderPort,
-                "FrontLeft", DriveConstants.kFrontLeftOffset, driveIO.frontLeft);
-        m_rearLeft = new SwerveModule(
-                DriveConstants.kRearLeftDriveMotorPort,
-                DriveConstants.kRearLeftTurningMotorPort,
-                DriveConstants.kRearLeftTurningEncoderPort,
-                "RearLeft", DriveConstants.kRearLeftOffset, driveIO.rearLeft);
-        m_frontRight = new SwerveModule(
-                DriveConstants.kFrontRightDriveMotorPort,
-                DriveConstants.kFrontRightTurningMotorPort,
-                DriveConstants.kFrontRightTurningEncoderPort,
-                "FrontRight", DriveConstants.kFrontRightOffset, driveIO.frontRight);
-        m_rearRight = new SwerveModule(
-                DriveConstants.kRearRightDriveMotorPort,
-                DriveConstants.kRearRightTurningMotorPort,
-                DriveConstants.kRearRightTurningEncoderPort,
-                "RearRight", DriveConstants.kRearRightOffset, driveIO.rearRight);
-    }
 
     public DriveSubsystem() {
         m_frontLeft = new SwerveModule(

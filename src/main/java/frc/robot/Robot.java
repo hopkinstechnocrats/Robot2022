@@ -35,7 +35,7 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void robotInit() {
-        setUseTiming(isReal());
+        setUseTiming(true);
         //LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
         Logger.getInstance().recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
         Logger.getInstance().recordMetadata("RuntimeType", getRuntimeType().toString());
@@ -60,8 +60,9 @@ public class Robot extends LoggedRobot {
             Logger.getInstance().addDataReceiver(new ByteLogReceiver("/home/lvuser/"));
             Logger.getInstance().addDataReceiver(new LogSocketServer(5800));
         } else {
-            String path = ByteLogReplay.promptForPath();
-            Logger.getInstance().setReplaySource(new ByteLogReplay(path));
+//            Logger.getInstance().addDataReceiver(new LogSocketServer(5800));
+            String path = "/home/henry/robotLogSim.rlog";
+//            Logger.getInstance().setReplaySource(new ByteLogReplay(path));
             Logger.getInstance().addDataReceiver(new ByteLogReceiver(ByteLogReceiver.addPathSuffix(path, "_sim")));
         }
         LiveWindow.disableAllTelemetry();

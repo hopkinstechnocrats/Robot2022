@@ -21,8 +21,5 @@ public class CANCoderClosedLoopIO implements ClosedLoopIO {
         inputs.positionRad = Rotation2d.fromDegrees(encoder.getAbsolutePosition()).minus(offset).getRadians();
         inputs.velocityRadPerSec = Units.degreesToRadians(encoder.getVelocity());
         inputs.appliedVolts = steerMotor.getMotorOutputVoltage();
-        inputs.statorCurrentAmps = new double[]{steerMotor.getStatorCurrent()};
-        inputs.supplyCurrentAmps = new double[]{steerMotor.getSupplyCurrent()};
-        inputs.tempCelcius = new double[]{steerMotor.getTemperature()};
     }
 }

@@ -90,30 +90,7 @@ public class RobotContainer {
 //      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
 //   }
         TunableNumber.setTuningMode(true);
-        if (isReal) {
-            m_robotDrive = new DriveSubsystem();
-        } else {
-            m_robotDrive = new DriveSubsystem(
-                    new DriveIOContainer(
-                            new ModuleIOContainer(
-                                    new ModuleDriveIOSim(),
-                                    new ModuleSteerIOSim()
-                            ),
-                            new ModuleIOContainer(
-                                    new ModuleDriveIOSim(),
-                                    new ModuleSteerIOSim()
-                            ),
-                            new ModuleIOContainer(
-                                    new ModuleDriveIOSim(),
-                                    new ModuleSteerIOSim()
-                            ),
-                            new ModuleIOContainer(
-                                    new ModuleDriveIOSim(),
-                                    new ModuleSteerIOSim()
-                            )
-                    )
-            );
-        }
+        m_robotDrive = new DriveSubsystem();
         m_led = new LEDSubsystem();
         m_intake = new IntakeSubsystem(m_led);
         m_climber = new ClimberSubsystem();
@@ -144,9 +121,9 @@ public class RobotContainer {
         CommandBase driveDefaultCommand = new RunCommand(
                 () ->
                         m_robotDrive.drive(
-                                -3 * m_driverController.getLeftY(),
-                                -3 * m_driverController.getLeftX(),
-                                3 * m_driverController.getRightX()
+                                -3 * m_driverController.getRawAxis(0),
+                                -3 * m_driverController.getRawAxis(1),
+                                3 * m_driverController.getRawAxis(2)
                         ), m_robotDrive);
         driveDefaultCommand.setName("DriveDefaultCommand");
         m_robotDrive.setDefaultCommand(driveDefaultCommand); // use this to change from field oriented to non-field oriented
