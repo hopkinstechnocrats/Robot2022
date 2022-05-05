@@ -121,9 +121,9 @@ public class RobotContainer {
         CommandBase driveDefaultCommand = new RunCommand(
                 () ->
                         m_robotDrive.drive(
-                                -3 * m_driverController.getRawAxis(0),
-                                -3 * m_driverController.getRawAxis(1),
-                                3 * m_driverController.getRawAxis(2)
+                                -3 * m_driverController.getLeftY(),
+                                -3 * m_driverController.getLeftX(),
+                                3 * m_driverController.getRightX()
                         ), m_robotDrive);
         driveDefaultCommand.setName("DriveDefaultCommand");
         m_robotDrive.setDefaultCommand(driveDefaultCommand); // use this to change from field oriented to non-field oriented
