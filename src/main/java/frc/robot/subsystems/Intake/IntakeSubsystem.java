@@ -1,19 +1,16 @@
 package frc.robot.subsystems.Intake;
 
 
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.LEDSubsystem;
 import lib.iotemplates.OpenLoopIO;
-
 import lib.iotemplates.OpenLoopIOTalonSRXBase;
 import lib.iotemplates.SolenoidIO;
 import lib.iotemplates.SolenoidIOBase;
-
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -48,6 +45,7 @@ public class IntakeSubsystem extends SubsystemBase {
         speed = -1;
         spinIntake();
         m_led.intakeOn();
+        intakeIn();
     }
 
     public void StartIntakeIn() {
@@ -59,24 +57,25 @@ public class IntakeSubsystem extends SubsystemBase {
         speed = 0;
         spinIntake();
         m_led.intakeOff();
+        intakeOut();
     }
 
-    public void intakeOut(){
+    public void intakeOut() {
         solenoidIO.set(DoubleSolenoid.Value.kForward);
     }
 
-    public void intakeIn(){
+    public void intakeIn() {
         solenoidIO.set(DoubleSolenoid.Value.kReverse);
     }
 
     public void periodic() {
         double startTime = Logger.getInstance().getRealTimestamp();
-       motorIO.updateInputs(motorInputs);
-       Logger.getInstance().processInputs("IntakeMotor", motorInputs);
-       solenoidIO.updateInputs(solenoidInputs);
-       Logger.getInstance().processInputs("IntakeSolenoid", solenoidInputs);
-       double endTime = Logger.getInstance().getRealTimestamp();
-       Logger.getInstance().recordOutput("IntakeCodeSec", endTime-startTime);
+        motorIO.updateInputs(motorInputs);
+        Logger.getInstance().processInputs("IntakeMotor", motorInputs);
+        solenoidIO.updateInputs(solenoidInputs);
+        Logger.getInstance().processInputs("IntakeSolenoid", solenoidInputs);
+        double endTime = Logger.getInstance().getRealTimestamp();
+        Logger.getInstance().recordOutput("IntakeCodeSec", endTime - startTime);
     }
 }
 

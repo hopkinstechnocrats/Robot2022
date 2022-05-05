@@ -11,12 +11,7 @@ import java.util.Map;
 
 public class MotorControllerFactory {
     private static Map<Integer, BaseMotorController> mockFalcons = new HashMap<>();
-    private static Map<Integer, BaseMotorController> mockTalonSRXs = new HashMap<>();;
-
-    enum MotorType {
-        FALCON,
-        TALONSRX
-    }
+    private static final Map<Integer, BaseMotorController> mockTalonSRXs = new HashMap<>();
 
     public static void setMotorControllerMock(MotorType motorType, int CANID, BaseMotorController mock) {
         if (motorType == MotorType.FALCON) {
@@ -48,5 +43,10 @@ public class MotorControllerFactory {
             return motor;
         }
         return null;
+    }
+
+    enum MotorType {
+        FALCON,
+        TALONSRX
     }
 }

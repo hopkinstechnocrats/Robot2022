@@ -1,11 +1,8 @@
 package lib.iotemplates;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
 import lib.util.TunableNumber;
 import org.littletonrobotics.junction.Logger;
@@ -14,26 +11,26 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class VelocityClosedLoopIOTalon implements ClosedLoopIO{
-    private String name;
-    private TunableNumber kP;
-    private TunableNumber kI;
-    private TunableNumber kD;
-    private TunableNumber kF;
-    private List<WPI_TalonSRX> motors;
+public class VelocityClosedLoopIOTalon implements ClosedLoopIO {
     private final double kEncoderTicksPerRevolution;
+    private final String name;
+    private final TunableNumber kP;
+    private final TunableNumber kI;
+    private final TunableNumber kD;
+    private final TunableNumber kF;
+    private final List<WPI_TalonSRX> motors;
     private double currentVelocity;
     private double setpoint;
-    private WPI_TalonSRX master;
+    private final WPI_TalonSRX master;
 
     public VelocityClosedLoopIOTalon(String name, int[] motorPort, double kP, double kI, double kD, double kF, double kEncoderTicksPerRevolution) {
         this.name = name;
         this.kEncoderTicksPerRevolution = kEncoderTicksPerRevolution;
         this.currentVelocity = 0;
-        this.kP = new TunableNumber(name+"/kP", kP);
-        this.kI = new TunableNumber(name+"/kI", kI);
-        this.kD = new TunableNumber(name+"/kD", kD);
-        this.kF = new TunableNumber(name+"/kF", kF);
+        this.kP = new TunableNumber(name + "/kP", kP);
+        this.kI = new TunableNumber(name + "/kI", kI);
+        this.kD = new TunableNumber(name + "/kD", kD);
+        this.kF = new TunableNumber(name + "/kF", kF);
         motors = Arrays.stream(motorPort).mapToObj((int canID) -> {
             WPI_TalonSRX motor = new WPI_TalonSRX(canID);
             motor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20);

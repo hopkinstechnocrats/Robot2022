@@ -1,6 +1,5 @@
 package lib.talonconfiguration;
 
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 
 public class BaseTalonSRXConfiguration extends TalonSRXConfiguration {

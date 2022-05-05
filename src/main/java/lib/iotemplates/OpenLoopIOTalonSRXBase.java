@@ -16,7 +16,7 @@ public class OpenLoopIOTalonSRXBase implements OpenLoopIO {
         motors = Arrays.stream(CANIDs).mapToObj((int canID) -> {
             WPI_TalonSRX motor = new WPI_TalonSRX(canID);
             motor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20);
-        return motor;
+            return motor;
         }).collect(Collectors.toList());
         System.out.println("INTAKE MOTOR ARRAY SIZE:" + motors.size());
     }
@@ -51,7 +51,6 @@ public class OpenLoopIOTalonSRXBase implements OpenLoopIO {
             motor.setVoltage(voltage);
         }
     }
-
 
 
 }

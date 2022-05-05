@@ -4,20 +4,13 @@ package frc.robot.subsystems.Climber;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import java.util.ArrayList;
-
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import lib.iotemplates.OpenLoopIO;
 import lib.iotemplates.ClosedLoopIO.ClosedLoopIOInputs;
-
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public class ClimberSubsystem extends SubsystemBase {
 
-    DoubleSolenoid Clawssssssss = new DoubleSolenoid(PneumaticsModuleType.REVPH, 8, 9);
     public ClimberIO m_climberIO = new ClimberIO("Climb", 12, 7, 0.7, 0, 2048, .9, 1.25);
+    DoubleSolenoid Clawssssssss = new DoubleSolenoid(PneumaticsModuleType.REVPH, 8, 9);
     ClosedLoopIOInputs inputs;
     int speed = 0;
 
@@ -30,17 +23,19 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void spinClimber(double speed) {
-        m_climberIO.motor.setVoltage(speed);
+        ClimberIO.motor.setVoltage(speed);
     }
-    public void goTo(double Pos){
+
+    public void goTo(double Pos) {
         m_climberIO.setPosition(Pos);
     }
-    public void clawsOut(){
+
+    public void clawsOut() {
         Clawssssssss.set(DoubleSolenoid.Value.kForward);
         System.out.println("Hooker Reppeled");
     }
 
-    public void clawsIn(){
+    public void clawsIn() {
         Clawssssssss.set(DoubleSolenoid.Value.kReverse);
         System.out.println("Hooker Attracted");
     }
@@ -54,7 +49,7 @@ public class ClimberSubsystem extends SubsystemBase {
         Logger.getInstance().recordOutput("Climb/goalMeters", m_climberIO.feedback.getGoal().position);
         Logger.getInstance().recordOutput("Climb/setpointMeters", m_climberIO.feedback.getSetpoint().position);
         double endTime = Logger.getInstance().getRealTimestamp();
-        Logger.getInstance().recordOutput("ClimberCodeSec", endTime-startTime);
+        Logger.getInstance().recordOutput("ClimberCodeSec", endTime - startTime);
     }
 
     public void zeroClimberPosition() {
@@ -69,7 +64,7 @@ public class ClimberSubsystem extends SubsystemBase {
         return m_climberIO.getPosition();
     }
 
-    public void setPosition(double goal){
+    public void setPosition(double goal) {
         m_climberIO.setPosition(goal);
     }
 
