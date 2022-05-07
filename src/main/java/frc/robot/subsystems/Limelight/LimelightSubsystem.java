@@ -19,6 +19,7 @@ public class LimelightSubsystem extends SubsystemBase {
     NetworkTableEntry ty;
     NetworkTableEntry tx;
     NetworkTableEntry ledMode;
+    NetworkTableEntry stream;
     double horizontalAngle = 0;
     double verticalAngle = 0;
     double isTargetVisible = 0;
@@ -34,6 +35,7 @@ public class LimelightSubsystem extends SubsystemBase {
         ty = table.getEntry("ty");
         tv = table.getEntry("tv");
         ledMode = table.getEntry("ledMode");
+        stream = table.getEntry("stream");
     }
 
     @Override
@@ -51,6 +53,10 @@ public class LimelightSubsystem extends SubsystemBase {
     public boolean isTargetVisible() {
         isTargetVisible = tv.getDouble(isTargetVisible);
         return isTargetVisible == 1;
+    }
+
+    public void setStreamValue() {
+        stream.setNumber(2); //sets stream mode , 0 = sbs, 1 = main, 2 = extra
     }
 
     public double getRotationSpeed() {

@@ -104,6 +104,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void disabledPeriodic() {
         m_robotContainer.m_limelight.ledsOff();
+        m_robotContainer.m_limelight.setStreamValue();
     }
 
     /**

@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Feed.FeedSubsystem;
 import org.littletonrobotics.junction.Logger;
@@ -56,7 +57,7 @@ public class AutomaticFeedCommand extends CommandBase {
             }
         } else if (state == State.OneBallBottom) {
             if (feedSubsystem.getBottomSensor()) {
-                feedSubsystem.spinFeed(-1);
+                feedSubsystem.spinFeed(-.8);
                 state = State.TwoBallsTraveling;
             } else if (Timer.getFPGATimestamp() - timeTillOneBallBottom < 0.1) {
                 feedSubsystem.spinFeed(-1);
@@ -68,7 +69,7 @@ public class AutomaticFeedCommand extends CommandBase {
                 feedSubsystem.spinFeed(0);
                 state = State.TwoBallsTop;
             } else {
-                feedSubsystem.spinFeed(-1);
+                feedSubsystem.spinFeed(-0.8);
             }
         } else if (state == State.TwoBallsTop) {
             if (readyToLaunch.getAsBoolean()) {
@@ -102,11 +103,12 @@ public class AutomaticFeedCommand extends CommandBase {
                 feedSubsystem.spinFeed(0);
                 state = State.OneBallTop;
             } else {
-                feedSubsystem.spinFeed(-1);
+                feedSubsystem.spinFeed(-0.8);
             }
         }
 
         Logger.getInstance().recordOutput("Feed/state", state.name());
+        SmartDashboard.putString("FeedState", state.name());
         Logger.getInstance().recordOutput("Feed/readyToLaunch", readyToLaunch.getAsBoolean()); 
 
     }

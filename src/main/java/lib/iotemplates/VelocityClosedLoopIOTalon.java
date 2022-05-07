@@ -2,6 +2,7 @@ package lib.iotemplates;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXPIDSetConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.math.util.Units;
 import lib.util.TunableNumber;
@@ -22,6 +23,8 @@ public class VelocityClosedLoopIOTalon implements ClosedLoopIO {
     private double currentVelocity;
     private double setpoint;
     private final WPI_TalonSRX master;
+    TalonSRXPIDSetConfiguration config = new TalonSRXPIDSetConfiguration();
+
 
     public VelocityClosedLoopIOTalon(String name, int[] motorPort, double kP, double kI, double kD, double kF, double kEncoderTicksPerRevolution) {
         this.name = name;
@@ -33,6 +36,7 @@ public class VelocityClosedLoopIOTalon implements ClosedLoopIO {
         this.kF = new TunableNumber(name + "/kF", kF);
         motors = Arrays.stream(motorPort).mapToObj((int canID) -> {
             WPI_TalonSRX motor = new WPI_TalonSRX(canID);
+            motor.configFactoryDefault();
             motor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20);
             return motor;
         }).collect(Collectors.toList());
@@ -72,6 +76,7 @@ public class VelocityClosedLoopIOTalon implements ClosedLoopIO {
         master.config_kI(0, kI.get());
         master.config_kD(0, kD.get());
         master.config_kF(0, kF.get());
+        master.getPIDConfigs(config, 0, 20);
 
         // Convert from raw sensor units to radians
         inputs.positionRad = Units.rotationsToRadians(motors.get(0).getSelectedSensorPosition() / kEncoderTicksPerRevolution);

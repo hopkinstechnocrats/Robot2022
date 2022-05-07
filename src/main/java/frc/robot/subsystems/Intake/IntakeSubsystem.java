@@ -34,13 +34,7 @@ public class IntakeSubsystem extends SubsystemBase {
         motorIO.setVoltage(-12 * speed);
         kicker.setVoltage(12 * speed);
     }
-
-    public void RTrigger(XboxController m_controller) {
-        if (m_controller.getRawAxis(10) == 1) {
-            intakeIn();
-        }
-    }
-
+    
     public void StartIntakeOut() {
         speed = -1;
         spinIntake();

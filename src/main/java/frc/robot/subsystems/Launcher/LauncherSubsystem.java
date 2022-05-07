@@ -80,7 +80,7 @@ public class LauncherSubsystem extends SubsystemBase {
     }
 
     public Boolean atSpeed() {
-        return Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec) < 20 && inputs.velocitySetpointRadPerSec != 0;
+        return Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec) < 40 && inputs.velocitySetpointRadPerSec != 0;
     }
 
 

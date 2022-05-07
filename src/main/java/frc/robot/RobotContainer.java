@@ -102,7 +102,7 @@ public class RobotContainer {
         Solenoid obj = new Solenoid(PneumaticsModuleType.REVPH, 0);
         obj.set(true);
         phCompressor.enableAnalog(100, 120);
-        autoFeedCommand = new AutomaticFeedCommand(m_feed, () -> m_launcher.atSpeed() && m_limelight.isAimed() && m_driverController.getRightBumper());
+        autoFeedCommand = new AutomaticFeedCommand(m_feed, () -> m_launcher.atSpeed() && m_limelight.isAimed() && (m_driverController.getAButton()));
         
       // OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
       // OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(-5), m_climber));
