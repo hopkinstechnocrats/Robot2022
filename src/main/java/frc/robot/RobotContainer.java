@@ -102,7 +102,7 @@ public class RobotContainer {
         Solenoid obj = new Solenoid(PneumaticsModuleType.REVPH, 0);
         obj.set(true);
         phCompressor.enableAnalog(100, 120);
-        autoFeedCommand = new AutomaticFeedCommand(m_feed, () -> m_launcher.atSpeed() && m_limelight.isAimed() && (m_driverController.getAButton()));
+        autoFeedCommand = new AutomaticFeedCommand(m_feed, () -> m_launcher.atSpeed());// && m_limelight.isAimed() && (m_driverController.getAButton())
         
       // OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
       // OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(-5), m_climber));
@@ -231,7 +231,8 @@ public class RobotContainer {
         ORBumper.toggleWhenActive(new RunCommand(() -> {
             m_limelight.ledsOn();
             SmartDashboard.putBoolean("LauncherSpinning", true);
-            m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors / (Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
+            m_launcher.spinLauncher(2000);
+            //m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors / (Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
         }).beforeStarting(() -> {
             if (autoFeedCommand.getStateOfBall() == AutomaticFeedCommand.State.OneBallBottom) {
                 autoFeedCommand.moveToTop();
@@ -292,14 +293,14 @@ public class RobotContainer {
 
         Trigger RTrigger = new Trigger(() -> m_driverController.getRawAxis(3) >= .5);
 
-        RTrigger.whenActive(new RunCommand(
+        /* RTrigger.whenActive(new RunCommand(
                 () ->
                         m_robotDrive.drive(
                                 -1.5 * m_driverController.getLeftY(),
                                 -1.5 * m_driverController.getLeftX(),
                                 3 * m_driverController.getRightX()
                         ), m_robotDrive)
-        );
+        ); */
 
       RTrigger.whenActive(new RunCommand(
         () ->

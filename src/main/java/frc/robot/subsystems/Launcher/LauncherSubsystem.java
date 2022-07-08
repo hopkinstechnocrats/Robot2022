@@ -65,12 +65,12 @@ public class LauncherSubsystem extends SubsystemBase {
     public void spinLauncher(double speedRPM) {
         io.setVelocity(scalingFactor.get() * Units.rotationsPerMinuteToRadiansPerSecond(speedRPM));
         SmartDashboard.putNumber("Launcher RPM", speedRPM * scalingFactor.get());
-        m_led.launchingOn();
-        if (Units.radiansPerSecondToRotationsPerMinute(Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)) < 300) {
-            m_led.onTargetOn();
-        } else {
-            m_led.onTargetOff();
-        }
+        // m_led.launchingOn();
+        // if (Units.radiansPerSecondToRotationsPerMinute(Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)) < 300) {
+        //     m_led.onTargetOn();
+        // } else {
+        //     m_led.onTargetOff();
+        // }
 
         // if (Math.abs(inputs.velocityRadPerSec - inputs.velocitySetpointRadPerSec)<20) {
         //     m_operator.setRumble(RumbleType.kLeftRumble, 1);

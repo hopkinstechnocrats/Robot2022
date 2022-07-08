@@ -146,9 +146,9 @@ public class DriveSubsystem extends SubsystemBase {
         rot = -1 * MathUtil.applyDeadband(rot, 0.4);
         ySpeed = negate * MathUtil.applyDeadband(ySpeed, 0.2);
         xSpeed = negate * MathUtil.applyDeadband(xSpeed, 0.2);
-        rot = rotFilter.calculate(rot);
-        ySpeed = ySpeedFilter.calculate(ySpeed);
-        xSpeed = xSpeedFilter.calculate(xSpeed);
+        rot = 0;//rotFilter.calculate(rot);
+        ySpeed = 0;//ySpeedFilter.calculate(ySpeed);
+        xSpeed = 0;//xSpeedFilter.calculate(xSpeed);
 
         driveNoDeadband(xSpeed, ySpeed, rot);
     }
