@@ -121,9 +121,9 @@ public class RobotContainer {
         CommandBase driveDefaultCommand = new RunCommand(
                 () ->
                         m_robotDrive.drive(
-                                -3 * m_driverController.getLeftY(),
-                                -3 * m_driverController.getLeftX(),
-                                3 * m_driverController.getRightX()
+                                -2 * m_driverController.getLeftY(),
+                                -2 * m_driverController.getLeftX(),
+                                2 * m_driverController.getRightX()
                         ), m_robotDrive);
         driveDefaultCommand.setName("DriveDefaultCommand");
         m_robotDrive.setDefaultCommand(driveDefaultCommand); // use this to change from field oriented to non-field oriented
@@ -224,14 +224,16 @@ public class RobotContainer {
         Start.whenPressed(() -> m_robotDrive.makeBackwards(false));
         // AButton.whenHeld(new RunCommand(() -> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
         // m_limelight.ledsOn();}, m_robotDrive));
-        RBumper.whenHeld(new RunCommand(() -> {
-            m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
-        }));
+
+        
+        // RBumper.whenHeld(new RunCommand(() -> {
+        //     m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
+        // }));
 
         ORBumper.toggleWhenActive(new RunCommand(() -> {
             m_limelight.ledsOn();
             SmartDashboard.putBoolean("LauncherSpinning", true);
-            m_launcher.spinLauncher(2000);
+            m_launcher.spinLauncher(3500);
             //m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors / (Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
         }).beforeStarting(() -> {
             if (autoFeedCommand.getStateOfBall() == AutomaticFeedCommand.State.OneBallBottom) {
@@ -248,10 +250,10 @@ public class RobotContainer {
         OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
         OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(-5), m_climber));
 
-        OLBumper.whileHeld(new RunCommand(() -> {
-            m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors / (Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
-            // m_limelight.ledsOn();
-        }, m_launcher));
+        // OLBumper.whileHeld(new RunCommand(() -> {
+        //     m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors / (Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
+        //     // m_limelight.ledsOn();
+        // }, m_launcher));
 
       /*
 
