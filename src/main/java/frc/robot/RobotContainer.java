@@ -197,22 +197,22 @@ public class RobotContainer {
         // ORIn.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(180)));
         //
         POVButton DPadTop = new POVButton(m_driverController, 0);
-        DPadTop.whenHeld(new RunCommand(() -> m_climber.spinClimber(8), m_climber));
+        // DPadTop.whenHeld(new RunCommand(() -> m_climber.spinClimber(8), m_climber));
         // DPadTop.whenPressed(myAutoRoutines.drivePositiveY());
         POVButton DPadRight = new POVButton(m_driverController, 90);
         Command autoClimb = new AutoClimb(m_climber, m_robotDrive)
                 .beforeStarting(new InstantCommand(m_led::climbingOn))
                 .andThen(new InstantCommand(m_led::climbingOff));
-        DPadRight.whenPressed(autoClimb);
+        // DPadRight.whenPressed(autoClimb);
         BButton.whenPressed(new InstantCommand(m_led::climbingOff, m_climber));
         // DPadRight.whenPressed(myAutoRoutines.drivePositiveX());
         POVButton DPadBottom = new POVButton(m_driverController, 180);
-        DPadTop.whenHeld(new RunCommand(() -> m_climber.spinClimber(8), m_climber));
+        // DPadTop.whenHeld(new RunCommand(() -> m_climber.spinClimber(8), m_climber));
         //DPadBottom.whenHeld(new RunCommand(() -> m_launcher.spinLauncher(5500), m_launcher));
         //DPadBottom.whenPressed(new FixHeadingCommand(m_robo]\[][\]\tDrive, Rotation2d.fromDegrees(270)));
-        DPadBottom.whenHeld(new RunCommand(() -> m_climber.spinClimber(-8), m_climber));
+        // DPadBottom.whenHeld(new RunCommand(() -> m_climber.spinClimber(-8), m_climber));
         POVButton DPadLeft = new POVButton(m_driverController, 270);
-        DPadLeft.toggleWhenPressed(new StartEndCommand(m_climber::clawsOut, m_climber::clawsIn, m_climber));
+        // DPadLeft.toggleWhenPressed(new StartEndCommand(m_climber::clawsOut, m_climber::clawsIn, m_climber));
         // DPadLeft.whenPressed(new FixHeadingCommand(m_robotDrive, Rotation2d.fromDegrees(0), m_driverController));
 
         POVButton ODPadTop = new POVButton(m_operatorController, 0);
@@ -225,7 +225,7 @@ public class RobotContainer {
         // AButton.whenHeld(new RunCommand(() -> {m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
         // m_limelight.ledsOn();}, m_robotDrive));
 
-        
+
         // RBumper.whenHeld(new RunCommand(() -> {
         //     m_robotDrive.driveNoDeadband(0, 0, m_limelight.getRotationSpeed());
         // }));
@@ -247,8 +247,8 @@ public class RobotContainer {
         OXButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(0.3), m_feed));
         OAButton.whenHeld(new RunCommand(() -> m_feed.spinFeed(-1), m_feed));
 
-        OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
-        OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(-5), m_climber));
+        // OStart.whenHeld(new RunCommand(() -> m_climber.spinClimber(5), m_climber));
+        // OBack.whenHeld(new RunCommand(() -> m_climber.spinClimber(-5), m_climber));
 
         // OLBumper.whileHeld(new RunCommand(() -> {
         //     m_launcher.spinFromDistance(Constants.LauncherConstants.heightOfHighHubReflectors / (Math.tan(Units.degreesToRadians(m_limelight.getVerticalAngle()))));
@@ -304,18 +304,18 @@ public class RobotContainer {
                         ), m_robotDrive)
         ); */
 
-      RTrigger.whenActive(new RunCommand(
-        () ->
-            m_robotDrive.drive(
-                -1.5*m_driverController.getLeftY(),
-                -1.5*m_driverController.getLeftX(),
-                 3*m_driverController.getRightX()
-                 ), m_robotDrive)
-                 );
+    //   RTrigger.whenActive(new RunCommand(
+    //     () ->
+    //         m_robotDrive.drive(
+    //             -1.5*m_driverController.getLeftY(),
+    //             -1.5*m_driverController.getLeftX(),
+    //              3*m_driverController.getRightX()
+    //              ), m_robotDrive)
+    //              );
       // 1.2 and 0.9 are made up values
       // Extending the clibmer to right below the mid rung and right above the mid rung
-      YButton.whenPressed(new AutoExtendTelescope(1.2, m_climber, 1.25, 15));
-      OStart.whenPressed(new AutoExtendTelescope(0.9, m_climber, 1.25, 15));
+    //   YButton.whenPressed(new AutoExtendTelescope(1.2, m_climber, 1.25, 15));
+    //   OStart.whenPressed(new AutoExtendTelescope(0.9, m_climber, 1.25, 15));
 
       
       

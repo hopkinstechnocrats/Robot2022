@@ -31,7 +31,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void spinIntake() {
-        motorIO.setVoltage(-12 * speed);
+        motorIO.setVoltage(-12 * 0);
         kicker.setVoltage(12 * speed);
     }
     
@@ -39,7 +39,7 @@ public class IntakeSubsystem extends SubsystemBase {
         speed = -1;
         spinIntake();
         m_led.intakeOn();
-        intakeIn();
+        //intakeIn();
     }
 
     public void StartIntakeIn() {
@@ -51,7 +51,7 @@ public class IntakeSubsystem extends SubsystemBase {
         speed = 0;
         spinIntake();
         m_led.intakeOff();
-        intakeOut();
+        //intakeOut();
     }
 
     public void intakeOut() {
